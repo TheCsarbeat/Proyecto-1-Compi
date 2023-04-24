@@ -103,5 +103,19 @@ public interface Visitor {
 
   // Programs
   public abstract Object visitProgram(Program ast, Object o);
+  
+  // SimplePackageIdentifier
+  //public abstract Object visitSimplePackageIdentifier (SimplePackageIdentifier ast, Object o);
+
+  // Package-Declaration
+  public abstract Object visitPackageDeclaration(PackageDeclaration aThis, Object o);
+
+  public abstract Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o);
+
+  //Long-Identifier
+  //public abstract Object visitSimpleLongIdentifier(SimpleLongIdentifier ast, Object o);
+
+  //public abstract Object visitDollarLongIdentifier (DollarLongIdentifier ast, Object o);
+
 
 }

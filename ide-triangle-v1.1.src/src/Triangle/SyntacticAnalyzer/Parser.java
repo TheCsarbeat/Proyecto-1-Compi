@@ -55,6 +55,8 @@ import Triangle.AbstractSyntaxTrees.MultipleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.MultipleFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.MultipleRecordAggregate;
 import Triangle.AbstractSyntaxTrees.Operator;
+import Triangle.AbstractSyntaxTrees.PackageDeclaration;
+import Triangle.AbstractSyntaxTrees.PackageIdentifier;
 import Triangle.AbstractSyntaxTrees.ProcActualParameter;
 import Triangle.AbstractSyntaxTrees.ProcDeclaration;
 import Triangle.AbstractSyntaxTrees.ProcFormalParameter;
@@ -141,6 +143,8 @@ public class Parser {
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+  // paserseProgram Funtion in the Program ::= Package-Declaration * Command
+  
   public Program parseProgram() {
 
     Program programAST = null;
@@ -148,18 +152,70 @@ public class Parser {
     previousTokenPosition.start = 0;
     previousTokenPosition.finish = 0;
     currentToken = lexicalAnalyser.scan();
-
+    
     try {
+      PackageDeclaration packageDeclarationAST = null;
+      while(currentToken.kind == Token.PACKAGE){
+          packageDeclarationAST = parsePackageDeclaration();
+          if(currentToken.kind != Token.END){
+              syntacticError("end expected after end of program",
+                      currentToken.spelling);
+          }else{
+              acceptIt();
+          }
+      }
       Command cAST = parseCommand();
-      programAST = new Program(cAST, previousTokenPosition);
+      programAST = new Program(packageDeclarationAST, cAST, previousTokenPosition);
       if (currentToken.kind != Token.EOT) {
         syntacticError("\"%\" not expected after end of program",
           currentToken.spelling);
       }
-    }
-    catch (SyntaxError s) { return null; }
-    return programAST;
   }
+  catch (SyntaxError s) { return null; }
+  return programAST;
+  }
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Package Declaration
+//
+///////////////////////////////////////////////////////////////////////////////
+
+//parsePackageDeclaration Funtion in the PackageDeclaration ::= "package" Package-Identifier "~" Declaration "end"
+PackageDeclaration parsePackageDeclaration() throws SyntaxError {  
+  PackageDeclaration pacDecAST = null;
+  SourcePosition pacDecPos = new SourcePosition();
+  start(pacDecPos);
+  accept(Token.PACKAGE);
+  PackageIdentifier pacIDAST = parsePackageIdentifier();
+  System.out.println("Current Token: " + currentToken.kind);
+  accept(Token.IS);
+  Declaration dAST = parseDeclaration();
+ 
+  finish(pacDecPos);
+  pacDecAST = new PackageDeclaration(pacIDAST, dAST, pacDecPos);
+  return pacDecAST;
+}
+
+//parsePackageIdentifier Funtion in the Package-Identifier ::= Identifier
+PackageIdentifier parsePackageIdentifier() throws SyntaxError {
+  PackageIdentifier pacIDAST = null;
+  SourcePosition pacIDPos = new SourcePosition();
+  start(pacIDPos);
+  if (currentToken.kind == Token.IDENTIFIER) {
+    previousTokenPosition = currentToken.position;
+    String spelling = currentToken.spelling;
+    pacIDAST = new PackageIdentifier(spelling, previousTokenPosition);
+    currentToken = lexicalAnalyser.scan();
+  } else {
+    pacIDAST = null;
+    syntacticError("identifier expected here", "");
+  }
+  finish(pacIDPos);
+  return pacIDAST;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -334,10 +390,7 @@ public class Parser {
       }
       break;
 
-    case Token.SEMICOLON:
-    case Token.END:
-    case Token.ELSE:
-    case Token.IN:
+
     case Token.EOT:
 
       finish(commandPos);
