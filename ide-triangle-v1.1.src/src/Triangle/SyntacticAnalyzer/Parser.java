@@ -57,10 +57,12 @@ import Triangle.AbstractSyntaxTrees.MultipleRecordAggregate;
 import Triangle.AbstractSyntaxTrees.Operator;
 import Triangle.AbstractSyntaxTrees.PackageDeclaration;
 import Triangle.AbstractSyntaxTrees.PackageIdentifier;
+import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
 import Triangle.AbstractSyntaxTrees.ProcActualParameter;
 import Triangle.AbstractSyntaxTrees.ProcDeclaration;
 import Triangle.AbstractSyntaxTrees.ProcFormalParameter;
 import Triangle.AbstractSyntaxTrees.Program;
+import Triangle.AbstractSyntaxTrees.RECDeclaration;
 import Triangle.AbstractSyntaxTrees.RecordAggregate;
 import Triangle.AbstractSyntaxTrees.RecordExpression;
 import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
@@ -80,6 +82,7 @@ import Triangle.AbstractSyntaxTrees.UnaryExpression;
 import Triangle.AbstractSyntaxTrees.VarActualParameter;
 import Triangle.AbstractSyntaxTrees.VarDeclaration;
 import Triangle.AbstractSyntaxTrees.VarFormalParameter;
+import Triangle.AbstractSyntaxTrees.VariableInitializedDeclaration;
 import Triangle.AbstractSyntaxTrees.Vname;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
@@ -354,26 +357,38 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       commandAST = parseCommand();
       accept(Token.END);
       break;
-
+      
+      /*  
+      A�adir a single-command:
+      | "let" Declaration "in" Command "end"
+      */
+      
     case Token.LET:
       {
         acceptIt();
         Declaration dAST = parseDeclaration();
         accept(Token.IN);
-        Command cAST = parseSingleCommand();
+        Command cAST = parseCommand();
+        accept(Token.END);
         finish(commandPos);
         commandAST = new LetCommand(dAST, cAST, commandPos);
       }
       break;
+      
+      /*
+        A�adir:
+        | "if" Expression "then" Command ("|" Expression "then" Command)*
+          "else" Command "end"
+      */
 
     case Token.IF:
       {
         acceptIt();
         Expression eAST = parseExpression();
         accept(Token.THEN);
-        Command c1AST = parseSingleCommand();
-        accept(Token.ELSE);
-        Command c2AST = parseSingleCommand();
+        Command c1AST = parseCommand();
+        Command c2AST = parsePipelineCommand(); 
+        accept(Token.END);
         finish(commandPos);
         commandAST = new IfCommand(eAST, c1AST, c2AST, commandPos);
       }
@@ -406,6 +421,45 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
 
     return commandAST;
   }
+  
+  // m�todo que retorna pipeline
+  
+  Command parsePipelineCommand() throws SyntaxError {
+    Command commandAST = null; // in case there's a syntactic error
+
+    SourcePosition commandPos = new SourcePosition();
+    start(commandPos);
+    
+    switch(currentToken.kind){
+        
+      case Token.ELSE:
+        {
+          acceptIt();
+          Command elseAST = parseCommand();          
+          finish(commandPos);
+          commandAST = elseAST;
+        }
+        break;
+        
+      case Token.PIPELINE:
+        {
+          acceptIt();
+          Expression eAST = parseExpression();
+          accept(Token.THEN);
+          Command cAST = parseCommand();
+          finish(commandPos);
+          commandAST = new IfCommand(eAST, cAST, parsePipelineCommand(), commandPos);
+        }
+        
+        break;
+        default:
+        syntacticError("\"pipeline\" statement was expected, \"%\" was found",
+          currentToken.spelling);
+        break;
+    }
+    return commandAST;
+  }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -637,29 +691,38 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
 // DECLARATIONS
 //
 ///////////////////////////////////////////////////////////////////////////////
+  
+   /*
+    Modificar Declaration:
+    ::= compound-Declaration 
+    |   Declaration ";" compound-Declaration
+    es decir, ::= compound-Declaration (";" compound-Declaration)*
+   */
 
   Declaration parseDeclaration() throws SyntaxError {
     Declaration declarationAST = null; // in case there's a syntactic error
 
     SourcePosition declarationPos = new SourcePosition();
     start(declarationPos);
-    declarationAST = parseSingleDeclaration();
+    declarationAST = parseCompoundDeclaration();
     while (currentToken.kind == Token.SEMICOLON) {
       acceptIt();
-      Declaration d2AST = parseSingleDeclaration();
+      Declaration d2AST = parseCompoundDeclaration();
       finish(declarationPos);
       declarationAST = new SequentialDeclaration(declarationAST, d2AST,
         declarationPos);
     }
     return declarationAST;
   }
+  
+ 
 
   Declaration parseSingleDeclaration() throws SyntaxError {
     Declaration declarationAST = null; // in case there's a syntactic error
 
     SourcePosition declarationPos = new SourcePosition();
     start(declarationPos);
-
+    
     switch (currentToken.kind) {
 
     case Token.CONST:
@@ -672,18 +735,47 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
         declarationAST = new ConstDeclaration(iAST, eAST, declarationPos);
       }
       break;
+      
+      
 
+    /*
+       A�adir:
+        | "var" Identifier ":=" Expression
+    */
     case Token.VAR:
       {
         acceptIt();
         Identifier iAST = parseIdentifier();
-        accept(Token.COLON);
-        TypeDenoter tAST = parseTypeDenoter();
-        finish(declarationPos);
-        declarationAST = new VarDeclaration(iAST, tAST, declarationPos);
+        switch(currentToken.kind){
+          case Token.COLON:
+            {
+              acceptIt();
+              TypeDenoter tAST = parseTypeDenoter();
+              finish(declarationPos);
+              declarationAST = new VarDeclaration(iAST, tAST, declarationPos);
+            }
+            break;
+          case Token.BECOMES:
+            {
+              acceptIt();
+              Expression eAST = parseExpression();
+              finish(declarationPos);
+              declarationAST = new VariableInitializedDeclaration(iAST, eAST,declarationPos); 
+            }
+            break;
+          default:
+            syntacticError("\"%\" is not a valid declaration",
+              currentToken.spelling);
+            break;              
+        }
       }
       break;
 
+    /*
+       Modificar en single_Declaration:
+       | "proc" Identifier "(" Formal-Parameter-Sequence ")"
+         "~" Command "end"
+    */
     case Token.PROC:
       {
         acceptIt();
@@ -692,11 +784,14 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
         FormalParameterSequence fpsAST = parseFormalParameterSequence();
         accept(Token.RPAREN);
         accept(Token.IS);
-        Command cAST = parseSingleCommand();
+        Command cAST = parseCommand();
+        accept(Token.END);
         finish(declarationPos);
         declarationAST = new ProcDeclaration(iAST, fpsAST, cAST, declarationPos);
       }
       break;
+      
+      
 
     case Token.FUNC:
       {
@@ -730,10 +825,123 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       syntacticError("\"%\" cannot start a declaration",
         currentToken.spelling);
       break;
-
+      
+    }
+    
+    return declarationAST;
+  }
+  
+  /*
+    A�adir: 
+    compound-Declaration
+        ::= single-Declaration
+        | "rec" Proc-Funcs "end"
+        | "private" Declaration "in" Declaration "end"
+  */
+  
+  Declaration parseCompoundDeclaration() throws SyntaxError {
+    Declaration declarationAST = null; // in case there's a syntactic error
+    
+    SourcePosition declarationPos = new SourcePosition();
+    start(declarationPos);
+    
+    switch(currentToken.kind){
+      case Token.CONST:
+      case Token.VAR:
+      case Token.PROC:
+      case Token.FUNC:
+      case Token.TYPE:
+        {
+          declarationAST = parseSingleDeclaration();
+        }
+        break;
+      case Token.REC:
+        {
+          acceptIt();
+          Declaration pfsDeclaration = parse_ProcFuncs_Declaration();
+          accept(Token.END);
+          finish(declarationPos);
+          declarationAST = new RECDeclaration(pfsDeclaration, declarationPos);
+        }
+        break;
+      case Token.PRIVATE:
+        {
+          acceptIt();
+          Declaration d1AST = parseDeclaration();
+          accept(Token.IN);
+          Declaration d2AST = parseDeclaration();
+          accept(Token.END);
+          finish(declarationPos);
+          declarationAST = new PrivateDeclaration(d1AST, d2AST, declarationPos);
+        }
+        break;
+      default:
+      syntacticError("\"%\" cannot start a compound declaration",
+        currentToken.spelling);
+      break;
     }
     return declarationAST;
   }
+  
+  /*
+    A�adir:
+    ProcFunc
+        ::= "proc" Identifier "(" Formal-Parameter-Sequence ")"
+             "~" Command "end"
+        | "func" Identifier "(" Formal-Parameter-Sequence ")"
+             ":" Type-denoter "~" Expression
+  */
+  
+  Declaration parse_ProcFunc_Declaration() throws SyntaxError{
+    Declaration declarationAST = null; // in case there's a syntactic error
+    SourcePosition declarationPos = new SourcePosition();
+    
+    start(declarationPos);
+    
+    switch(currentToken.kind){
+      case Token.PROC:
+      case Token.FUNC:
+        {
+          declarationAST = parseSingleDeclaration();
+        }
+        break;
+      default:
+      syntacticError("\"%\" cannot start neither a process nor a function declaration",
+        currentToken.spelling);
+      break;
+    }
+    
+    return declarationAST;
+  }
+  
+  /*
+    A�adir:
+    ProcFuncs 
+        ::= Proc-Func ("|" Proc-Func)+
+  */
+  
+  Declaration parse_ProcFuncs_Declaration() throws SyntaxError{
+    Declaration declarationAST = null; // in case there's a syntactic error
+    SourcePosition declarationPos = new SourcePosition();
+    
+    start(declarationPos);
+    
+    declarationAST = parse_ProcFunc_Declaration();
+    accept(Token.PIPELINE);
+    Declaration pf2AST = parse_ProcFunc_Declaration();
+    
+    declarationAST = new SequentialDeclaration(declarationAST, pf2AST, declarationPos);
+    
+    while(currentToken.kind == Token.PIPELINE){
+      acceptIt();
+      Declaration pfAuxAST = parse_ProcFunc_Declaration();
+      finish(declarationPos);
+      declarationAST = new SequentialDeclaration(declarationAST, pfAuxAST, declarationPos);
+    }
+    return declarationAST;
+  }
+  
+  
 
 ///////////////////////////////////////////////////////////////////////////////
 //
