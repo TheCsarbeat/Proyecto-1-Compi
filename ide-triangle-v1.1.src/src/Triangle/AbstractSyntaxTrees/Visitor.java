@@ -48,6 +48,9 @@ public interface Visitor {
   public abstract Object visitTypeDeclaration(TypeDeclaration ast, Object o);
   public abstract Object visitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, Object o);
   public abstract Object visitVarDeclaration(VarDeclaration ast, Object o);
+  public abstract Object visitRecDeclaration(RECDeclaration ast, Object o); // se agregó
+  public abstract Object visitPrivateDeclaration(PrivateDeclaration ast, Object o); // se agregó
+  public abstract Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o); // se agregó
 
   // Array Aggregates
   public abstract Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object o);

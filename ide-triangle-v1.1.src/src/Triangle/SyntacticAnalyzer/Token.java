@@ -78,32 +78,39 @@ final class Token extends Object {
     IN			= 12,
     LET			= 13,
     OF			= 14,
-    PROC		= 15,
-    RECORD		= 16,
-    THEN		= 17,
-    TYPE		= 18,
-    VAR			= 19,
-    WHILE		= 20,
+    PIPELINE            = 15, // token agregado
+    PRIVATE             = 16, // token agregado
+    PROC		= 17,
+    REC                 = 18, // token agregado
+    RECORD		= 19,
+    THEN		= 20,
+    TYPE		= 21,
+    VAR			= 22,
+    WHILE		= 23,
 
     // punctuation...
-    DOT			= 21,
-    COLON		= 22,
-    SEMICOLON	= 23,
-    COMMA		= 24,
-    BECOMES		= 25,
-    IS			= 26,
+    DOT			= 24,
+    COLON		= 25,
+    SEMICOLON	        = 26,
+    COMMA		= 27,
+    BECOMES		= 28,
+    IS			= 29,
 
     // brackets...
-    LPAREN		= 27,
-    RPAREN		= 28,
-    LBRACKET	= 29,
-    RBRACKET	= 30,
-    LCURLY		= 31,
-    RCURLY		= 32,
+    LPAREN		= 30,
+    RPAREN		= 31,
+    LBRACKET            = 32,
+    RBRACKET            = 33,
+    LCURLY		= 34,
+    RCURLY		= 35,
 
     // special tokens...
-    EOT			= 33,
-    ERROR		= 34;
+    EOT			= 36,
+    ERROR		= 37;
+    
+    // agregados
+    
+    
 
   private static String[] tokenTable = new String[] {
     "<int>",
@@ -140,7 +147,8 @@ final class Token extends Object {
     "{",
     "}",
     "",
-    "<error>"
+    "<error>",
+    "|" // se agregó este token 
   };
 
   private final static int	firstReservedWord = Token.ARRAY,
