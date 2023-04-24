@@ -96,8 +96,8 @@
  
        // punctuation...
        DOLLAR = 31,
-       PIPE = 32,
-       DOUBLEDOT = 33,
+       PIPELINE = 32,
+       DOTDOT = 33,
        DOT = 34,
        COLON = 35,
        SEMICOLON = 36,

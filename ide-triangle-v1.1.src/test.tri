@@ -1,11 +1,12 @@
-
-let
-   var n : Integer;
-   var c : Char
-in
-
-   begin
-    c := '&';
-    n := n+1;
-    putint(n)
-   end
+let
+	rec
+		proc p (var i : Integer) ~ 
+			i := i + 1
+		end
+	and
+		func f () : Integer ~
+			1
+	end
+in
+	skip
+end

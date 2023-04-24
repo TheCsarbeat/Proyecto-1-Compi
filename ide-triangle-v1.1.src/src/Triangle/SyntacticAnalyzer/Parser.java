@@ -352,16 +352,12 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       }
       break;
 
-    case Token.BEGIN:
-      acceptIt();
-      commandAST = parseCommand();
-      accept(Token.END);
-      break;
+  
       
-      /*  
-      A�adir a single-command:
-      | "let" Declaration "in" Command "end"
-      */
+    /*  
+    A�adir a single-command:
+    | "let" Declaration "in" Command "end"
+    */
       
     case Token.LET:
       {
@@ -406,8 +402,8 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       break;
 
 
-    case Token.EOT:
-
+    case Token.SKIP:
+      acceptIt();
       finish(commandPos);
       commandAST = new EmptyCommand(commandPos);
       break;
