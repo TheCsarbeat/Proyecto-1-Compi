@@ -25,7 +25,11 @@ public interface Visitor {
   public abstract Object visitSequentialCommand(SequentialCommand ast, Object o);
   public abstract Object visitWhileCommand(WhileCommand ast, Object o);
 
-
+  //Loops
+  public abstract Object visitForCommand(ForCommand ast, Object o);
+  public abstract Object visitForWhileCommand(ForWhileCommand ast, Object o);
+  public abstract Object visitForUntilCommand(ForUntilCommand ast, Object o);
+  public abstract Object visitForInCommand(ForInCommand ast, Object o);
   // Expressions
   public abstract Object visitArrayExpression(ArrayExpression ast, Object o);
   public abstract Object visitBinaryExpression(BinaryExpression ast, Object o);
@@ -120,5 +124,15 @@ public interface Visitor {
 
   //public abstract Object visitDollarLongIdentifier (DollarLongIdentifier ast, Object o);
 
+
+    public Object visitWhileLoop(WhileLoop aThis, Object o);
+
+    public Object visitUntilLoop(UntilLoop aThis, Object o);
+
+    public Object visitRepeatTimes(RepeatTimes aThis, Object o);
+
+    public Object visitDoWhileLoop(DoWhileLoop aThis, Object o);
+
+    public Object visitDoUntilLoop(DoUntilLoop aThis, Object o);
 
 }

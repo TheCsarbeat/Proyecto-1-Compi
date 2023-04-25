@@ -81,8 +81,8 @@
        PACKAGE = 16,
        PRIVATE = 17,
        PROC = 18,
-       RECORD = 19,
-       REC = 20,
+       REC = 19,
+       RECORD = 20,       
        REPEAT = 21,
        SELECT = 22,
        SKIP = 23,
@@ -137,8 +137,8 @@
        "package", // Palabra añadida
        "private", // Palabra añadida
        "proc",
-       "record",
        "rec", // Palabra añadida
+       "record",       
        "repeat", // Palabra añadida
        "select", // Palabra añadida
        "skip", // Palabra añadida

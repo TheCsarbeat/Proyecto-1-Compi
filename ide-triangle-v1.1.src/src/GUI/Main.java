@@ -42,7 +42,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * The Main class. Contains the main form.
  *
- * @author Luis Leopoldo Pérez <luiperpe@ns.isi.ulatina.ac.cr>
+ * @author Luis Leopoldo Pï¿½rez <luiperpe@ns.isi.ulatina.ac.cr>
  */
 public class Main extends javax.swing.JFrame {
 
@@ -629,7 +629,7 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_compileMenuItemActionPerformed
-
+    
     /**
      * Handles the "Save" button and menu option.
      */
@@ -810,7 +810,7 @@ public class Main extends javax.swing.JFrame {
     ActionListener delegateRun = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             runMenuItem.setEnabled(true);
-            buttonRun.setEnabled(true);
+            buttonRun.setEnabled(false);
             compileMenuItem.setEnabled(true);
             buttonCompile.setEnabled(true);
         }
@@ -911,4 +911,5 @@ public class Main extends javax.swing.JFrame {
     }
     
     // </editor-fold>
+    
 }

@@ -1,11 +1,12 @@
 let
 	rec
 		proc p (var i : Integer) ~ 
-			i := i + 1
+			skip
 		end
-	and
-		func f () : Integer ~
-			1
+		|
+		func function1 (var m : Integer) : erks ~
+			n>1
+		
 	end
 in
 	skip
