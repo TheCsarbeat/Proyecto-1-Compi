@@ -1,13 +1,18 @@
+
 let
-	rec
-		proc p (var i : Integer) ~ 
-			skip
-		end
-		|
-		func function1 (var m : Integer) : erks ~
-			n>1
-		
-	end
+   var n := 1;
+   var c : Char
+
 in
-	skip
-end
+
+    ferks . n ( n>1);
+    c := '&';
+    n := n+1;
+
+    if    asdf $ n ( n>1) then p := p+1 | n<1 then skip | n<1 then skip else skip end;
+
+    skip
+   end
+
+
+

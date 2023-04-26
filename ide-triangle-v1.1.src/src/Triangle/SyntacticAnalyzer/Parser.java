@@ -55,6 +55,9 @@ import Triangle.AbstractSyntaxTrees.IntegerExpression;
 import Triangle.AbstractSyntaxTrees.IntegerLiteral;
 import Triangle.AbstractSyntaxTrees.LetCommand;
 import Triangle.AbstractSyntaxTrees.LetExpression;
+import Triangle.AbstractSyntaxTrees.LongIdentifier;
+import Triangle.AbstractSyntaxTrees.LongIdentifierComplex;
+import Triangle.AbstractSyntaxTrees.LongIdentifierSimple;
 import Triangle.AbstractSyntaxTrees.MultipleActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.MultipleArrayAggregate;
 import Triangle.AbstractSyntaxTrees.MultipleFieldTypeDenoter;
@@ -289,6 +292,40 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     return I;
   }
 
+  //parseLongIdentifier Long-Identifier ::= [ Package-Identifier "$" ] Identifier
+  LongIdentifier parseLongIdentifier() throws SyntaxError {
+    LongIdentifier LI = null;
+    SourcePosition LIpos = new SourcePosition();
+    start(LIpos);
+    PackageIdentifier pacIDAST = null;
+    Identifier tempAST = null;
+    Identifier idAST = null;
+    if (currentToken.kind == Token.IDENTIFIER) {
+      previousTokenPosition = currentToken.position;
+      String spelling = currentToken.spelling;
+      tempAST = new Identifier(spelling, previousTokenPosition); // Create the Identifier before the $ in the LongIdentifier
+      currentToken = lexicalAnalyser.scan();
+
+      if (currentToken.kind == Token.DOLLAR) {
+        acceptIt();        
+        idAST = parseIdentifier();
+        pacIDAST = new PackageIdentifier(tempAST); // Create the PackageIdentifier with the Identifier before the $ 
+        finish(LIpos);
+        LI = new LongIdentifierComplex(pacIDAST, idAST, LIpos);
+      } else{ //This case is when is a longIdentifierSimple
+        finish(LIpos);
+        LI = new LongIdentifierSimple(tempAST, LIpos);
+        return LI;
+
+      }
+    } else {
+      LI = null;
+      syntacticError("identifier expected here", "$");
+    }
+    
+    return LI;
+  }
+  
   // parseOperator parses an operator, and constructs a leaf AST to
   // represent it.
 
@@ -340,14 +377,34 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     switch (currentToken.kind) {
 
     case Token.IDENTIFIER:
-    //parse | V-name ":=" Expression
+    
       {
-        Identifier iAST = parseIdentifier();
-        Vname vAST = parseRestOfVname(iAST);
-        accept(Token.BECOMES);
-        Expression eAST = parseExpression();
-        finish(commandPos);
-        commandAST = new AssignCommand(vAST, eAST, commandPos);
+        Identifier iAST = null;
+        LongIdentifier longI = parseLongIdentifier();
+
+        //This if is to check if the longIdentifier is a longIdentifierComplex or a longIdentifierSimple and save the simpleIdentifier in iAST
+        if (longI.getClass() == LongIdentifierComplex.class) {
+          iAST = ((LongIdentifierComplex) longI).I;
+        } else {
+          iAST = ((LongIdentifierSimple) longI).I;
+        }
+        
+        if (currentToken.kind == Token.LPAREN) {
+          acceptIt();
+          ActualParameterSequence apsAST = parseActualParameterSequence();
+          accept(Token.RPAREN);
+          finish(commandPos);
+          LongIdentifier longIAST = new LongIdentifierSimple(iAST, commandPos); // We create a longIdentifierSimple with the identifier
+          commandAST = new CallCommand(longIAST, apsAST, commandPos); // We modify this line to a longIdentifier the position 1 of the command
+
+        } else {
+          //parse | V-name ":=" Expression
+          Vname vAST = parseRestOfVname(iAST);
+          accept(Token.BECOMES);
+          Expression eAST = parseExpression();
+          finish(commandPos);
+          commandAST = new AssignCommand(vAST, eAST, commandPos);
+        }
       }
       break;
     // parse | "for" Identifier ":=" Expression ".." Expression "do" Command "end"
@@ -698,13 +755,23 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
         break;
 
       case Token.IDENTIFIER: {
-        Identifier iAST = parseIdentifier();
+        Identifier iAST = null;
+        LongIdentifier longI = parseLongIdentifier();
+
+        //This if is to check if the longIdentifier is a longIdentifierComplex or a longIdentifierSimple and save the simpleIdentifier in iAST
+        if (longI.getClass() == LongIdentifierComplex.class) {
+          iAST = ((LongIdentifierComplex) longI).I;
+        } else {
+          iAST = ((LongIdentifierSimple) longI).I;
+        }
+
         if (currentToken.kind == Token.LPAREN) {
           acceptIt();
           ActualParameterSequence apsAST = parseActualParameterSequence();
           accept(Token.RPAREN);
           finish(expressionPos);
-          expressionAST = new CallExpression(iAST, apsAST, expressionPos);
+          LongIdentifier longIAST = new LongIdentifierSimple(iAST, expressionPos); // We create a longIdentifierSimple with the identifier
+          expressionAST = new CallExpression(longIAST, apsAST, expressionPos);
 
         } else {
           Vname vAST = parseRestOfVname(iAST);
@@ -1278,7 +1345,7 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     switch (currentToken.kind) {
 
       case Token.IDENTIFIER: {
-        Identifier iAST = parseIdentifier();
+        LongIdentifier iAST = parseLongIdentifier();
         finish(typePos);
         typeAST = new SimpleTypeDenoter(iAST, typePos);
       }

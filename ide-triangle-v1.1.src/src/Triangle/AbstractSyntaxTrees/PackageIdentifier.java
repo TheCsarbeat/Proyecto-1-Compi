@@ -10,6 +10,11 @@ public class PackageIdentifier extends Identifier{
         decl = null;
     }
     
+    public PackageIdentifier(Identifier iAST){
+        super(iAST.spelling, iAST.position);
+        type = null;
+        decl = null;
+    }
 
 
 }

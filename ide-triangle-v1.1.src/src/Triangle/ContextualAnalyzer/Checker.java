@@ -122,14 +122,14 @@ public final class Checker implements Visitor {
 
     Declaration binding = (Declaration) ast.I.visit(this, null);
     if (binding == null)
-      reportUndeclared(ast.I);
+      reportUndeclared(ast.I.getSimpleIdentifier());
     else if (binding instanceof ProcDeclaration) {
       ast.APS.visit(this, ((ProcDeclaration) binding).FPS);
     } else if (binding instanceof ProcFormalParameter) {
       ast.APS.visit(this, ((ProcFormalParameter) binding).FPS);
     } else
       reporter.reportError("\"%\" is not a procedure identifier",
-                           ast.I.spelling, ast.I.position);
+                           ast.I.getSimpleIdentifier().spelling, ast.I.position);
     return null;
   }
 
@@ -213,7 +213,7 @@ public final class Checker implements Visitor {
   public Object visitCallExpression(CallExpression ast, Object o) {
     Declaration binding = (Declaration) ast.I.visit(this, null);
     if (binding == null) {
-      reportUndeclared(ast.I);
+      reportUndeclared(ast.I.getSimpleIdentifier());
       ast.type = StdEnvironment.errorType;
     } else if (binding instanceof FuncDeclaration) {
       ast.APS.visit(this, ((FuncDeclaration) binding).FPS);
@@ -223,7 +223,7 @@ public final class Checker implements Visitor {
       ast.type = ((FuncFormalParameter) binding).T;
     } else
       reporter.reportError("\"%\" is not a function identifier",
-                           ast.I.spelling, ast.I.position);
+                           ast.I.getSimpleIdentifier().spelling, ast.I.position);
     return ast.type;
   }
 
@@ -620,11 +620,11 @@ public final class Checker implements Visitor {
   public Object visitSimpleTypeDenoter(SimpleTypeDenoter ast, Object o) {
     Declaration binding = (Declaration) ast.I.visit(this, null);
     if (binding == null) {
-      reportUndeclared (ast.I);
+      reportUndeclared (ast.I.getSimpleIdentifier());
       return StdEnvironment.errorType;
     } else if (! (binding instanceof TypeDeclaration)) {
       reporter.reportError ("\"%\" is not a type identifier",
-                            ast.I.spelling, ast.I.position);
+                            ast.I.getSimpleIdentifier().spelling, ast.I.position);
       return StdEnvironment.errorType;
     }
     return ((TypeDeclaration) binding).T;
