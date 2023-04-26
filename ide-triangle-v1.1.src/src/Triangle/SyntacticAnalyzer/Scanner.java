@@ -127,10 +127,22 @@ public final class Scanner {
         return Token.CHARLITERAL;
       } else
         return Token.ERROR;
-
+    
+    case '$':
+      takeIt();
+      return Token.DOLLAR;
+    
+    case '|':
+      takeIt();
+      return Token.PIPELINE;
+    
     case '.':
       takeIt();
-      return Token.DOT;
+      if (currentChar == '.') {
+        takeIt();
+        return Token.DOTDOT;
+      } else
+        return Token.DOT;
 
     case ':':
       takeIt();

@@ -25,7 +25,11 @@ public interface Visitor {
   public abstract Object visitSequentialCommand(SequentialCommand ast, Object o);
   public abstract Object visitWhileCommand(WhileCommand ast, Object o);
 
-
+  //Loops
+  public abstract Object visitForCommand(ForCommand ast, Object o);
+  public abstract Object visitForWhileCommand(ForWhileCommand ast, Object o);
+  public abstract Object visitForUntilCommand(ForUntilCommand ast, Object o);
+  public abstract Object visitForInCommand(ForInCommand ast, Object o);
   // Expressions
   public abstract Object visitArrayExpression(ArrayExpression ast, Object o);
   public abstract Object visitBinaryExpression(BinaryExpression ast, Object o);
@@ -48,6 +52,9 @@ public interface Visitor {
   public abstract Object visitTypeDeclaration(TypeDeclaration ast, Object o);
   public abstract Object visitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, Object o);
   public abstract Object visitVarDeclaration(VarDeclaration ast, Object o);
+  public abstract Object visitRecDeclaration(RECDeclaration ast, Object o); // se agregó
+  public abstract Object visitPrivateDeclaration(PrivateDeclaration ast, Object o); // se agregó
+  public abstract Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o); // se agregó
 
   // Array Aggregates
   public abstract Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object o);
@@ -103,5 +110,29 @@ public interface Visitor {
 
   // Programs
   public abstract Object visitProgram(Program ast, Object o);
+  
+  // SimplePackageIdentifier
+  //public abstract Object visitSimplePackageIdentifier (SimplePackageIdentifier ast, Object o);
+
+  // Package-Declaration
+  public abstract Object visitPackageDeclaration(PackageDeclaration aThis, Object o);
+
+  public abstract Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o);
+
+  //Long-Identifier
+  //public abstract Object visitSimpleLongIdentifier(SimpleLongIdentifier ast, Object o);
+
+  //public abstract Object visitDollarLongIdentifier (DollarLongIdentifier ast, Object o);
+
+
+    public Object visitWhileLoop(WhileLoop aThis, Object o);
+
+    public Object visitUntilLoop(UntilLoop aThis, Object o);
+
+    public Object visitRepeatTimes(RepeatTimes aThis, Object o);
+
+    public Object visitDoWhileLoop(DoWhileLoop aThis, Object o);
+
+    public Object visitDoUntilLoop(DoUntilLoop aThis, Object o);
 
 }
