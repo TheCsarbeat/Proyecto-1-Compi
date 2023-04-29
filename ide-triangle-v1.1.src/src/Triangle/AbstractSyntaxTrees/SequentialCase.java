@@ -2,6 +2,11 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
+/**
+ *
+ * @author erks
+ */
+
 public class SequentialCase extends Case{
 
     public SequentialCase(Case c1, Case c2, SourcePosition thePosition) {

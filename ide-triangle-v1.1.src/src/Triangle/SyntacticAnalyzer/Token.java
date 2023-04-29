@@ -12,6 +12,12 @@
  * of the authors.
  */
 
+ /*
+  * Modified by: Sebastián Chavez{
+    add the new token for the new reserved words
+  }
+
+  */
  package Triangle.SyntacticAnalyzer;
 
  final class Token extends Object {

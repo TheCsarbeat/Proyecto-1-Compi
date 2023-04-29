@@ -1,7 +1,10 @@
 package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
-
+/**
+ *
+ * @author erks
+ */
 public class Case extends AST{
 
     public Case(SourcePosition thePosition) {
