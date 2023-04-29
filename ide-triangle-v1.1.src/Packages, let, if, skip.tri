@@ -7,7 +7,7 @@ let
 in
 ! Oh wow
 
-    c := '&';
+    c := 'J';
     n := n+1;
 
     if n > 1 then p := p+1 | n<1 then skip | n<1 then skip else skip end;

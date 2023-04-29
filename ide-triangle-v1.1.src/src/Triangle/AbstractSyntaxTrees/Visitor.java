@@ -136,6 +136,7 @@ public interface Visitor {
 
   //SelectCommand visitor
   public Object visitSelectCommand(SelectCommand aThis, Object o);
+  //public Object visitCase(Case c, Object o);
 
 
 }

@@ -1,0 +1,77 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<LetCommand>
+<SequentialDeclaration>
+<InitializedVariableDeclaration>
+<Identifier value="n"/>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</InitializedVariableDeclaration>
+<VarDeclaration>
+<Identifier value="c"/>
+<SimpleTypeDenoter>
+<LongIdentifierSimple>
+<Identifier value="Char"/>
+</LongIdentifierSimple>
+</SimpleTypeDenoter>
+</VarDeclaration>
+</SequentialDeclaration>
+<SequentialCommand>
+<SequentialCommand>
+<CallCommand>
+<LongIdentifierSimple>
+<Identifier value="n"/>
+</LongIdentifierSimple>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<BinaryExpression>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="n"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+<Operator value=">"/>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</BinaryExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+<AssignCommand>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="c"/>
+</LongIdentifierSimple>
+</SimpleVname>
+<CharacterExpression>
+<CharacterLiteral value="'J'"/>
+</CharacterExpression>
+</AssignCommand>
+</SequentialCommand>
+<AssignCommand>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="n"/>
+</LongIdentifierSimple>
+</SimpleVname>
+<BinaryExpression>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="n"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+<Operator value="+"/>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</BinaryExpression>
+</AssignCommand>
+</SequentialCommand>
+</LetCommand>
+</Program>
