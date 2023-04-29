@@ -52,9 +52,9 @@ public interface Visitor {
   public abstract Object visitTypeDeclaration(TypeDeclaration ast, Object o);
   public abstract Object visitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, Object o);
   public abstract Object visitVarDeclaration(VarDeclaration ast, Object o);
-  public abstract Object visitRecDeclaration(RECDeclaration ast, Object o); // se agregó
-  public abstract Object visitPrivateDeclaration(PrivateDeclaration ast, Object o); // se agregó
-  public abstract Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o); // se agregó
+  public abstract Object visitRecDeclaration(RECDeclaration ast, Object o); // se agregï¿½
+  public abstract Object visitPrivateDeclaration(PrivateDeclaration ast, Object o); // se agregï¿½
+  public abstract Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o); // se agregï¿½
 
   // Array Aggregates
   public abstract Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object o);
@@ -111,8 +111,6 @@ public interface Visitor {
   // Programs
   public abstract Object visitProgram(Program ast, Object o);
   
-  // SimplePackageIdentifier
-  //public abstract Object visitSimplePackageIdentifier (SimplePackageIdentifier ast, Object o);
 
   // Package-Declaration
   public abstract Object visitPackageDeclaration(PackageDeclaration aThis, Object o);
@@ -120,9 +118,9 @@ public interface Visitor {
   public abstract Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o);
 
   //Long-Identifier
-  //public abstract Object visitSimpleLongIdentifier(SimpleLongIdentifier ast, Object o);
+  public abstract Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o);
 
-  //public abstract Object visitDollarLongIdentifier (DollarLongIdentifier ast, Object o);
+  public abstract Object visitLongIdentifierComplex (LongIdentifierComplex ast, Object o);
 
 
     public Object visitWhileLoop(WhileLoop aThis, Object o);
@@ -134,5 +132,10 @@ public interface Visitor {
     public Object visitDoWhileLoop(DoWhileLoop aThis, Object o);
 
     public Object visitDoUntilLoop(DoUntilLoop aThis, Object o);
+
+
+  //SelectCommand visitor
+  public Object visitSelectCommand(SelectCommand aThis, Object o);
+
 
 }

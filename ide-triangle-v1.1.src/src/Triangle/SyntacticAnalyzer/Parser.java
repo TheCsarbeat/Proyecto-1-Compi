@@ -24,6 +24,9 @@ import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
 import Triangle.AbstractSyntaxTrees.CallCommand;
 import Triangle.AbstractSyntaxTrees.CallExpression;
+import Triangle.AbstractSyntaxTrees.Case;
+import Triangle.AbstractSyntaxTrees.CaseLiteral;
+import Triangle.AbstractSyntaxTrees.CaseRange;
 import Triangle.AbstractSyntaxTrees.CharacterExpression;
 import Triangle.AbstractSyntaxTrees.CharacterLiteral;
 import Triangle.AbstractSyntaxTrees.Command;
@@ -76,12 +79,15 @@ import Triangle.AbstractSyntaxTrees.RecordAggregate;
 import Triangle.AbstractSyntaxTrees.RecordExpression;
 import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
 import Triangle.AbstractSyntaxTrees.RepeatTimes;
+import Triangle.AbstractSyntaxTrees.SelectCommand;
+import Triangle.AbstractSyntaxTrees.SequentialCase;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
 import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
+import Triangle.AbstractSyntaxTrees.SingleCase;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
@@ -159,8 +165,10 @@ public class Parser {
   //
   ///////////////////////////////////////////////////////////////////////////////
 
-  // paserseProgram Funtion in the Program ::= Package-Declaration * Command
-  
+  /* Modificar Program:
+        Program ::= Package-Declaration * Command
+        Maynor Martinez
+  */
   public Program parseProgram() {
 
     Program programAST = null;
@@ -195,11 +203,15 @@ public class Parser {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Package Declaration
+// Package Declaration - and Long Identifier
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-//parsePackageDeclaration Funtion in the PackageDeclaration ::= "package" Package-Identifier "~" Declaration "end"
+/* Agregar:
+        PackageDeclaration ::= "package" Package-Identifier "~" 
+                                         Declaration "end"
+        Maynor Martinez
+  */
 PackageDeclaration parsePackageDeclaration() throws SyntaxError {  
   PackageDeclaration pacDecAST = null;
   SourcePosition pacDecPos = new SourcePosition();
@@ -214,7 +226,10 @@ PackageDeclaration parsePackageDeclaration() throws SyntaxError {
   return pacDecAST;
 }
 
-//parsePackageIdentifier Funtion in the Package-Identifier ::= Identifier
+/* Agregar:
+        Package-Identifier ::= Identifier
+        Maynor Martinez
+    */
 PackageIdentifier parsePackageIdentifier() throws SyntaxError {
   PackageIdentifier pacIDAST = null;
   SourcePosition pacIDPos = new SourcePosition();
@@ -230,6 +245,41 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
   }
   finish(pacIDPos);
   return pacIDAST;
+}
+
+//parseLongIdentifier Long-Identifier ::= [ Package-Identifier "$" ] Identifier
+//Maynor Martinez
+LongIdentifier parseLongIdentifier() throws SyntaxError {
+  LongIdentifier LI = null;
+  SourcePosition LIpos = new SourcePosition();
+  start(LIpos);
+  PackageIdentifier pacIDAST = null;
+  Identifier tempAST = null;
+  Identifier idAST = null;
+  if (currentToken.kind == Token.IDENTIFIER) {
+    previousTokenPosition = currentToken.position;
+    String spelling = currentToken.spelling;
+    tempAST = new Identifier(spelling, previousTokenPosition); // Create the Identifier before the $ in the LongIdentifier
+    currentToken = lexicalAnalyser.scan();
+
+    if (currentToken.kind == Token.DOLLAR) {
+      acceptIt();        
+      idAST = parseIdentifier();
+      pacIDAST = new PackageIdentifier(tempAST); // Create the PackageIdentifier with the Identifier before the $ 
+      finish(LIpos);
+      LI = new LongIdentifierComplex(pacIDAST, idAST, LIpos);
+    } else{ //This case is when is a longIdentifierSimple
+      finish(LIpos);
+      LI = new LongIdentifierSimple(tempAST, LIpos);
+      return LI;
+
+    }
+  } else {
+    LI = null;
+    syntacticError("identifier expected here", "$");
+  }
+  
+  return LI;
 }
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -290,41 +340,7 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       syntacticError("identifier expected here", "");
     }
     return I;
-  }
-
-  //parseLongIdentifier Long-Identifier ::= [ Package-Identifier "$" ] Identifier
-  LongIdentifier parseLongIdentifier() throws SyntaxError {
-    LongIdentifier LI = null;
-    SourcePosition LIpos = new SourcePosition();
-    start(LIpos);
-    PackageIdentifier pacIDAST = null;
-    Identifier tempAST = null;
-    Identifier idAST = null;
-    if (currentToken.kind == Token.IDENTIFIER) {
-      previousTokenPosition = currentToken.position;
-      String spelling = currentToken.spelling;
-      tempAST = new Identifier(spelling, previousTokenPosition); // Create the Identifier before the $ in the LongIdentifier
-      currentToken = lexicalAnalyser.scan();
-
-      if (currentToken.kind == Token.DOLLAR) {
-        acceptIt();        
-        idAST = parseIdentifier();
-        pacIDAST = new PackageIdentifier(tempAST); // Create the PackageIdentifier with the Identifier before the $ 
-        finish(LIpos);
-        LI = new LongIdentifierComplex(pacIDAST, idAST, LIpos);
-      } else{ //This case is when is a longIdentifierSimple
-        finish(LIpos);
-        LI = new LongIdentifierSimple(tempAST, LIpos);
-        return LI;
-
-      }
-    } else {
-      LI = null;
-      syntacticError("identifier expected here", "$");
-    }
-    
-    return LI;
-  }
+  }  
   
   // parseOperator parses an operator, and constructs a leaf AST to
   // represent it.
@@ -369,6 +385,16 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     return commandAST;
   }
 
+  /*
+        Eliminar:
+        ::= (vacio)
+        | "begin" Command "end"
+        | "let" Declaration "in" single-Command
+        | "if" Expression "then" single-Command "else" single-Command
+        | "while" Expression "do" single-Command
+        Maynor Martinez, Cesar Jimenez, Fernanda Murillo y Sebastian Chaves
+   */
+
   Command parseSingleCommand() throws SyntaxError {
     Command commandAST = null; // in case there's a syntactic error
 
@@ -382,12 +408,11 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
         Identifier iAST = null;
         LongIdentifier longI = parseLongIdentifier();
 
-        //This if is to check if the longIdentifier is a longIdentifierComplex or a longIdentifierSimple and save the simpleIdentifier in iAST
-        if (longI.getClass() == LongIdentifierComplex.class) {
-          iAST = ((LongIdentifierComplex) longI).I;
-        } else {
-          iAST = ((LongIdentifierSimple) longI).I;
-        }
+        /*
+        * add: LongIdentifier in the case of a call expression
+        * Maynor Martínez
+        */
+        iAST = longI.getSimpleIdentifier();
         
         if (currentToken.kind == Token.LPAREN) {
           acceptIt();
@@ -399,7 +424,8 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
 
         } else {
           //parse | V-name ":=" Expression
-          Vname vAST = parseRestOfVname(iAST);
+          //Maynor Martínez
+          Vname vAST = parseRestOfVname(longI);
           accept(Token.BECOMES);
           Expression eAST = parseExpression();
           finish(commandPos);
@@ -411,6 +437,7 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     //       | "for" Identifier ":=" Expression ".." Expression "while" Expression "do" Command "end
     //       | "for" Identifier ":=" Expression ".." Expression "until" Expression "do" Command "end
     //       | "for" Identifier "in" Expression "do" Command "end"
+    // César Jiménez
     case Token.FOR:
       {
         acceptIt();
@@ -486,7 +513,9 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
         | "repeat" "do" Command "while" Expression "end"
         | "repeat" "do" Command "until" Expression "end"
         | "repeat" Expression "times" "do" Command "end"
-      ----------------------------------------------------------------------*/
+      ----------------------------------------------------------------------
+      //Sebastian Chaves
+      */
 
       case Token.REPEAT: {
         acceptIt();
@@ -559,6 +588,11 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       }
         break;
 
+      /*
+        Agregar:
+        | "let" Declaration "in" Command "end"
+        Fernanda Murillo
+      */
       case Token.LET: {
         acceptIt();
         Declaration dAST = parseDeclaration();
@@ -570,12 +604,12 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       }
       break;
       
-      /*
-        A�adir:
+     /*
+        Agregar:
         | "if" Expression "then" Command ("|" Expression "then" Command)*
           "else" Command "end"
+        Fernanda Murillo
       */
-
       case Token.IF: {
         acceptIt();
         Expression eAST = parseExpression();
@@ -588,17 +622,48 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       }
         break;
 
-      case Token.WHILE: {
-        acceptIt();
-        Expression eAST = parseExpression();
-        accept(Token.DO);
-        Command cAST = parseSingleCommand();
+    
+    /*
+      Agregar:
+      | "select" Expression "from" Cases ["else" Command] "end"
+
+      Cases ::= Case+
+      Case ::= "when" Case-Literals "then" Command
+      Case-Literals ::= Case-Range ("|" Case-Range)*
+      Case-Range ::= Case-Literal [".." Case-Literal]
+      Case-Literal ::= Integer-Literal | Character-Literal
+      Maynor Martínez
+    */
+    case Token.SELECT:
+      acceptIt();
+      Expression eAST = parseExpression();
+      accept(Token.FROM);
+      Case caseAST = parseSingleCase();
+      
+      while (currentToken.kind == Token.WHEN) {
+        SingleCase singleCase2AST = parseSingleCase();
         finish(commandPos);
-        commandAST = new WhileCommand(eAST, cAST, commandPos);
+        caseAST = new SequentialCase(caseAST, singleCase2AST, caseAST.position);
       }
-        break;
 
+      //This is to get de deafault value
+      if (currentToken.kind == Token.ELSE) {
+        acceptIt();
+        Command cAST2 = parseCommand();
+        accept(Token.END);
+        finish(commandPos);
+        commandAST = new SelectCommand(eAST, caseAST, cAST2, commandPos);
+      } else {
+        accept(Token.END);
+        finish(commandPos);
+        commandAST = new SelectCommand(eAST, caseAST, commandPos);
+      }
+      break;
 
+      /* Agregar:
+            Skip
+        Fernanda Murillo
+        */
     case Token.SKIP:
       acceptIt();
       finish(commandPos);
@@ -615,7 +680,8 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     return commandAST;
   }
   
-  // m�todo que retorna pipeline
+  // This method is about the pipe command
+  //Fernada Murillo
   
   Command parsePipelineCommand() throws SyntaxError {
     Command commandAST = null; // in case there's a syntactic error
@@ -753,17 +819,16 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
         expressionAST = new RecordExpression(raAST, expressionPos);
       }
         break;
-
+      /*
+       * add: LongIdentifier in the case of a call expression
+       * Maynor Martínez
+       */
       case Token.IDENTIFIER: {
         Identifier iAST = null;
         LongIdentifier longI = parseLongIdentifier();
 
         //This if is to check if the longIdentifier is a longIdentifierComplex or a longIdentifierSimple and save the simpleIdentifier in iAST
-        if (longI.getClass() == LongIdentifierComplex.class) {
-          iAST = ((LongIdentifierComplex) longI).I;
-        } else {
-          iAST = ((LongIdentifierSimple) longI).I;
-        }
+        iAST = longI.getSimpleIdentifier();
 
         if (currentToken.kind == Token.LPAREN) {
           acceptIt();
@@ -774,7 +839,7 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
           expressionAST = new CallExpression(longIAST, apsAST, expressionPos);
 
         } else {
-          Vname vAST = parseRestOfVname(iAST);
+          Vname vAST = parseRestOfVname(longI);
           finish(expressionPos);
           expressionAST = new VnameExpression(vAST, expressionPos);
         }
@@ -847,20 +912,132 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
 
   ///////////////////////////////////////////////////////////////////////////////
   //
+  // Select Cases Methods
+  //
+  ///////////////////////////////////////////////////////////////////////////////
+  
+
+  /*
+   * Cases ::= Case+
+    Case ::= "when" Case-Literals "then" Command
+    Case-Literals ::= Case-Range ("|" Case-Range)*
+    Case-Range ::= Case-Literal [".." Case-Literal]
+    Case-Literal ::= Integer-Literal | Character-Literal
+
+    Maynor Martínez
+
+   */
+
+
+
+  //parseSingleCase "when" Case-Literals "then" Command
+  SingleCase parseSingleCase() throws SyntaxError {
+    SingleCase singleCaseAST = null; // in case there's a syntactic error
+
+    SourcePosition singleCasePos = new SourcePosition();
+    start(singleCasePos);
+    accept(Token.WHEN);
+    CaseRange caseLiteralsAST = parseCaseLiterals();
+    accept(Token.THEN);
+    Command comandAST = parseCommand();
+    finish(singleCasePos);
+    singleCaseAST = new SingleCase(caseLiteralsAST, comandAST, singleCasePos);
+    return singleCaseAST;
+  }
+
+  //parseCaseLiterals CaseLiterals =: CaseRange ("|" CaseRange )*  
+  CaseRange parseCaseLiterals() throws SyntaxError {
+    
+
+    SourcePosition caseLiteralsPos = new SourcePosition();
+    start(caseLiteralsPos);
+
+    CaseRange cAST = parseCaseRange();
+    while (currentToken.kind == Token.PIPELINE) {
+      acceptIt();
+      CaseRange cAST2 = parseCaseRange();
+      finish(caseLiteralsPos);
+      cAST = new CaseRange(cAST, cAST2, caseLiteralsPos);
+    }
+    return cAST;
+  }
+
+  //parseCaseRange caseLiteral [".." caseLiteral]
+  CaseRange parseCaseRange() throws SyntaxError {
+    CaseRange caseRangeAST = null; // in case there's a syntactic error
+
+    SourcePosition caseRangePos = new SourcePosition();
+    start(caseRangePos);
+
+    CaseLiteral cAST = parseCaseLiteral();
+    if (currentToken.kind == Token.DOTDOT) {
+      acceptIt();
+      CaseLiteral cAST2 = parseCaseLiteral();
+      finish(caseRangePos);
+      caseRangeAST = new CaseRange(cAST, cAST2, caseRangePos);
+    } else {
+      finish(caseRangePos);
+      caseRangeAST = new CaseRange(cAST,null, caseRangePos);
+    }
+    return caseRangeAST;
+  }
+
+  //parseCaseLiteral intergerLiteral | characterLiteral
+  CaseLiteral parseCaseLiteral() throws SyntaxError {
+    CaseLiteral caseLiteralAST = null; // in case there's a syntactic error
+
+    SourcePosition caseLiteralPos = new SourcePosition();
+    start(caseLiteralPos);
+
+    switch (currentToken.kind) {
+      case Token.INTLITERAL:
+        IntegerLiteral ilAST = parseIntegerLiteral();
+        finish(caseLiteralPos);
+        caseLiteralAST = new CaseLiteral(ilAST, caseLiteralPos); // Is the same constructor but abstracte
+        break;
+      case Token.CHARLITERAL:
+        CharacterLiteral clAST = parseCharacterLiteral();
+        finish(caseLiteralPos);
+        caseLiteralAST = new CaseLiteral(clAST, caseLiteralPos); // Is the same constructor but abstracte
+        break;
+      default:
+        syntacticError("\"%\" cannot start a case literal",
+            currentToken.spelling);
+        break;
+    }
+    return caseLiteralAST;
+  }
+  
+
+  ///////////////////////////////////////////////////////////////////////////////
+  //
   // VALUE-OR-VARIABLE NAMES
   //
   ///////////////////////////////////////////////////////////////////////////////
 
+  /*
+
+    V-name ::= [ Package-Identifier "$" ] Var-name
+
+    Var-name ::= Identifier
+    | Var-name "." Identifier
+    | Var-name "[" Expression "]"
+    Maynor Martínez
+   */
+
   Vname parseVname() throws SyntaxError {
     Vname vnameAST = null; // in case there's a syntactic error
-    Identifier iAST = parseIdentifier();
+    LongIdentifier iAST = parseLongIdentifier();
     vnameAST = parseRestOfVname(iAST);
     return vnameAST;
   }
 
-  Vname parseRestOfVname(Identifier identifierAST) throws SyntaxError {
+  Vname parseRestOfVname(LongIdentifier identifierAST) throws SyntaxError {
+
+    
     SourcePosition vnamePos = new SourcePosition();
     vnamePos = identifierAST.position;
+    
     Vname vAST = new SimpleVname(identifierAST, vnamePos);
 
     while (currentToken.kind == Token.DOT ||
@@ -881,6 +1058,8 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     return vAST;
   }
 
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // DECLARATIONS
@@ -892,6 +1071,8 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     ::= compound-Declaration 
     |   Declaration ";" compound-Declaration
     es decir, ::= compound-Declaration (";" compound-Declaration)*
+
+    Fernanda Murillo
    */
 
   Declaration parseDeclaration() throws SyntaxError {
@@ -933,8 +1114,9 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
       
 
     /*
-       A�adir:
+       add:
         | "var" Identifier ":=" Expression
+        Fernadna Murillo
     */
     case Token.VAR:
       {
@@ -969,6 +1151,7 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
        Modificar en single_Declaration:
        | "proc" Identifier "(" Formal-Parameter-Sequence ")"
          "~" Command "end"
+        Fernadna Murillo
     */
     case Token.PROC:
       {
@@ -1024,11 +1207,12 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
   }
   
   /*
-    A�adir: 
+    add: 
     compound-Declaration
         ::= single-Declaration
         | "rec" Proc-Funcs "end"
         | "private" Declaration "in" Declaration "end"
+        Fernadna Murillo
   */
   
   Declaration parseCompoundDeclaration() throws SyntaxError {
@@ -1076,12 +1260,13 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
   }
   
   /*
-    A�adir:
+    add:
     ProcFunc
         ::= "proc" Identifier "(" Formal-Parameter-Sequence ")"
              "~" Command "end"
         | "func" Identifier "(" Formal-Parameter-Sequence ")"
              ":" Type-denoter "~" Expression
+        Fernadna Murillo
   */
   
   Declaration parse_ProcFunc_Declaration() throws SyntaxError{
@@ -1107,9 +1292,10 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
   }
   
   /*
-    A�adir:
+    add:
     ProcFuncs 
         ::= Proc-Func ("|" Proc-Func)+
+    Fernadna Murillo
   */
   
   Declaration parse_ProcFuncs_Declaration() throws SyntaxError{
@@ -1335,7 +1521,12 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
   // TYPE-DENOTERS
   //
   ///////////////////////////////////////////////////////////////////////////////
-
+  /*
+   Type-denoter ::= Long-Identifier
+| "array" Integer-Literal "of" Type-denoter
+| "record" Record-Type-denoter "end"
+Maynor Martinez
+   */
   TypeDenoter parseTypeDenoter() throws SyntaxError {
     TypeDenoter typeAST = null; // in case there's a syntactic error
     SourcePosition typePos = new SourcePosition();

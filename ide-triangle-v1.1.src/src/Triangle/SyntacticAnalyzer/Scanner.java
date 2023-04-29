@@ -129,7 +129,10 @@ public final class Scanner {
         return Token.CHARLITERAL;
       } else
         return Token.ERROR;
-    
+    /*
+      Add new character literals here
+      Maynor Martinez, César Jiménez, Fernanda Murillo, Sebastian Chavez
+     */
     case '$':
       takeIt();
       return Token.DOLLAR;

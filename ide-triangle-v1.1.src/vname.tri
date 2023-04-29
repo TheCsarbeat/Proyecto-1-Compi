@@ -1,0 +1,12 @@
+let
+   var n := 1;
+   var c : Char
+
+in
+
+    ferks $ n ( n>1);
+    asdf $ n := '&';
+    n := n+1;
+
+    skip
+   end
