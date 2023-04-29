@@ -20,11 +20,11 @@
   */
  package Triangle.SyntacticAnalyzer;
 
- final class Token extends Object {
+ public final class Token extends Object {
  
-   protected int kind;
-   protected String spelling;
-   protected SourcePosition position;
+   public int kind;
+   public String spelling;
+   public SourcePosition position;
  
    public Token(int kind, String spelling, SourcePosition position) {
  
@@ -121,7 +121,11 @@
  
        // special tokens...
        EOT = 46,
-       ERROR = 47;
+       ERROR = 47,
+       COMMENT = 48,
+       EOL = 49,
+       TAB = 50;
+
  
    private static String[] tokenTable = new String[] {
        "<int>",
@@ -171,7 +175,8 @@
        "{",
        "}",
        "",
-       "<error>"
+       "<error>",
+       ""
    };
  
    private final static int firstReservedWord = Token.ARRAY,

@@ -1,8 +1,10 @@
+! This is a comment
 let
-   var n := 1;
-   var c : Char
+	var n := 1;
+	var c : Char
 
 in
+
 
     ferks $ n ( n>1);
     c := '&';
@@ -11,6 +13,5 @@ in
     if    asdf $ n ( n>1) then p := p+1 | n<1 then c := '&' | n<1 then v := 'f' else skip end;
 
     for i := 0 .. 10 do if    asdf $ n ( n>1) then p := p+1 | n<1 then skip | n<1 then skip else skip end end;
+end
 
-    skip
-   end
