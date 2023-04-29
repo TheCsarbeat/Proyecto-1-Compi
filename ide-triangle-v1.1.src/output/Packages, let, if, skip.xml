@@ -1,5 +1,16 @@
 <?xml version="1.0" standalone="yes"?>
 <Program>
+<PackageDeclaration>
+<Identifier value="asdf"/>
+<VarDeclaration>
+<Identifier value="a"/>
+<SimpleTypeDenoter>
+<LongIdentifierSimple>
+<Identifier value="Integer"/>
+</LongIdentifierSimple>
+</SimpleTypeDenoter>
+</VarDeclaration>
+</PackageDeclaration>
 <LetCommand>
 <SequentialDeclaration>
 <VarDeclaration>
@@ -24,9 +35,12 @@
 <SequentialCommand>
 <AssignCommand>
 <SimpleVname>
-<LongIdentifierSimple>
-<Identifier value="c"/>
-</LongIdentifierSimple>
+<LongIdentifierComplex>
+<PackageIdentifier>
+<Identifier value="asdf"/>
+</PackageIdentifier>
+<Identifier value="fgh"/>
+</LongIdentifierComplex>
 </SimpleVname>
 <CharacterExpression>
 <CharacterLiteral value="'J'"/>

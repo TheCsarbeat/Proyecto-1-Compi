@@ -4,7 +4,7 @@ let
 	var c : Char
 
 in
-    ferks $ n ( n>1);
+    ferks $ de ( n>1);
     c := 'J';
     n := n+1
 end

@@ -15,6 +15,6 @@ public class PackageIdentifier extends Identifier{
         type = null;
         decl = null;
     }
-
+    
 
 }

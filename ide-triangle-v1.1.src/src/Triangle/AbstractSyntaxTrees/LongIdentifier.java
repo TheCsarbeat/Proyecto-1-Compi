@@ -21,5 +21,16 @@ public abstract class LongIdentifier extends AST{
 
         return iAST;
     }
+    /* 
+    @Override
+    public Object visit(Visitor v, Object o) {
+      if (this.getClass() == LongIdentifierComplex.class) {
+        return ((LongIdentifierComplex) this).visit(v, o);
+      }
+      return ((LongIdentifierSimple) this).visit(v, o);
+      
+    }*/
+
+
     
 }

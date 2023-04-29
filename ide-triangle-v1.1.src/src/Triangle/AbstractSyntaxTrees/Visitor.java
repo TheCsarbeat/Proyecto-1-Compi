@@ -118,6 +118,8 @@ public interface Visitor {
   public abstract Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o);
 
   //Long-Identifier
+  /*public abstract Object visitLongIdentifier(LongIdentifier ast, Object o);*/
+
   public abstract Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o);
 
   public abstract Object visitLongIdentifierComplex (LongIdentifierComplex ast, Object o);

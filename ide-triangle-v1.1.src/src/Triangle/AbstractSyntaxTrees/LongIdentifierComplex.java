@@ -4,7 +4,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class LongIdentifierComplex extends LongIdentifier {
 
-    public LongIdentifierComplex(Identifier pAST, Identifier iAST,  SourcePosition position) {
+    public LongIdentifierComplex(PackageIdentifier pAST, Identifier iAST,  SourcePosition position) {
         super(position);
         Pac = pAST;
         I = iAST;
@@ -18,6 +18,6 @@ public class LongIdentifierComplex extends LongIdentifier {
     }
 
     public Identifier I;
-    public Identifier Pac;
+    public PackageIdentifier Pac;
     
 }

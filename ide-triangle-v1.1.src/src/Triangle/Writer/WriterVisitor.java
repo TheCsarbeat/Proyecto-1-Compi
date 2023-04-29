@@ -38,6 +38,7 @@ import Triangle.AbstractSyntaxTrees.IntegerExpression;
 import Triangle.AbstractSyntaxTrees.IntegerLiteral;
 import Triangle.AbstractSyntaxTrees.LetCommand;
 import Triangle.AbstractSyntaxTrees.LetExpression;
+import Triangle.AbstractSyntaxTrees.LongIdentifier;
 import Triangle.AbstractSyntaxTrees.LongIdentifierComplex;
 import Triangle.AbstractSyntaxTrees.LongIdentifierSimple;
 import Triangle.AbstractSyntaxTrees.MultipleActualParameterSequence;
@@ -564,6 +565,7 @@ public class WriterVisitor implements Visitor {
     // Programs
     public Object visitProgram(Program ast, Object obj) {
         writeLineHTML("<Program>");
+        ast.P.visit(this, null);
         ast.C.visit(this, null);
         writeLineHTML("</Program>");
         return null;
@@ -678,7 +680,15 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("<PackageIdentifier value=\"" + packageIdentifier.spelling + "\"/>");
         return null;
     }
-
+    
+    /*@Override
+    public Object visitLongIdentifier(LongIdentifier ast, Object o) {
+        writeLineHTML("<LongIdentifier>");
+        ast.I.visit(this, null);
+        writeLineHTML("</LongIdentifier>");
+        return null;
+    }*/
+        
     @Override
     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
         writeLineHTML("<LongIdentifierSimple>");
@@ -690,8 +700,10 @@ public class WriterVisitor implements Visitor {
     @Override
     public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
         writeLineHTML("<LongIdentifierComplex>");
-        ast.I.visit(this, null);
+        writeLineHTML("<PackageIdentifier>");
         ast.Pac.visit(this, null);
+        writeLineHTML("</PackageIdentifier>");
+        ast.I.visit(this, null);        
         writeLineHTML("</LongIdentifierComplex>");
         return null;
     }
@@ -750,5 +762,7 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("</SelectCommand>");
         return null;
     }
+
+   
 
 }

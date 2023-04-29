@@ -20,9 +20,10 @@
 <SequentialCommand>
 <SequentialCommand>
 <CallCommand>
-<LongIdentifierSimple>
-<Identifier value="n"/>
-</LongIdentifierSimple>
+<LongIdentifierComplex>
+<Identifier value="ferks"/>
+<Identifier value="de"/>
+</LongIdentifierComplex>
 <SingleActualParameterSequence>
 <ConstActualParameter>
 <BinaryExpression>
