@@ -182,7 +182,7 @@ public class Parser {
       while(currentToken.kind == Token.PACKAGE){
           packageDeclarationAST = parsePackageDeclaration();
           if(currentToken.kind != Token.END){
-              syntacticError("end expected after end of program",
+              syntacticError("end expected at the end of package declaration ",
                       currentToken.spelling);
           }else{
               acceptIt();
@@ -241,7 +241,7 @@ PackageIdentifier parsePackageIdentifier() throws SyntaxError {
     currentToken = lexicalAnalyser.scan();
   } else {
     pacIDAST = null;
-    syntacticError("identifier expected here", "");
+    syntacticError("a Package-identifier expected here", currentToken.spelling);
   }
   finish(pacIDPos);
   return pacIDAST;
@@ -412,15 +412,12 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
         * add: LongIdentifier in the case of a call expression
         * Maynor Martínez
         */
-        iAST = longI.getSimpleIdentifier();
-        
         if (currentToken.kind == Token.LPAREN) {
           acceptIt();
           ActualParameterSequence apsAST = parseActualParameterSequence();
           accept(Token.RPAREN);
           finish(commandPos);
-          LongIdentifier longIAST = new LongIdentifierSimple(iAST, commandPos); // We create a longIdentifierSimple with the identifier
-          commandAST = new CallCommand(longIAST, apsAST, commandPos); // We modify this line to a longIdentifier the position 1 of the command
+          commandAST = new CallCommand(longI, apsAST, commandPos); // We modify this line to a longIdentifier the position 1 of the command
 
         } else {
           //parse | V-name ":=" Expression

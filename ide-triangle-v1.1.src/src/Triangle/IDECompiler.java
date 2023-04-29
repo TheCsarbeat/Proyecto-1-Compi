@@ -16,6 +16,7 @@ import Triangle.SyntacticAnalyzer.Parser;
 import Triangle.ContextualAnalyzer.Checker;
 import Triangle.CodeGenerator.Encoder;
 import java.io.File;
+import Triangle.Writer.Writer;
 
 
 
@@ -71,6 +72,7 @@ public class IDECompiler {
             Checker checker = new Checker(report);
             checker.check(rootAST);
             */
+            writeXML(rootAST, sourceName.substring(sourceName.lastIndexOf(File.separatorChar)).replace(".tri", ""));
             if (report.numErrors == 0) {
                 /*
                 System.out.println("Code Generation ...");
@@ -106,6 +108,13 @@ public class IDECompiler {
      */
     public Program getAST() {
         return(rootAST);
+    }
+
+    private void writeXML(Program programAST, String sourceName){
+        Writer writerXML = new Writer(sourceName);
+        
+        writerXML.write(programAST);
+        
     }
     // </editor-fold>
     
