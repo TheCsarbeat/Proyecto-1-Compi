@@ -12,8 +12,7 @@ public class LongIdentifierSimple extends LongIdentifier{
 
     @Override
     public Object visit(Visitor v, Object o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+        return v.visitLongIdentifierSimple(this, o);
     }
 
     public Identifier I;

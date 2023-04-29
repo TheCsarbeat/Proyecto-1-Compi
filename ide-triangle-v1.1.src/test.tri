@@ -8,7 +8,7 @@ in
     c := '&';
     n := n+1;
 
-    if    asdf $ n ( n>1) then p := p+1 | n<1 then skip | n<1 then skip else skip end;
+    if    asdf $ n ( n>1) then p := p+1 | n<1 then c := '&' | n<1 then v := 'f' else skip end;
 
     for i := 0 .. 10 do if    asdf $ n ( n>1) then p := p+1 | n<1 then skip | n<1 then skip else skip end end;
 

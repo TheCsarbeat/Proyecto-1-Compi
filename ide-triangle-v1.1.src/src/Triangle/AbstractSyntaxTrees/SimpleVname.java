@@ -18,7 +18,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class SimpleVname extends Vname {
 
-  public SimpleVname (Identifier iAST, SourcePosition thePosition) {
+  public SimpleVname (LongIdentifier iAST, SourcePosition thePosition) {
     super (thePosition);
     I = iAST;
   }
@@ -27,5 +27,5 @@ public class SimpleVname extends Vname {
     return v.visitSimpleVname(this, o);
   }
 
-  public Identifier I;
+  public LongIdentifier I;
 }
