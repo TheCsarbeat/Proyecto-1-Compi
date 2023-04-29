@@ -5,7 +5,7 @@ let
    var n : Integer;
    var c : Char
 in
-
+! Oh wow
 
     c := '&';
     n := n+1;

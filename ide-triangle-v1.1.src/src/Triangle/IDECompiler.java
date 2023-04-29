@@ -8,11 +8,14 @@ package Triangle;
 import Triangle.CodeGenerator.Frame;
 import java.awt.event.ActionListener;
 import Triangle.SyntacticAnalyzer.SourceFile;
+import Triangle.Writer.WriterHTML;
+import Triangle.Writer.WriterHTMLController;
 import Triangle.SyntacticAnalyzer.Scanner;
 import Triangle.AbstractSyntaxTrees.Program;
 import Triangle.SyntacticAnalyzer.Parser;
 import Triangle.ContextualAnalyzer.Checker;
 import Triangle.CodeGenerator.Encoder;
+import java.io.File;
 
 
 
@@ -49,6 +52,16 @@ public class IDECompiler {
         Scanner scanner = new Scanner(source);
         report = new IDEReporter();
         Parser parser = new Parser(scanner, report);
+        //html writer
+        WriterHTML writer = new WriterHTML(sourceName.substring(sourceName.lastIndexOf(File.separatorChar)).replace(".tri", ""));
+        source = new SourceFile(sourceName);
+        Scanner scanner2 = new Scanner(source);
+        scanner2.setWritingHTML(true);
+        WriterHTMLController writerController;
+        writerController = new WriterHTMLController(scanner2, writer);
+        writerController.writeHTML();
+        scanner2.setWritingHTML(false);
+        
         boolean success = false;
         
         rootAST = parser.parseProgram();
