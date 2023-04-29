@@ -197,14 +197,18 @@ public final class Scanner {
         if (currentChar == SourceFile.EOL)
           takeIt();
         return Token.COMMENT;
-
-    case '\n':
-      takeIt();
-      return Token.EOL;
     
     case '\t':
       takeIt();
       return Token.TAB;
+    
+    case '\r':
+      takeIt();
+      if (currentChar == '\n') {
+        takeIt();
+        return Token.EOL;
+      } else
+        return Token.EOL;
     
     case SourceFile.EOT:
       return Token.EOT;
