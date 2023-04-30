@@ -1,6 +1,5 @@
 <?xml version="1.0" standalone="yes"?>
 <Program>
-<SequentialPackage>
 <PackageDeclaration>
 <Identifier value="ferks"/>
 <VarDeclaration>
@@ -12,17 +11,37 @@
 </SimpleTypeDenoter>
 </VarDeclaration>
 </PackageDeclaration>
-<PackageDeclaration>
-<Identifier value="mnb"/>
+<LetCommand>
 <VarDeclaration>
-<Identifier value="s"/>
+<Identifier value="num"/>
 <SimpleTypeDenoter>
-<LongIdentifierSimple>
-<Identifier value="Identifier"/>
-</LongIdentifierSimple>
+<LongIdentifierComplex>
+<PackageIdentifier>
+<Identifier value="fers"/>
+</PackageIdentifier>
+<Identifier value="n"/>
+</LongIdentifierComplex>
 </SimpleTypeDenoter>
 </VarDeclaration>
-</PackageDeclaration>
-</SequentialPackage>
-<EmptyCommand/>
+<AssignCommand>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="num"/>
+</LongIdentifierSimple>
+</SimpleVname>
+<BinaryExpression>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="num"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+<Operator value="+"/>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</BinaryExpression>
+</AssignCommand>
+</LetCommand>
 </Program>
