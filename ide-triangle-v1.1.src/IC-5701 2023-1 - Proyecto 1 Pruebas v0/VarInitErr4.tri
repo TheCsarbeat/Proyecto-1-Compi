@@ -1,0 +1,9 @@
+let
+	var j init 'c'; ! sintaxis inválida, en lugar de "init" debe ser ":="
+	var i : Integer;
+	var y : Integer
+in
+	skip
+end
+
+! Error: usa "init" y no ":="

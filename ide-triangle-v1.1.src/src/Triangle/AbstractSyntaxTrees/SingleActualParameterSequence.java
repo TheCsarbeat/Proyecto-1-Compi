@@ -23,7 +23,8 @@ public class SingleActualParameterSequence extends ActualParameterSequence {
     super (thePosition);
     AP = apAST;
   }
-
+  
+  @Override
   public Object visit(Visitor v, Object o) {
     return v.visitSingleActualParameterSequence(this, o);
   }

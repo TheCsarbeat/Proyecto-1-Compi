@@ -1,0 +1,3 @@
+do skip until 4 = 4 end
+
+! Error: Falta el repeat o algo más

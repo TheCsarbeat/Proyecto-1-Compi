@@ -1,0 +1,12 @@
+package myP  ! falta ~, error
+	var a: Integer
+end
+
+let
+	var b: Integer
+	
+in
+	b := myP $ a ! este es un comando
+end
+
+! Error: falta el ~ antes del cuerpo del package

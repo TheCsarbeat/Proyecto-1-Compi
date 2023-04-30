@@ -29,8 +29,7 @@ public class CaseRange extends AST{
 
     @Override
     public Object visit(Visitor v, Object o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+        return v.visitCaseRange(this, o);
     }
     public CaseRange caseRange, caseRange2;
     public CaseLiteral caseLiteral1, caseLiteral2;

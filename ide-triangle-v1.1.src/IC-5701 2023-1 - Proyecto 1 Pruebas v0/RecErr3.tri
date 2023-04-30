@@ -1,0 +1,9 @@
+let
+	rec
+		
+	end
+in
+	skip 
+end
+
+! Error: No hay alternativas

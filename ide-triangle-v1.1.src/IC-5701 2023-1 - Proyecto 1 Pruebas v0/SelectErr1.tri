@@ -1,0 +1,7 @@
+select 1 from 
+
+  when then putint (1) 
+
+end
+
+! Error: faltan literales 

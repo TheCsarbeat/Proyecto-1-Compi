@@ -1,0 +1,10 @@
+let
+	rec
+		func doble ( var i : Integer ) : Integer ~
+			i*2
+	end
+in
+	skip 
+end
+
+! Error: Solo hay una alternativa

@@ -1,0 +1,14 @@
+package myP ~ 
+	var a: Integer
+end
+
+let
+	var b: Integer
+in
+      getint(var myP $ a) ;
+      b := myP $ a ;
+      myP $ a := myP $ a + 1 ;
+      putint (myP $ a)
+end
+
+! OK

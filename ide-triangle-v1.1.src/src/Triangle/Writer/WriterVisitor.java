@@ -9,6 +9,8 @@ import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
 import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CallCommand;
 import Triangle.AbstractSyntaxTrees.CallExpression;
+import Triangle.AbstractSyntaxTrees.CaseLiteral;
+import Triangle.AbstractSyntaxTrees.CaseRange;
 import Triangle.AbstractSyntaxTrees.CharTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CharacterExpression;
 import Triangle.AbstractSyntaxTrees.CharacterLiteral;
@@ -59,12 +61,14 @@ import Triangle.AbstractSyntaxTrees.RecordExpression;
 import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
 import Triangle.AbstractSyntaxTrees.RepeatTimes;
 import Triangle.AbstractSyntaxTrees.SelectCommand;
+import Triangle.AbstractSyntaxTrees.SequentialCase;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
 import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
+import Triangle.AbstractSyntaxTrees.SingleCase;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
@@ -94,28 +98,33 @@ public class WriterVisitor implements Visitor {
     }
 
     // Commands
-    public Object visitAssignCommand(AssignCommand ast, Object obj) {
+    
+         @Override
+     public Object visitAssignCommand(AssignCommand ast, Object obj) {
         writeLineHTML("<AssignCommand>");
         ast.V.visit(this, null);
         ast.E.visit(this, null);
         writeLineHTML("</AssignCommand>");
         return null;
     }
-
-    public Object visitCallCommand(CallCommand ast, Object obj) {
+    
+         @Override
+     public Object visitCallCommand(CallCommand ast, Object obj) {
         writeLineHTML("<CallCommand>");
         ast.I.visit(this, null);
         ast.APS.visit(this, null);
         writeLineHTML("</CallCommand>");
         return null;
     }
-
-    public Object visitEmptyCommand(EmptyCommand ast, Object obj) {
+    
+         @Override
+     public Object visitEmptyCommand(EmptyCommand ast, Object obj) {
         writeLineHTML("<EmptyCommand/>");
         return null;
     }
 
-    public Object visitIfCommand(IfCommand ast, Object obj) {
+         @Override
+     public Object visitIfCommand(IfCommand ast, Object obj) {
         writeLineHTML("<IfCommand>");
         ast.E.visit(this, null);
         ast.C1.visit(this, null);
@@ -124,7 +133,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitLetCommand(LetCommand ast, Object obj) {
+         @Override
+     public Object visitLetCommand(LetCommand ast, Object obj) {
         writeLineHTML("<LetCommand>");
         ast.D.visit(this, null);
         ast.C.visit(this, null);
@@ -132,7 +142,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSequentialCommand(SequentialCommand ast, Object obj) {
+         @Override
+     public Object visitSequentialCommand(SequentialCommand ast, Object obj) {
         writeLineHTML("<SequentialCommand>");
         ast.C1.visit(this, null);
         ast.C2.visit(this, null);
@@ -140,7 +151,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitWhileCommand(WhileCommand ast, Object obj) {
+         @Override
+     public Object visitWhileCommand(WhileCommand ast, Object obj) {
         writeLineHTML("<WhileCommand>");
         ast.E.visit(this, null);
         ast.C.visit(this, null);
@@ -150,14 +162,16 @@ public class WriterVisitor implements Visitor {
 
 
     // Expressions
-    public Object visitArrayExpression(ArrayExpression ast, Object obj) {
+         @Override
+     public Object visitArrayExpression(ArrayExpression ast, Object obj) {
         writeLineHTML("<ArrayExpression>");
         ast.AA.visit(this, null);
         writeLineHTML("</ArrayExpression>");
         return null;
     }
 
-    public Object visitBinaryExpression(BinaryExpression ast, Object obj) {
+         @Override
+     public Object visitBinaryExpression(BinaryExpression ast, Object obj) {
         writeLineHTML("<BinaryExpression>");
         ast.E1.visit(this, null);
         ast.O.visit(this, null);
@@ -166,7 +180,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitCallExpression(CallExpression ast, Object obj) {
+         @Override
+     public Object visitCallExpression(CallExpression ast, Object obj) {
         writeLineHTML("<CallExpression>");
         ast.I.visit(this, null);
         ast.APS.visit(this, null);
@@ -174,19 +189,22 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitCharacterExpression(CharacterExpression ast, Object obj) {
+         @Override
+     public Object visitCharacterExpression(CharacterExpression ast, Object obj) {
         writeLineHTML("<CharacterExpression>");
         ast.CL.visit(this, null);
         writeLineHTML("</CharacterExpression>");
         return null;
     }
 
-    public Object visitEmptyExpression(EmptyExpression ast, Object obj) {
+         @Override
+     public Object visitEmptyExpression(EmptyExpression ast, Object obj) {
         writeLineHTML("<EmptyExpression/>");
         return null;
     }
 
-    public Object visitIfExpression(IfExpression ast, Object obj) {
+         @Override
+     public Object visitIfExpression(IfExpression ast, Object obj) {
         writeLineHTML("<IfExpression>");
         ast.E1.visit(this, null);
         ast.E2.visit(this, null);
@@ -195,14 +213,16 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitIntegerExpression(IntegerExpression ast, Object obj) {
+         @Override
+     public Object visitIntegerExpression(IntegerExpression ast, Object obj) {
         writeLineHTML("<IntegerExpression>");
         ast.IL.visit(this, null);
         writeLineHTML("</IntegerExpression>");
         return null;
     }
 
-    public Object visitLetExpression(LetExpression ast, Object obj) {
+         @Override
+     public Object visitLetExpression(LetExpression ast, Object obj) {
         writeLineHTML("<LetExpression>");
         ast.D.visit(this, null);
         ast.E.visit(this, null);
@@ -210,14 +230,16 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitRecordExpression(RecordExpression ast, Object obj) {
+         @Override
+     public Object visitRecordExpression(RecordExpression ast, Object obj) {
         writeLineHTML("<RecordExpression>");
         ast.RA.visit(this, null);
         writeLineHTML("</RecordExpression>");
         return null;
     }
 
-    public Object visitUnaryExpression(UnaryExpression ast, Object obj) {
+         @Override
+     public Object visitUnaryExpression(UnaryExpression ast, Object obj) {
         writeLineHTML("<UnaryExpression>");
         ast.O.visit(this, null);
         ast.E.visit(this, null);
@@ -225,7 +247,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitVnameExpression(VnameExpression ast, Object obj) {
+         @Override
+     public Object visitVnameExpression(VnameExpression ast, Object obj) {
         writeLineHTML("<VnameExpression>");
         ast.V.visit(this, null);
         writeLineHTML("</VnameExpression>");
@@ -234,7 +257,8 @@ public class WriterVisitor implements Visitor {
 
 
     // Declarations
-    public Object visitBinaryOperatorDeclaration(BinaryOperatorDeclaration ast, Object obj) {
+         @Override
+     public Object visitBinaryOperatorDeclaration(BinaryOperatorDeclaration ast, Object obj) {
         writeLineHTML("<BinaryOperatorDeclaration>");
         ast.O.visit(this, null);
         ast.ARG1.visit(this, null);
@@ -244,7 +268,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitConstDeclaration(ConstDeclaration ast, Object obj) {
+         @Override
+     public Object visitConstDeclaration(ConstDeclaration ast, Object obj) {
         writeLineHTML("<ConstDeclaration>");
         ast.I.visit(this, null);
         ast.E.visit(this, null);
@@ -252,7 +277,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitFuncDeclaration(FuncDeclaration ast, Object obj) {
+         @Override
+     public Object visitFuncDeclaration(FuncDeclaration ast, Object obj) {
         writeLineHTML("<FuncDeclaration>");
         ast.I.visit(this, null);
         ast.FPS.visit(this, null);
@@ -262,7 +288,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitProcDeclaration(ProcDeclaration ast, Object obj) {
+         @Override
+     public Object visitProcDeclaration(ProcDeclaration ast, Object obj) {
         writeLineHTML("<ProcDeclaration>");
         ast.I.visit(this, null);
         ast.FPS.visit(this, null);
@@ -271,7 +298,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSequentialDeclaration(SequentialDeclaration ast, Object obj) {
+         @Override
+     public Object visitSequentialDeclaration(SequentialDeclaration ast, Object obj) {
         writeLineHTML("<SequentialDeclaration>");
         ast.D1.visit(this, null);
         ast.D2.visit(this, null);
@@ -279,7 +307,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitTypeDeclaration(TypeDeclaration ast, Object obj) {
+         @Override
+     public Object visitTypeDeclaration(TypeDeclaration ast, Object obj) {
         writeLineHTML("<TypeDeclaration>");
         ast.I.visit(this, null);
         ast.T.visit(this, null);
@@ -287,7 +316,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, Object obj) {
+         @Override
+     public Object visitUnaryOperatorDeclaration(UnaryOperatorDeclaration ast, Object obj) {
         writeLineHTML("<UnaryOperatorDeclaration>");
         ast.O.visit(this, null);
         ast.ARG.visit(this, null);
@@ -296,7 +326,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitVarDeclaration(VarDeclaration ast, Object obj) {
+         @Override
+     public Object visitVarDeclaration(VarDeclaration ast, Object obj) {
         writeLineHTML("<VarDeclaration>");
         ast.I.visit(this, null);
         ast.T.visit(this, null);
@@ -306,7 +337,8 @@ public class WriterVisitor implements Visitor {
 
 
     // Array Aggregates
-    public Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object obj) {
+         @Override
+     public Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object obj) {
         writeLineHTML("<MultipleArrayAggregate>");
         ast.E.visit(this, null);
         ast.AA.visit(this, null);
@@ -314,7 +346,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSingleArrayAggregate(SingleArrayAggregate ast, Object obj) {
+         @Override
+     public Object visitSingleArrayAggregate(SingleArrayAggregate ast, Object obj) {
         writeLineHTML("<SingleArrayAggregate>");
         ast.E.visit(this, null);
         writeLineHTML("</SingleArrayAggregate>");
@@ -323,7 +356,8 @@ public class WriterVisitor implements Visitor {
 
 
     // Record Aggregates
-    public Object visitMultipleRecordAggregate(MultipleRecordAggregate ast, Object obj) {
+         @Override
+     public Object visitMultipleRecordAggregate(MultipleRecordAggregate ast, Object obj) {
         writeLineHTML("<MultipleRecordAggregate>");
         ast.I.visit(this, null);
         ast.E.visit(this, null);
@@ -332,7 +366,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSingleRecordAggregate(SingleRecordAggregate ast, Object obj) {
+         @Override
+     public Object visitSingleRecordAggregate(SingleRecordAggregate ast, Object obj) {
         writeLineHTML("<SingleRecordAggregate>");
         ast.I.visit(this, null);
         ast.E.visit(this, null);
@@ -342,7 +377,8 @@ public class WriterVisitor implements Visitor {
 
 
     // Formal Parameters
-    public Object visitConstFormalParameter(ConstFormalParameter ast, Object obj) {
+         @Override
+     public Object visitConstFormalParameter(ConstFormalParameter ast, Object obj) {
         writeLineHTML("<ConstFormalParameter>");
         ast.I.visit(this, null);
         ast.T.visit(this, null);
@@ -350,7 +386,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitFuncFormalParameter(FuncFormalParameter ast, Object obj) {
+         @Override
+     public Object visitFuncFormalParameter(FuncFormalParameter ast, Object obj) {
         writeLineHTML("<FuncFormalParameter>");
         ast.I.visit(this, null);
         ast.FPS.visit(this, null);
@@ -359,7 +396,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitProcFormalParameter(ProcFormalParameter ast, Object obj) {
+         @Override
+     public Object visitProcFormalParameter(ProcFormalParameter ast, Object obj) {
         writeLineHTML("<ProcFormalParameter>");
         ast.I.visit(this, null);
         ast.FPS.visit(this, null);
@@ -367,7 +405,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitVarFormalParameter(VarFormalParameter ast, Object obj) {
+         @Override
+     public Object visitVarFormalParameter(VarFormalParameter ast, Object obj) {
         writeLineHTML("<VarFormalParameter>");
         ast.I.visit(this, null);
         ast.T.visit(this, null);
@@ -376,12 +415,14 @@ public class WriterVisitor implements Visitor {
     }
 
 
-    public Object visitEmptyFormalParameterSequence(EmptyFormalParameterSequence ast, Object obj) {
+         @Override
+     public Object visitEmptyFormalParameterSequence(EmptyFormalParameterSequence ast, Object obj) {
         writeLineHTML("<EmptyFormalParameterSequence/>");
         return null;
     }
 
-    public Object visitMultipleFormalParameterSequence(MultipleFormalParameterSequence ast, Object obj) {
+         @Override
+     public Object visitMultipleFormalParameterSequence(MultipleFormalParameterSequence ast, Object obj) {
         writeLineHTML("<MultipleFormalParameterSequence>");
         ast.FP.visit(this, null);
         ast.FPS.visit(this, null);
@@ -389,7 +430,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSingleFormalParameterSequence(SingleFormalParameterSequence ast, Object obj) {
+         @Override
+     public Object visitSingleFormalParameterSequence(SingleFormalParameterSequence ast, Object obj) {
         writeLineHTML("<SingleFormalParameterSequence>");
         ast.FP.visit(this, null);
         writeLineHTML("</SingleFormalParameterSequence>");
@@ -398,28 +440,32 @@ public class WriterVisitor implements Visitor {
 
 
     // Actual Parameters
-    public Object visitConstActualParameter(ConstActualParameter ast, Object obj) {
+         @Override
+     public Object visitConstActualParameter(ConstActualParameter ast, Object obj) {
         writeLineHTML("<ConstActualParameter>");
         ast.E.visit(this, null);
         writeLineHTML("</ConstActualParameter>");
         return null;
     }
 
-    public Object visitFuncActualParameter(FuncActualParameter ast, Object obj) {
+         @Override
+     public Object visitFuncActualParameter(FuncActualParameter ast, Object obj) {
         writeLineHTML("<FuncActualParameter>");
         ast.I.visit(this, null);
         writeLineHTML("</FuncActualParameter>");
         return null;
     }
 
-    public Object visitProcActualParameter(ProcActualParameter ast, Object obj) {
+         @Override
+     public Object visitProcActualParameter(ProcActualParameter ast, Object obj) {
         writeLineHTML("<ProcActualParameter>");
         ast.I.visit(this, null);
         writeLineHTML("</ProcActualParameter>");
         return null;
     }
 
-    public Object visitVarActualParameter(VarActualParameter ast, Object obj) {
+         @Override
+     public Object visitVarActualParameter(VarActualParameter ast, Object obj) {
         writeLineHTML("<VarActualParameter>");
         ast.V.visit(this, null);
         writeLineHTML("</VarActualParameter>");
@@ -427,12 +473,14 @@ public class WriterVisitor implements Visitor {
     }
 
 
-    public Object visitEmptyActualParameterSequence(EmptyActualParameterSequence ast, Object obj) {
+         @Override
+     public Object visitEmptyActualParameterSequence(EmptyActualParameterSequence ast, Object obj) {
         writeLineHTML("<EmptyActualParameterSequence/>");
         return null;
     }
 
-    public Object visitMultipleActualParameterSequence(MultipleActualParameterSequence ast, Object obj) {
+         @Override
+     public Object visitMultipleActualParameterSequence(MultipleActualParameterSequence ast, Object obj) {
         writeLineHTML("<MultipleActualParameterSequence>");
         ast.AP.visit(this, null);
         ast.APS.visit(this, null);
@@ -440,7 +488,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSingleActualParameterSequence(SingleActualParameterSequence ast, Object obj) {
+         @Override
+     public Object visitSingleActualParameterSequence(SingleActualParameterSequence ast, Object obj) {
         writeLineHTML("<SingleActualParameterSequence>");
         ast.AP.visit(this, null);
         writeLineHTML("</SingleActualParameterSequence>");
@@ -449,12 +498,14 @@ public class WriterVisitor implements Visitor {
 
 
     // Type Denoters
-    public Object visitAnyTypeDenoter(AnyTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitAnyTypeDenoter(AnyTypeDenoter ast, Object obj) {
         writeLineHTML("<AnyTypeDenoter/>");
         return null;
     }
 
-    public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object obj) {
         writeLineHTML("<ArrayTypeDenoter>");
         ast.IL.visit(this, null);
         ast.T.visit(this, null);
@@ -462,34 +513,40 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitBoolTypeDenoter(BoolTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitBoolTypeDenoter(BoolTypeDenoter ast, Object obj) {
         writeLineHTML("<BoolTypeDenoter/>");
         return null;
     }
 
-    public Object visitCharTypeDenoter(CharTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitCharTypeDenoter(CharTypeDenoter ast, Object obj) {
         writeLineHTML("<CharTypeDenoter/>");
         return null;
     }
 
-    public Object visitErrorTypeDenoter(ErrorTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitErrorTypeDenoter(ErrorTypeDenoter ast, Object obj) {
         writeLineHTML("<ErrorTypeDenoter/>");
         return null;
     }
 
-    public Object visitSimpleTypeDenoter(SimpleTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitSimpleTypeDenoter(SimpleTypeDenoter ast, Object obj) {
         writeLineHTML("<SimpleTypeDenoter>");
         ast.I.visit(this, null);
         writeLineHTML("</SimpleTypeDenoter>");
         return null;
     }
 
-    public Object visitIntTypeDenoter(IntTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitIntTypeDenoter(IntTypeDenoter ast, Object obj) {
         writeLineHTML("<IntTypeDenoter/>");
         return null;
     }
 
-    public Object visitRecordTypeDenoter(RecordTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitRecordTypeDenoter(RecordTypeDenoter ast, Object obj) {
         writeLineHTML("<RecordTypeDenoter>");
         ast.FT.visit(this, null);
         writeLineHTML("</RecordTypeDenoter>");
@@ -497,7 +554,8 @@ public class WriterVisitor implements Visitor {
     }
 
 
-    public Object visitMultipleFieldTypeDenoter(MultipleFieldTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitMultipleFieldTypeDenoter(MultipleFieldTypeDenoter ast, Object obj) {
         writeLineHTML("<MultipleFieldTypeDenoter>");
         ast.I.visit(this, null);
         ast.T.visit(this, null);
@@ -506,7 +564,8 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSingleFieldTypeDenoter(SingleFieldTypeDenoter ast, Object obj) {
+         @Override
+     public Object visitSingleFieldTypeDenoter(SingleFieldTypeDenoter ast, Object obj) {
         writeLineHTML("<SingleFieldTypeDenoter>");
         ast.I.visit(this, null);
         ast.T.visit(this, null);
@@ -516,29 +575,34 @@ public class WriterVisitor implements Visitor {
 
 
     // Literals, Identifiers and Operators
-    public Object visitCharacterLiteral(CharacterLiteral ast, Object obj) {
+         @Override
+     public Object visitCharacterLiteral(CharacterLiteral ast, Object obj) {
         writeLineHTML("<CharacterLiteral value=\"" + transformOperator(ast.spelling) + "\"/>");
         return null;
     }
 
-    public Object visitIdentifier(Identifier ast, Object obj) {
+         @Override
+     public Object visitIdentifier(Identifier ast, Object obj) {
         writeLineHTML("<Identifier value=\"" + ast.spelling + "\"/>");
         return null;
     }
 
-    public Object visitIntegerLiteral(IntegerLiteral ast, Object obj) {
+         @Override
+     public Object visitIntegerLiteral(IntegerLiteral ast, Object obj) {
         writeLineHTML("<IntegerLiteral value=\"" + ast.spelling + "\"/>");
         return null;
     }
 
-    public Object visitOperator(Operator ast, Object obj) {
+         @Override
+     public Object visitOperator(Operator ast, Object obj) {
         writeLineHTML("<Operator value=\"" + transformOperator(ast.spelling) + "\"/>");
         return null;
     }
 
 
     // Value-or-variable names
-    public Object visitDotVname(DotVname ast, Object obj) {
+         @Override
+     public Object visitDotVname(DotVname ast, Object obj) {
         writeLineHTML("<DotVname>");
         ast.V.visit(this, null);
         ast.I.visit(this, null);
@@ -546,14 +610,16 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitSimpleVname(SimpleVname ast, Object obj) {
+         @Override
+     public Object visitSimpleVname(SimpleVname ast, Object obj) {
         writeLineHTML("<SimpleVname>");
         ast.I.visit(this, null);
         writeLineHTML("</SimpleVname>");
         return null;
     }
 
-    public Object visitSubscriptVname(SubscriptVname ast, Object obj) {
+         @Override
+     public Object visitSubscriptVname(SubscriptVname ast, Object obj) {
         writeLineHTML("<SubscriptVname>");
         ast.V.visit(this, null);
         ast.E.visit(this, null);
@@ -563,9 +629,13 @@ public class WriterVisitor implements Visitor {
 
 
     // Programs
-    public Object visitProgram(Program ast, Object obj) {
+         @Override
+     public Object visitProgram(Program ast, Object obj) {
         writeLineHTML("<Program>");
-        ast.P.visit(this, null);
+        if (ast.P != null){
+             ast.P.visit(this, null);
+        }   
+        //ast.P.visit(this, null);
         ast.C.visit(this, null);
         writeLineHTML("</Program>");
         return null;
@@ -595,61 +665,67 @@ public class WriterVisitor implements Visitor {
             return operator;
     }
 
-    @Override
-    public Object visitForCommand(ForCommand ast, Object o) {
+    
+         @Override
+     public Object visitForCommand(ForCommand ast, Object o) {
         writeLineHTML("<ForCommand>");
         ast.I.visit(this, null);
-        ast.E1.visit(null, null);
-        ast.E2.visit(null, null);
-        ast.C.visit(null, null);
+        ast.E1.visit(this, null);
+        ast.E2.visit(this, null);
+        ast.C.visit(this, null);
         writeLineHTML("</ForCommand>");
         return null;
     }
 
-    @Override
-    public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+    
+         @Override
+     public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
         writeLineHTML("<ForWhileCommand>");
         ast.I.visit(this, null);
-        ast.E1.visit(null, null);
-        ast.E2.visit(null, null);
-        ast.E3.visit(null, null);
-        ast.C.visit(null, null);
+        ast.E1.visit(this, null);
+        ast.E2.visit(this, null);
+        ast.E3.visit(this, null);
+        ast.C.visit(this, null);
         writeLineHTML("</ForWhileCommand>");
         return null;
     }
 
-    @Override
-    public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+    
+         @Override
+     public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
         writeLineHTML("<ForUntilCommand>");
         ast.I.visit(this, null);
-        ast.E1.visit(null, null);
-        ast.E2.visit(null, null);
-        ast.E3.visit(null, null);
-        ast.C.visit(null, null);
+        ast.E1.visit(this, null);
+        ast.E2.visit(this, null);
+        ast.E3.visit(this, null);
+        ast.C.visit(this, null);
         writeLineHTML("</ForUntilCommand>");
         return null;
     }
 
-    @Override
-    public Object visitForInCommand(ForInCommand ast, Object o) {
+    
+         @Override
+     public Object visitForInCommand(ForInCommand ast, Object o) {
         writeLineHTML("<ForInCommand>");
         ast.I.visit(this, null);
-        ast.E1.visit(null, null);
-        ast.C.visit(null, null);
+        ast.E1.visit(this, null);
+        ast.C.visit(this, null);
         writeLineHTML("</ForInCommand>");
         return null;
     }
 
-    @Override
-    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
+    
+         @Override
+     public Object visitRecDeclaration(RECDeclaration ast, Object o) {
         writeLineHTML("<RECDeclaration>");
-        ast.PFS.visit(null, null);
+        ast.PFS.visit(this, null);
         writeLineHTML("</RECDeclaration>");
         return null;
     }
 
-    @Override
-    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
+    
+         @Override
+     public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
         writeLineHTML("<PrivateDeclaration>");
         ast.D1.visit(this, null);
         ast.D2.visit(this, null);
@@ -657,8 +733,9 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+    
+         @Override
+     public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
         writeLineHTML("<InitializedVariableDeclaration>");
         ast.I.visit(this, null);
         ast.E.visit(this, null);
@@ -666,8 +743,9 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
+    
+         @Override
+     public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
         writeLineHTML("<PackageDeclaration>");
         aThis.I.visit(this, null);
         aThis.D.visit(this, null);
@@ -675,30 +753,33 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
+    
+         @Override
+     public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
         writeLineHTML("<PackageIdentifier value=\"" + packageIdentifier.spelling + "\"/>");
         return null;
     }
     
-    /*@Override
-    public Object visitLongIdentifier(LongIdentifier ast, Object o) {
+    /*
+         @Override
+     public Object visitLongIdentifier(LongIdentifier ast, Object o) {
         writeLineHTML("<LongIdentifier>");
         ast.I.visit(this, null);
         writeLineHTML("</LongIdentifier>");
         return null;
     }*/
         
-    @Override
-    public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
+    
+         @Override
+     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
         writeLineHTML("<LongIdentifierSimple>");
         ast.I.visit(this, null);
         writeLineHTML("</LongIdentifierSimple>");
         return null;
     }
 
-    @Override
-    public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
+         @Override
+     public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
         writeLineHTML("<LongIdentifierComplex>");
         writeLineHTML("<PackageIdentifier>");
         ast.Pac.visit(this, null);
@@ -708,8 +789,9 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitWhileLoop(WhileLoop aThis, Object o) {
+    
+          @Override
+     public Object visitWhileLoop(WhileLoop aThis, Object o) {
         writeLineHTML("<WhileLoop>");
         aThis.E.visit(this, null);
         aThis.C.visit(this, null);
@@ -717,8 +799,10 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitUntilLoop(UntilLoop aThis, Object o) {
+    
+    
+     @Override
+     public Object visitUntilLoop(UntilLoop aThis, Object o) {
         writeLineHTML("<UntilLoop>");
         aThis.E.visit(this, null);
         aThis.C.visit(this, null);
@@ -726,8 +810,9 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
+    
+         @Override
+     public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
         writeLineHTML("<RepeatTimes>");
         aThis.E.visit(this, null);
         aThis.C.visit(this, null);
@@ -735,8 +820,9 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
+    
+         @Override
+     public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
         writeLineHTML("<DoWhileLoop>");
         aThis.E.visit(this, null);
         aThis.C.visit(this, null);
@@ -744,8 +830,9 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
+    
+         @Override
+     public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
         writeLineHTML("<DoUntilLoop>");
         aThis.E.visit(this, null);
         aThis.C.visit(this, null);
@@ -753,13 +840,67 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    @Override
-    public Object visitSelectCommand(SelectCommand aThis, Object o) {
+    
+         @Override
+     public Object visitSelectCommand(SelectCommand aThis, Object o) {
         writeLineHTML("<SelectCommand>");
         aThis.E.visit(this, null);
         aThis.C.visit(this, null);
-        aThis.elseCommand.visit(this, null);
+        if (aThis.elseCommand != null){
+            aThis.elseCommand.visit(this, null);
+        }
+        
         writeLineHTML("</SelectCommand>");
+        return null;
+    }
+
+    @Override
+    public Object visitSequentialCase(SequentialCase aThis, Object o) {
+        writeLineHTML("<SequentialCase>");
+        aThis.Case1.visit(this, null);
+        aThis.Case2.visit(this, null);
+        writeLineHTML("</SequentialCase>");
+        return null;
+    }
+
+    @Override
+    public Object visitSingleCase(SingleCase aThis, Object o) {
+        writeLineHTML("<Case>");
+        aThis.caseLiteralsAST.visit(this, null);
+        aThis.commandAST.visit(this, null);
+        writeLineHTML("</Case>");
+        return null;
+    }
+
+    @Override
+    public Object visitCaseRange(CaseRange aThis, Object o) {
+        writeLineHTML("<CaseRange>");
+        if (aThis.caseRange != null){
+            aThis.caseRange.visit(this, null);
+        }else if(aThis.caseLiteral1 != null){
+            aThis.caseLiteral1.visit(this, null);
+        }else if (aThis.caseRange2 != null){
+            aThis.caseRange2.visit(this, null);
+        }else if(aThis.caseLiteral2 != null){
+            aThis.caseLiteral2.visit(this, null);
+        }
+        
+        
+        
+        writeLineHTML("</CaseRange>");
+        return null;
+    }
+
+    @Override
+    public Object visitCaseLiteral(CaseLiteral aThis, Object o) {
+        writeLineHTML("<CaseLiteral>");
+        if (aThis.characterLiteralAST != null){
+            aThis.characterLiteralAST.visit(this, null);
+        }else{
+            aThis.integerLiteralAST.visit(this, null);
+        }
+
+        writeLineHTML("</CaseLiteral>");
         return null;
     }
 

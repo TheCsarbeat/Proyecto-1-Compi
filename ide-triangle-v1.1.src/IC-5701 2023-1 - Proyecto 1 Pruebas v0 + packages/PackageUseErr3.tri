@@ -1,0 +1,12 @@
+package myP ~ 
+	var a: Integer
+end
+let
+	var b: Integer
+in
+	b := a[3] $ b; ! hace un acceso cualificado inapropiado
+	putint(b)
+
+end
+
+!Error: el $ solamente puede aparecer inmediatamente después del identificador de paquete, antes de seguir hacia Var-name

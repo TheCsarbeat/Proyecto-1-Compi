@@ -1,16 +1,5 @@
 <?xml version="1.0" standalone="yes"?>
 <Program>
-<PackageDeclaration>
-<Identifier value="asdf"/>
-<VarDeclaration>
-<Identifier value="a"/>
-<SimpleTypeDenoter>
-<LongIdentifierSimple>
-<Identifier value="Integer"/>
-</LongIdentifierSimple>
-</SimpleTypeDenoter>
-</VarDeclaration>
-</PackageDeclaration>
 <LetCommand>
 <SequentialDeclaration>
 <VarDeclaration>

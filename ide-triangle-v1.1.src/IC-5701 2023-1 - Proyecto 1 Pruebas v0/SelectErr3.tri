@@ -1,0 +1,11 @@
+select 1 from
+
+  when 5 || 6 then putint (1) ! separador incorrecto: debe ser únicamente un "|", o un ".."
+
+  when 7 then putint(7)
+
+  else  putint (0)
+
+  ! comentar el else para otro caso de error
+
+end

@@ -1,0 +1,56 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<LetCommand>
+<ProcDeclaration>
+<Identifier value="p"/>
+<MultipleFormalParameterSequence>
+<VarFormalParameter>
+<Identifier value="num1"/>
+<SimpleTypeDenoter>
+<LongIdentifierSimple>
+<Identifier value="Integer"/>
+</LongIdentifierSimple>
+</SimpleTypeDenoter>
+</VarFormalParameter>
+<SingleFormalParameterSequence>
+<ConstFormalParameter>
+<Identifier value="num2"/>
+<SimpleTypeDenoter>
+<LongIdentifierSimple>
+<Identifier value="Integer"/>
+</LongIdentifierSimple>
+</SimpleTypeDenoter>
+</ConstFormalParameter>
+</SingleFormalParameterSequence>
+</MultipleFormalParameterSequence>
+<SequentialCommand>
+<AssignCommand>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="num1"/>
+</LongIdentifierSimple>
+</SimpleVname>
+<BinaryExpression>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="num1"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+<Operator value="*"/>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="num2"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+</BinaryExpression>
+</AssignCommand>
+<EmptyCommand/>
+</SequentialCommand>
+</ProcDeclaration>
+<EmptyCommand/>
+</LetCommand>
+</Program>

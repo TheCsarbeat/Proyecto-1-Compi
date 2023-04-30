@@ -1,0 +1,10 @@
+let
+  var begin: Integer
+in
+  getint (var begin);
+  putint (begin);
+  puteol ()
+end
+
+! OK: begin ya no es palabra reservada
+! y el comando puede ser compuesto

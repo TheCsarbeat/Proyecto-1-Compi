@@ -1,0 +1,13 @@
+package myP ~ 
+	var a: Integer
+end
+
+let
+	var b: Integer
+in
+	b:= myP . a; ! usa . y es válido, porque puede ser el acceso a un registro (estamos solo en sintaxis, no contexto)
+	putint(b)
+
+end
+
+! Está bien, porque en el análisis sintáctico no sabemos que myP es un identificador de paquete. myP . a puede ser un acceso al campo de una variable registro.

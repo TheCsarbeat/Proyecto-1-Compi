@@ -1,0 +1,41 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<ForInCommand>
+<Identifier value="x"/>
+<BinaryExpression>
+<BinaryExpression>
+<IntegerExpression>
+<IntegerLiteral value="8"/>
+</IntegerExpression>
+<Operator value="*"/>
+<IntegerExpression>
+<IntegerLiteral value="20"/>
+</IntegerExpression>
+</BinaryExpression>
+<Operator value="+"/>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="x"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+</BinaryExpression>
+<CallCommand>
+<LongIdentifierSimple>
+<Identifier value="putint"/>
+</LongIdentifierSimple>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="x"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</ForInCommand>
+</Program>

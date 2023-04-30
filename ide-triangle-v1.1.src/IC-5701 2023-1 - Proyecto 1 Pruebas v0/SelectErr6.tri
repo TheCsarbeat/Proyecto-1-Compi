@@ -1,0 +1,10 @@
+select 10 from
+
+  when 5 .. 6 then putint (1) ! buen rango
+
+  when 7 .. then putint(7) ! rango incompleto, nada después de ".."
+
+  else putint (0)
+
+end
+

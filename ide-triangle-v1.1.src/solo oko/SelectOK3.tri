@@ -1,0 +1,9 @@
+select 1 from
+
+  when 0 .. 1 then putint (1) ! rango de literales
+
+  when 2 then putint(2)
+
+end
+
+! OK

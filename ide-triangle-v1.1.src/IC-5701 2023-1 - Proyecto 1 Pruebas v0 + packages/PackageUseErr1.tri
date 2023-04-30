@@ -1,0 +1,12 @@
+package myP ~ 
+	var a: Integer
+end
+let
+	var b: Integer
+in
+	b:= myP  a; ! falta usar $ para cualificar el acceso a a dentro de myP
+	putint(b)
+
+end
+
+! Error: falta el $

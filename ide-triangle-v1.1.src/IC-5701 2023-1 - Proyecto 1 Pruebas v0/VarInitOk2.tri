@@ -1,0 +1,10 @@
+let
+	var j := 5;
+	var i := 'c';
+	var y : Integer
+in
+	skip ;
+      put (i)
+end
+
+! OK

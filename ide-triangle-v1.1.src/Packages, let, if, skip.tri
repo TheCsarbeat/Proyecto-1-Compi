@@ -1,6 +1,4 @@
-package asdf ~ 
-	var a: Integer
-end
+
 let
    var n : Integer;
    var c : Char

@@ -21,11 +21,10 @@ public class CaseLiteral extends AST{
         super (thePosition);
         characterLiteralAST = cAST;
     }
-
+    
     @Override
     public Object visit(Visitor v, Object o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visit'");
+        return v.visitCaseLiteral(this, o);
     }
     
     public IntegerLiteral integerLiteralAST;
