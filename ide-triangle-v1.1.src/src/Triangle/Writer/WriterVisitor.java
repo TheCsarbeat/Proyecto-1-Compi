@@ -64,6 +64,7 @@ import Triangle.AbstractSyntaxTrees.SelectCommand;
 import Triangle.AbstractSyntaxTrees.SequentialCase;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
+import Triangle.AbstractSyntaxTrees.SequentialPackage;
 import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
@@ -71,6 +72,7 @@ import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
 import Triangle.AbstractSyntaxTrees.SingleCase;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
+import Triangle.AbstractSyntaxTrees.SinglePackage;
 import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
 import Triangle.AbstractSyntaxTrees.SubscriptVname;
 import Triangle.AbstractSyntaxTrees.TypeDeclaration;
@@ -743,13 +745,33 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    
-         @Override
+    /*
+     @Override
      public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
         writeLineHTML("<PackageDeclaration>");
         aThis.I.visit(this, null);
         aThis.D.visit(this, null);
         writeLineHTML("</PackageDeclaration>");
+        return null;
+    }*/
+     
+    @Override
+    public Object visitSinglePackageDeclaration(SinglePackage aThis, Object o) {
+        writeLineHTML("<PackageDeclaration>");
+        aThis.I.visit(this, null);
+        aThis.D.visit(this, null);
+        writeLineHTML("</PackageDeclaration>");
+        return null;
+    }
+
+    @Override
+    public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
+        writeLineHTML("<SequentialPackage>");
+        aThis.package1.visit(this, null);
+        if (aThis.package2 != null){
+            aThis.package2.visit(this, null);
+        }        
+        writeLineHTML("</SequentialPackage>");
         return null;
     }
 
@@ -903,6 +925,8 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("</CaseLiteral>");
         return null;
     }
+
+
 
    
 

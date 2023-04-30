@@ -83,6 +83,7 @@ import Triangle.AbstractSyntaxTrees.SelectCommand;
 import Triangle.AbstractSyntaxTrees.SequentialCase;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
+import Triangle.AbstractSyntaxTrees.SequentialPackage;
 import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
@@ -90,6 +91,7 @@ import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
 import Triangle.AbstractSyntaxTrees.SingleCase;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
+import Triangle.AbstractSyntaxTrees.SinglePackage;
 import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
 import Triangle.AbstractSyntaxTrees.SubscriptVname;
 import Triangle.AbstractSyntaxTrees.TypeDeclaration;
@@ -178,15 +180,23 @@ public class Parser {
     currentToken = lexicalAnalyser.scan();
     
     try {
+      int packageCounter = 0;
       PackageDeclaration packageDeclarationAST = null;
+      PackageDeclaration tempPackageDeclaration = null;
       while(currentToken.kind == Token.PACKAGE){
-          packageDeclarationAST = parsePackageDeclaration();
+          tempPackageDeclaration = parsePackageDeclaration();
           if(currentToken.kind != Token.END){
               syntacticError("end expected at the end of package declaration ",
                       currentToken.spelling);
           }else{
               acceptIt();
+              packageCounter++;
+              if (packageCounter == 1)
+                  packageDeclarationAST = tempPackageDeclaration;
+              else
+                  packageDeclarationAST = new SequentialPackage(packageDeclarationAST, tempPackageDeclaration, previousTokenPosition);
           }
+
       }
       Command cAST = parseCommand();
       programAST = new Program(packageDeclarationAST, cAST, previousTokenPosition);
@@ -222,7 +232,7 @@ PackageDeclaration parsePackageDeclaration() throws SyntaxError {
   Declaration dAST = parseDeclaration();
  
   finish(pacDecPos);
-  pacDecAST = new PackageDeclaration(pacIDAST, dAST, pacDecPos);
+  pacDecAST = new SinglePackage(pacIDAST, dAST, pacDecPos);
   return pacDecAST;
 }
 
@@ -479,7 +489,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             break;
                         }
                         default:
-                            syntacticError("\"%\" cannot start a command",
+                            syntacticError("\"%\" and error ocurr in for command, cannot start a command",
                                     currentToken.spelling);
                             break;
                     }       break;

@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<PackageDeclaration>
+<Identifier value="ferks"/>
+<VarDeclaration>
+<Identifier value="n"/>
+<SimpleTypeDenoter>
+<LongIdentifierSimple>
+<Identifier value="Identifier"/>
+</LongIdentifierSimple>
+</SimpleTypeDenoter>
+</VarDeclaration>
+</PackageDeclaration>
+<LetCommand>
+<VarDeclaration>
+<Identifier value="num"/>
+<SimpleTypeDenoter>
+<LongIdentifierComplex>
+<PackageIdentifier>
+<Identifier value="fers"/>
+</PackageIdentifier>
+<Identifier value="n"/>
+</LongIdentifierComplex>
+</SimpleTypeDenoter>
+</VarDeclaration>
+<AssignCommand>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="num"/>
+</LongIdentifierSimple>
+</SimpleVname>
+<BinaryExpression>
+<VnameExpression>
+<SimpleVname>
+<LongIdentifierSimple>
+<Identifier value="num"/>
+</LongIdentifierSimple>
+</SimpleVname>
+</VnameExpression>
+<Operator value="+"/>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</BinaryExpression>
+</AssignCommand>
+</LetCommand>
+</Program>
