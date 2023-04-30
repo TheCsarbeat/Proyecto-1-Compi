@@ -113,7 +113,9 @@ public interface Visitor {
   
 
   // Package-Declaration
-  public abstract Object visitPackageDeclaration(PackageDeclaration aThis, Object o);
+  public abstract Object visitSinglePackageDeclaration(SinglePackage aThis, Object o);
+
+  public abstract Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o);
 
   public abstract Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o);
 

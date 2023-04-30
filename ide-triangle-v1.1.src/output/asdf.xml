@@ -1,5 +1,6 @@
 <?xml version="1.0" standalone="yes"?>
 <Program>
+<SequentialPackage>
 <PackageDeclaration>
 <Identifier value="ferks"/>
 <VarDeclaration>
@@ -11,5 +12,17 @@
 </SimpleTypeDenoter>
 </VarDeclaration>
 </PackageDeclaration>
+<PackageDeclaration>
+<Identifier value="mnb"/>
+<VarDeclaration>
+<Identifier value="s"/>
+<SimpleTypeDenoter>
+<LongIdentifierSimple>
+<Identifier value="Identifier"/>
+</LongIdentifierSimple>
+</SimpleTypeDenoter>
+</VarDeclaration>
+</PackageDeclaration>
+</SequentialPackage>
 <EmptyCommand/>
 </Program>

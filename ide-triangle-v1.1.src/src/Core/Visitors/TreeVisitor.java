@@ -69,6 +69,7 @@ import Triangle.AbstractSyntaxTrees.SelectCommand;
 import Triangle.AbstractSyntaxTrees.SequentialCase;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
+import Triangle.AbstractSyntaxTrees.SequentialPackage;
 import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
@@ -76,6 +77,7 @@ import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
 import Triangle.AbstractSyntaxTrees.SingleCase;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
+import Triangle.AbstractSyntaxTrees.SinglePackage;
 import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
 import Triangle.AbstractSyntaxTrees.SubscriptVname;
 import Triangle.AbstractSyntaxTrees.TypeDeclaration;
@@ -378,6 +380,7 @@ public class TreeVisitor implements Visitor {
     }
     
     public Object visitProgram(Program ast, Object obj) {
+        DefaultMutableTreeNode ach = createUnary("Program", ast.C);
         return(createUnary("Program", ast.C));
     }
     // </editor-fold>
@@ -403,6 +406,7 @@ public class TreeVisitor implements Visitor {
      */
     public DefaultMutableTreeNode createUnary(String caption, AST child1) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
+        DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode)child1.visit(this, null);
         t.add((DefaultMutableTreeNode)child1.visit(this, null));
         
         return(t);
@@ -417,6 +421,7 @@ public class TreeVisitor implements Visitor {
      */
     public DefaultMutableTreeNode createBinary(String caption, AST child1, AST child2) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
+        DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode)child1.visit(this, null);
         t.add((DefaultMutableTreeNode)child1.visit(this, null));
         t.add((DefaultMutableTreeNode)child2.visit(this, null));
         
@@ -460,10 +465,10 @@ public class TreeVisitor implements Visitor {
     }
     // </editor-fold>
 
-    @Override
+    /*@Override
     public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }*/
 
     @Override
     public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
@@ -560,6 +565,16 @@ public class TreeVisitor implements Visitor {
 
     @Override
     public Object visitCaseLiteral(CaseLiteral aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitSinglePackageDeclaration(SinglePackage aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -1,0 +1,7 @@
+package ferks ~
+ var n: Identifier end
+
+package mnb ~
+ var s: Identifier end
+
+skip
