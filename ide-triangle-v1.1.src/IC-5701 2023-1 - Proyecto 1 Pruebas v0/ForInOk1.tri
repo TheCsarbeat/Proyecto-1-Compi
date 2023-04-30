@@ -1,0 +1,4 @@
+for x in 8 * 20 + x do putint (x) end
+
+! OK sintácticamente
+! Tiene dos errores contextuales: tipo (expresión no es arreglo) e identificación (x no es visible en la expresión)

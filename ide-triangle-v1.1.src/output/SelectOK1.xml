@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<SelectCommand>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+<Case>
+<CaseRange>
+<CaseLiteral>
+<IntegerLiteral value="0"/>
+</CaseLiteral>
+</CaseRange>
+<CallCommand>
+<LongIdentifierSimple>
+<Identifier value="putint"/>
+</LongIdentifierSimple>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</Case>
+</SelectCommand>
+</Program>

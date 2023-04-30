@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<SelectCommand>
+<IntegerExpression>
+<IntegerLiteral value="0"/>
+</IntegerExpression>
+<SequentialCase>
+<Case>
+<CaseRange>
+<CaseLiteral>
+<IntegerLiteral value="3"/>
+</CaseLiteral>
+</CaseRange>
+<CallCommand>
+<LongIdentifierSimple>
+<Identifier value="putint"/>
+</LongIdentifierSimple>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="3"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</Case>
+<Case>
+<CaseRange>
+<CaseLiteral>
+<IntegerLiteral value="4"/>
+</CaseLiteral>
+</CaseRange>
+<SelectCommand>
+<CharacterExpression>
+<CharacterLiteral value="'1'"/>
+</CharacterExpression>
+<Case>
+<CaseRange>
+<CaseLiteral>
+<CharacterLiteral value="'1'"/>
+</CaseLiteral>
+</CaseRange>
+<CallCommand>
+<LongIdentifierSimple>
+<Identifier value="putint"/>
+</LongIdentifierSimple>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</Case>
+<CallCommand>
+<LongIdentifierSimple>
+<Identifier value="putint"/>
+</LongIdentifierSimple>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="2"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</SelectCommand>
+</Case>
+</SequentialCase>
+</SelectCommand>
+</Program>

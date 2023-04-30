@@ -1,0 +1,9 @@
+let
+	var j  'c'; ! falta ":" o ":="
+	var i : Integer;
+	var y : Integer
+in
+	nil 
+end
+
+! Error: falta ":" o ":=" entre j y 'c'

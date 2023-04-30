@@ -1,0 +1,10 @@
+let
+	proc p (var num1 : Integer, num2 : Integer)
+		~ num1 := num1 * num2 ;
+              skip
+      end
+in
+	skip 
+end
+
+! OK

@@ -1,0 +1,10 @@
+select 10 from
+
+  when 5 .. 6 then putint (1) ! case range bien
+
+  when 'a' .. then putint(7) ! falta literal después de ".."
+
+  else putint (0)
+
+end
+

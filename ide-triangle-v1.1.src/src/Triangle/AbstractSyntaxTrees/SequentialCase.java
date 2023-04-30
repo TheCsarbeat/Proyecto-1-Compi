@@ -18,7 +18,7 @@ public class SequentialCase extends Case{
 
     @Override
     public Object visit(Visitor v, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return v.visitSequentialCase(this, o);
     }
 
     public Case Case1, Case2;

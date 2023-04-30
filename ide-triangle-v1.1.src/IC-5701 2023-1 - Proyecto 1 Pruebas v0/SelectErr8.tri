@@ -1,0 +1,13 @@
+select 1 from
+
+  when 5 .. 6 then putint (1) ! separador correcto
+
+  when 7 then putint(7)
+
+  else  putint (0)
+
+  else ! este else está sobrando, debe ser detectado
+
+end
+
+! Error: detecta else espurio

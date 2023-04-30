@@ -140,5 +140,18 @@ public interface Visitor {
   public Object visitSelectCommand(SelectCommand aThis, Object o);
   //public Object visitCase(Case c, Object o);
 
+  //SequentialCase visitor
+  public Object visitSequentialCase(SequentialCase aThis, Object o);
+
+  //SingleCase visitor
+  public Object visitSingleCase(SingleCase aThis, Object o);
+
+  //CaseRange visitor
+  public Object visitCaseRange(CaseRange aThis, Object o);
+
+  //CaseLiteral visitor
+  public Object visitCaseLiteral(CaseLiteral aThis, Object o);
+
+  
 
 }

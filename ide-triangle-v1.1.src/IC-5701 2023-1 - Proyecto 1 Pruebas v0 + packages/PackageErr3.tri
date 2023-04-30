@@ -1,0 +1,11 @@
+package myP ~
+	var a: Integer
+; ! falta "end". El ";" debería ser seguido por una declaración, pero hay un "let", que no puede iniciar una declaración
+let
+	var b: Integer
+	
+in
+	b := myP $ a ! acceso cualificado
+end
+
+ !Error: falta el end del package

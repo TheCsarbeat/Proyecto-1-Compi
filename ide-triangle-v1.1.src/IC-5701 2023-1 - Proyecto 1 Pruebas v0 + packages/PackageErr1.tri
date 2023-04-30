@@ -1,0 +1,11 @@
+myP ~ ! falta package antes de myP
+	var a: Integer
+end ; ! entre una declaracicón de package y el comando principal no debe haber un ";"
+let
+	var b: Integer
+in
+	b := myP $ a ! esto funcionaría bien si myP hubiera sido declarado apropiadamente
+
+end
+
+! Error: falta el package, el mensaje de error podría ser que espera una asignación o una llamada a procedimiento, porque un programa puede ser un comando

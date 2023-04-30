@@ -1,0 +1,7 @@
+select 1 from
+
+  when 0 then putint (1)
+
+end
+
+! OK

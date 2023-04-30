@@ -1,0 +1,8 @@
+let
+	proc p(var num1 : Integer, num2 : Integer)
+		: num1 := num1 * num2 end
+in
+	skip 
+end
+
+! Error: Los comandos del proc deben empezar con "~" y no con ":"

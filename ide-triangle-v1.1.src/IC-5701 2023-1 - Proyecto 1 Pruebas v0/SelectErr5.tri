@@ -1,0 +1,10 @@
+select 10 from
+
+  when 5 | .. 6 then putint (1) ! case range debe tener "|" o ".." entre dos literales, no ambos
+
+  when 7 then putint(7)
+
+  else  putint (0)
+
+end
+

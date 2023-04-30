@@ -1,0 +1,8 @@
+let
+! Error: declaración vací­a 
+in
+	put(i);
+	put(i)
+end
+
+! Error: declaración vací­a
