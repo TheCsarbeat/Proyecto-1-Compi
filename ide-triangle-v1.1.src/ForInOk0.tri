@@ -4,4 +4,23 @@ package ferks ~
 package ferks ~
  var n: Identifier end
 
+let
+	private 
+	rec
+		proc p (var i : Integer) ~ 
+			skip
+		end
+		|
+		func function1 (var m : Integer) : erks ~
+			n>1
+		
+	end
+	in
+	 var n : Integer
+	end
+	
+in
+	skip
+end;
+
 skip
