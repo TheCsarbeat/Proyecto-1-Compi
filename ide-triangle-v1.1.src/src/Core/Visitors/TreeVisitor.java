@@ -140,6 +140,46 @@ public class TreeVisitor implements Visitor {
     public Object visitWhileCommand(WhileCommand ast, Object obj) {
         return (createBinary("While Command", ast.E, ast.C));
     }
+
+    public Object visitForCommand(ForCommand ast, Object o) {
+        return (createQuaternary("For Command", ast.I, ast.E1, ast.E2, ast.C));
+    }
+
+    public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+        return (createQuinary("For While Command", ast.I, ast.E1, ast.E2, ast.E3, ast.C));
+    }
+
+    public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+        return (createQuinary("For Until Command", ast.I, ast.E1, ast.E2, ast.E3, ast.C));
+    }
+
+    public Object visitForInCommand(ForInCommand ast, Object o) {
+        return (createTernary("For In Command", ast.I, ast.E1, ast.C));
+    }
+
+    public Object visitWhileLoop(WhileLoop aThis, Object o) {
+        return (createBinary("While Loop", aThis.E, aThis.C));
+    }
+
+    public Object visitUntilLoop(UntilLoop aThis, Object o) {
+        return (createBinary("Until Loop", aThis.E, aThis.C));
+    }
+
+    public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
+        return (createBinary("Repeat Times", aThis.E, aThis.C));
+    }
+
+    public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
+        return (createBinary("Do While Loop", aThis.C, aThis.E));
+    }
+
+    public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
+        return (createBinary("Do Until Loop", aThis.C, aThis.E));
+    }
+
+    public Object visitSelectCommand(SelectCommand aThis, Object o) {
+        return (createBinary("Select Command", aThis.E, aThis.C)); // fix
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Expressions ">
@@ -221,6 +261,18 @@ public class TreeVisitor implements Visitor {
 
     public Object visitVarDeclaration(VarDeclaration ast, Object obj) {
         return (createBinary("Variable Declaration", ast.I, ast.T));
+    }
+
+    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
+        return (createUnary("Recursive Declaration", ast.PFS));
+    }
+
+    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
+        return (createBinary("Private Declaration", ast.D1, ast.D2));
+    }
+
+    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+        return (createBinary("Initialized Variable Declaration", ast.I, ast.E));
     }
     // </editor-fold>
 
@@ -349,7 +401,6 @@ public class TreeVisitor implements Visitor {
 
     // <editor-fold defaultstate="collapsed" desc=" Literals, Identifiers and
     // Operators ">
-
     // Literals, Identifiers and Operators
     public Object visitCharacterLiteral(CharacterLiteral ast, Object obj) {
         return (createNullary(ast.spelling));
@@ -365,6 +416,18 @@ public class TreeVisitor implements Visitor {
 
     public Object visitOperator(Operator ast, Object obj) {
         return (createNullary(ast.spelling));
+    }
+
+    public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
+        return createNullary(packageIdentifier.spelling);
+    }
+
+    public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
+        return createUnary("Long Identifier Simple", ast.I);
+    }
+
+    public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
+        return createBinary("Long Identifier Complex", ast.Pac, ast.I);
     }
     // </editor-fold>
 
@@ -471,107 +534,36 @@ public class TreeVisitor implements Visitor {
 
         return (t);
     }
+
+    /**
+     * Creates a quinary tree node.
+     * 
+     * @param caption The tree's caption (text to be shown when the tree is drawn).
+     * @param child1  The first children node.
+     * @param child2  The second children node.
+     * @param child3  The third children node.
+     * @param child4  The fourth children node.
+     * @param child5  The fifth children node.
+     * @return The tree node.
+     */
+    public DefaultMutableTreeNode createQuinary(String caption, AST child1, AST child2, AST child3, AST child4,
+            AST child5) {
+        DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
+        t.add((DefaultMutableTreeNode) child1.visit(this, null));
+        t.add((DefaultMutableTreeNode) child2.visit(this, null));
+        t.add((DefaultMutableTreeNode) child3.visit(this, null));
+        t.add((DefaultMutableTreeNode) child4.visit(this, null));
+        t.add((DefaultMutableTreeNode) child5.visit(this, null));
+
+        return (t);
+    }
+
     // </editor-fold>
 
-    // @Override
-    // public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
-    // throw new UnsupportedOperationException("Not supported yet."); //To change
-    // body of generated methods, choose Tools | Templates.
-    // }
-
     @Override
-    public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitForCommand(ForCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitForInCommand(ForInCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    public Object visitWhileLoop(WhileLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitUntilLoop(UntilLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
-    }
-
-    @Override
-    public Object visitSelectCommand(SelectCommand aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change
+    body of generated methods, choose Tools | Templates.
     }
 
     @Override
