@@ -154,6 +154,12 @@ public interface Visitor {
   //CaseLiteral visitor
   public Object visitCaseLiteral(CaseLiteral aThis, Object o);
 
+  //bodySingle
+  public Object visitBodySingle(BodySingle aThis, Object o);
+
+  //BodyComplex
+  public Object visitBodyComplex(BodyComplex aThis, Object o);
+
   
 
 }

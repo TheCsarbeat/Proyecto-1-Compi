@@ -1,3 +1,4 @@
+
 select n>1
 from
 when 1 .. 10 | 100 .. 110 | 200 .. 210 then skip

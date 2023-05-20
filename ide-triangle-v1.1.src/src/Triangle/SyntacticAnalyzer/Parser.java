@@ -22,6 +22,9 @@ import Triangle.AbstractSyntaxTrees.ArrayExpression;
 import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
+import Triangle.AbstractSyntaxTrees.BodyComplex;
+import Triangle.AbstractSyntaxTrees.BodyProgram;
+import Triangle.AbstractSyntaxTrees.BodySingle;
 import Triangle.AbstractSyntaxTrees.CallCommand;
 import Triangle.AbstractSyntaxTrees.CallExpression;
 import Triangle.AbstractSyntaxTrees.Case;
@@ -175,6 +178,8 @@ public class Parser {
 
     Program programAST = null;
 
+    BodyProgram body = null;
+
     previousTokenPosition.start = 0;
     previousTokenPosition.finish = 0;
     currentToken = lexicalAnalyser.scan();
@@ -199,14 +204,25 @@ public class Parser {
 
       }
       Command cAST = parseCommand();
-      programAST = new Program(packageDeclarationAST, cAST, previousTokenPosition);
+      if (packageCounter == 0)
+          body = new BodySingle(cAST, previousTokenPosition);
+      else
+          body = new BodyComplex(packageDeclarationAST, cAST, previousTokenPosition);
+
+      programAST = new Program(body, previousTokenPosition);
+      //programAST = new Program(packageDeclarationAST, cAST, previousTokenPosition);
       if (currentToken.kind != Token.EOT) {
         syntacticError("\"%\" not expected after end of program",
             currentToken.spelling);
       }
+
+      
+
+
+
   }
   catch (SyntaxError s) { return null; }
-  return programAST;
+    return programAST;
   }
 
 

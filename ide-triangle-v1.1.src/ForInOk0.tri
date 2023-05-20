@@ -1,8 +1,10 @@
 package ferks ~
  var n: Identifier end
-
 package ferks ~
  var n: Identifier end
+package ferks ~
+ var n: Identifier end
+
 
 let
 	private 
@@ -23,4 +25,5 @@ in
 	skip
 end;
 
+skip;
 skip

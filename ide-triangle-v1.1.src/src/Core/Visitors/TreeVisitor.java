@@ -12,6 +12,8 @@ import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
 import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
+import Triangle.AbstractSyntaxTrees.BodyComplex;
+import Triangle.AbstractSyntaxTrees.BodySingle;
 import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CallCommand;
 import Triangle.AbstractSyntaxTrees.CallExpression;
@@ -446,8 +448,8 @@ public class TreeVisitor implements Visitor {
     }
 
     public Object visitProgram(Program ast, Object obj) {
-        DefaultMutableTreeNode ach = createUnary("Program", ast.C);
-        return (createUnary("Program", ast.C));
+        //DefaultMutableTreeNode ach = createUnary("Program", ast.C);
+        return (createUnary("Program",ast.B));
     }
     // </editor-fold>
 
@@ -474,7 +476,7 @@ public class TreeVisitor implements Visitor {
      */
     public DefaultMutableTreeNode createUnary(String caption, AST child1) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
-        DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode) child1.visit(this, null);
+        //DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode) child1.visit(this, null);
         t.add((DefaultMutableTreeNode) child1.visit(this, null));
 
         return (t);
@@ -490,7 +492,6 @@ public class TreeVisitor implements Visitor {
      */
     public DefaultMutableTreeNode createBinary(String caption, AST child1, AST child2) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
-        DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode) child1.visit(this, null);
         t.add((DefaultMutableTreeNode) child1.visit(this, null));
         t.add((DefaultMutableTreeNode) child2.visit(this, null));
 
@@ -568,38 +569,42 @@ public class TreeVisitor implements Visitor {
 
     @Override
     public Object visitSequentialCase(SequentialCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        return (createBinary("Sequential Case", aThis.Case1, aThis.Case2));
     }
 
     @Override
     public Object visitSingleCase(SingleCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        return (createBinary("Single Case", aThis.caseLiteralsAST, aThis.commandAST));
     }
 
     @Override
     public Object visitCaseRange(CaseRange aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+       return (createBinary("Case Range", aThis.caseLiteral1, aThis.caseLiteral2));
     }
 
     @Override
     public Object visitCaseLiteral(CaseLiteral aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        return (createBinary("Case Literal", aThis.integerLiteralAST, aThis.characterLiteralAST));
     }
 
     @Override
-    public Object visitSinglePackageDeclaration(SinglePackage aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    public Object visitSinglePackageDeclaration(SinglePackage ast, Object o) {
+        return (createBinary("Package Declaration", ast.I, ast.D));
     }
 
     @Override
-    public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    public Object visitSequentialPackageDeclaration(SequentialPackage ast, Object o) {
+        return (createBinary("Sequential Package", ast.package1, ast.package2));
+    }
+
+    @Override
+    public Object visitBodySingle(BodySingle aThis, Object o) {
+        return (createUnary("Body Single", aThis.C));
+    }
+
+    @Override
+    public Object visitBodyComplex(BodyComplex aThis, Object o) {
+        return (createBinary("Body Complex", aThis.P, aThis.C));
     }
 
 }
