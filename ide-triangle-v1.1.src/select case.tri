@@ -1,6 +1,8 @@
+
 select n>1
 from
 when 1 .. 10 | 100 .. 110 | 200 .. 210 then skip
 when 2 .. 20 then skip
-when 3 .. 30 then skip
+when 3 then skip
+else skip
 end

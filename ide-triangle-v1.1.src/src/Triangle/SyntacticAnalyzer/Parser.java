@@ -15,97 +15,7 @@
 package Triangle.SyntacticAnalyzer;
 
 import Triangle.ErrorReporter;
-import Triangle.AbstractSyntaxTrees.ActualParameter;
-import Triangle.AbstractSyntaxTrees.ActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.ArrayAggregate;
-import Triangle.AbstractSyntaxTrees.ArrayExpression;
-import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
-import Triangle.AbstractSyntaxTrees.AssignCommand;
-import Triangle.AbstractSyntaxTrees.BinaryExpression;
-import Triangle.AbstractSyntaxTrees.CallCommand;
-import Triangle.AbstractSyntaxTrees.CallExpression;
-import Triangle.AbstractSyntaxTrees.Case;
-import Triangle.AbstractSyntaxTrees.CaseLiteral;
-import Triangle.AbstractSyntaxTrees.CaseRange;
-import Triangle.AbstractSyntaxTrees.CharacterExpression;
-import Triangle.AbstractSyntaxTrees.CharacterLiteral;
-import Triangle.AbstractSyntaxTrees.Command;
-import Triangle.AbstractSyntaxTrees.ConstActualParameter;
-import Triangle.AbstractSyntaxTrees.ConstDeclaration;
-import Triangle.AbstractSyntaxTrees.ConstFormalParameter;
-import Triangle.AbstractSyntaxTrees.Declaration;
-import Triangle.AbstractSyntaxTrees.DoUntilLoop;
-import Triangle.AbstractSyntaxTrees.DoWhileLoop;
-import Triangle.AbstractSyntaxTrees.DotVname;
-import Triangle.AbstractSyntaxTrees.EmptyActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.EmptyCommand;
-import Triangle.AbstractSyntaxTrees.EmptyFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.Expression;
-import Triangle.AbstractSyntaxTrees.FieldTypeDenoter;
-import Triangle.AbstractSyntaxTrees.ForCommand;
-import Triangle.AbstractSyntaxTrees.ForInCommand;
-import Triangle.AbstractSyntaxTrees.ForUntilCommand;
-import Triangle.AbstractSyntaxTrees.ForWhileCommand;
-import Triangle.AbstractSyntaxTrees.FormalParameter;
-import Triangle.AbstractSyntaxTrees.FormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.FuncActualParameter;
-import Triangle.AbstractSyntaxTrees.FuncDeclaration;
-import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
-import Triangle.AbstractSyntaxTrees.Identifier;
-import Triangle.AbstractSyntaxTrees.IfCommand;
-import Triangle.AbstractSyntaxTrees.IfExpression;
-import Triangle.AbstractSyntaxTrees.IntegerExpression;
-import Triangle.AbstractSyntaxTrees.IntegerLiteral;
-import Triangle.AbstractSyntaxTrees.LetCommand;
-import Triangle.AbstractSyntaxTrees.LetExpression;
-import Triangle.AbstractSyntaxTrees.LongIdentifier;
-import Triangle.AbstractSyntaxTrees.LongIdentifierComplex;
-import Triangle.AbstractSyntaxTrees.LongIdentifierSimple;
-import Triangle.AbstractSyntaxTrees.MultipleActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.MultipleArrayAggregate;
-import Triangle.AbstractSyntaxTrees.MultipleFieldTypeDenoter;
-import Triangle.AbstractSyntaxTrees.MultipleFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.MultipleRecordAggregate;
-import Triangle.AbstractSyntaxTrees.Operator;
-import Triangle.AbstractSyntaxTrees.PackageDeclaration;
-import Triangle.AbstractSyntaxTrees.PackageIdentifier;
-import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
-import Triangle.AbstractSyntaxTrees.ProcActualParameter;
-import Triangle.AbstractSyntaxTrees.ProcDeclaration;
-import Triangle.AbstractSyntaxTrees.ProcFormalParameter;
-import Triangle.AbstractSyntaxTrees.Program;
-import Triangle.AbstractSyntaxTrees.RECDeclaration;
-import Triangle.AbstractSyntaxTrees.RecordAggregate;
-import Triangle.AbstractSyntaxTrees.RecordExpression;
-import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
-import Triangle.AbstractSyntaxTrees.RepeatTimes;
-import Triangle.AbstractSyntaxTrees.SelectCommand;
-import Triangle.AbstractSyntaxTrees.SequentialCase;
-import Triangle.AbstractSyntaxTrees.SequentialCommand;
-import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
-import Triangle.AbstractSyntaxTrees.SequentialPackage;
-import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
-import Triangle.AbstractSyntaxTrees.SimpleVname;
-import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
-import Triangle.AbstractSyntaxTrees.SingleCase;
-import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
-import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.SinglePackage;
-import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
-import Triangle.AbstractSyntaxTrees.SubscriptVname;
-import Triangle.AbstractSyntaxTrees.TypeDeclaration;
-import Triangle.AbstractSyntaxTrees.TypeDenoter;
-import Triangle.AbstractSyntaxTrees.UnaryExpression;
-import Triangle.AbstractSyntaxTrees.UntilLoop;
-import Triangle.AbstractSyntaxTrees.VarActualParameter;
-import Triangle.AbstractSyntaxTrees.VarDeclaration;
-import Triangle.AbstractSyntaxTrees.VarFormalParameter;
-import Triangle.AbstractSyntaxTrees.VariableInitializedDeclaration;
-import Triangle.AbstractSyntaxTrees.Vname;
-import Triangle.AbstractSyntaxTrees.VnameExpression;
-import Triangle.AbstractSyntaxTrees.WhileCommand;
-import Triangle.AbstractSyntaxTrees.WhileLoop;
+import Triangle.AbstractSyntaxTrees.*;
 
 public class Parser {
 
@@ -175,6 +85,8 @@ public class Parser {
 
     Program programAST = null;
 
+    BodyProgram body = null;
+
     previousTokenPosition.start = 0;
     previousTokenPosition.finish = 0;
     currentToken = lexicalAnalyser.scan();
@@ -199,14 +111,25 @@ public class Parser {
 
       }
       Command cAST = parseCommand();
-      programAST = new Program(packageDeclarationAST, cAST, previousTokenPosition);
+      if (packageCounter == 0)
+          body = new BodySingle(cAST, previousTokenPosition);
+      else
+          body = new BodyComplex(packageDeclarationAST, cAST, previousTokenPosition);
+
+      programAST = new Program(body, previousTokenPosition);
+      //programAST = new Program(packageDeclarationAST, cAST, previousTokenPosition);
       if (currentToken.kind != Token.EOT) {
         syntacticError("\"%\" not expected after end of program",
             currentToken.spelling);
       }
+
+      
+
+
+
   }
   catch (SyntaxError s) { return null; }
-  return programAST;
+    return programAST;
   }
 
 
@@ -659,11 +582,11 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
         Command cAST2 = parseCommand();
         accept(Token.END);
         finish(commandPos);
-        commandAST = new SelectCommand(eAST, caseAST, cAST2, commandPos);
+        commandAST = new SelectCommandComplex(eAST, caseAST, cAST2, commandPos);
       } else {
         accept(Token.END);
         finish(commandPos);
-        commandAST = new SelectCommand(eAST, caseAST, commandPos);
+        commandAST = new SelectCommandSimple(eAST, caseAST, commandPos);
       }
       break;
 
@@ -944,7 +867,8 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
     SourcePosition singleCasePos = new SourcePosition();
     start(singleCasePos);
     accept(Token.WHEN);
-    CaseRange caseLiteralsAST = parseCaseLiterals();
+    CaseLiterals caseLiteralsAST = parseCaseLiterals();
+    //CaseRange caseLiteralsAST = parseCaseLiterals();
     accept(Token.THEN);
     Command comandAST = parseCommand();
     finish(singleCasePos);
@@ -953,20 +877,26 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
   }
 
   //parseCaseLiterals CaseLiterals =: CaseRange ("|" CaseRange )*  
-  CaseRange parseCaseLiterals() throws SyntaxError {
+  CaseLiterals parseCaseLiterals() throws SyntaxError {
     
 
     SourcePosition caseLiteralsPos = new SourcePosition();
+    CaseLiterals caseLiteralsAST = null; // in case there's a syntactic error
+    
     start(caseLiteralsPos);
-
+    
     CaseRange cAST = parseCaseRange();
+    caseLiteralsAST = new SingleCaseLiterals(cAST, caseLiteralsPos);
+
     while (currentToken.kind == Token.PIPELINE) {
       acceptIt();
+      SingleCaseLiterals temp = null;
       CaseRange cAST2 = parseCaseRange();
+      temp = new SingleCaseLiterals(cAST2, caseLiteralsPos);
       finish(caseLiteralsPos);
-      cAST = new CaseRange(cAST, cAST2, caseLiteralsPos);
+      caseLiteralsAST = new SequentialCaseLiterals(caseLiteralsAST, temp, caseLiteralsPos);
     }
-    return cAST;
+    return caseLiteralsAST;
   }
 
   //parseCaseRange caseLiteral [".." caseLiteral]
@@ -981,10 +911,10 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
       acceptIt();
       CaseLiteral cAST2 = parseCaseLiteral();
       finish(caseRangePos);
-      caseRangeAST = new CaseRange(cAST, cAST2, caseRangePos);
+      caseRangeAST = new CaseRangeComplex(cAST, cAST2, caseRangePos);
     } else {
       finish(caseRangePos);
-      caseRangeAST = new CaseRange(cAST,null, caseRangePos);
+      caseRangeAST = new CaseRangeSimple(cAST,caseRangePos);
     }
     return caseRangeAST;
   }
@@ -1000,12 +930,12 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
       case Token.INTLITERAL:
         IntegerLiteral ilAST = parseIntegerLiteral();
         finish(caseLiteralPos);
-        caseLiteralAST = new CaseLiteral(ilAST, caseLiteralPos); // Is the same constructor but abstracte
+        caseLiteralAST = new CaseLiteralInteger(ilAST, caseLiteralPos); // Is the same constructor but abstracte
         break;
       case Token.CHARLITERAL:
         CharacterLiteral clAST = parseCharacterLiteral();
         finish(caseLiteralPos);
-        caseLiteralAST = new CaseLiteral(clAST, caseLiteralPos); // Is the same constructor but abstracte
+        caseLiteralAST = new CaseLiteralChar(clAST, caseLiteralPos); // Is the same constructor but abstracte
         break;
       default:
         syntacticError("\"%\" cannot start a case literal",

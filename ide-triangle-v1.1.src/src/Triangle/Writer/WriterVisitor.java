@@ -6,11 +6,17 @@ import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
 import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
+import Triangle.AbstractSyntaxTrees.BodyComplex;
+import Triangle.AbstractSyntaxTrees.BodySingle;
 import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CallCommand;
 import Triangle.AbstractSyntaxTrees.CallExpression;
 import Triangle.AbstractSyntaxTrees.CaseLiteral;
+import Triangle.AbstractSyntaxTrees.CaseLiteralChar;
+import Triangle.AbstractSyntaxTrees.CaseLiteralInteger;
 import Triangle.AbstractSyntaxTrees.CaseRange;
+import Triangle.AbstractSyntaxTrees.CaseRangeComplex;
+import Triangle.AbstractSyntaxTrees.CaseRangeSimple;
 import Triangle.AbstractSyntaxTrees.CharTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CharacterExpression;
 import Triangle.AbstractSyntaxTrees.CharacterLiteral;
@@ -60,8 +66,10 @@ import Triangle.AbstractSyntaxTrees.RECDeclaration;
 import Triangle.AbstractSyntaxTrees.RecordExpression;
 import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
 import Triangle.AbstractSyntaxTrees.RepeatTimes;
-import Triangle.AbstractSyntaxTrees.SelectCommand;
+import Triangle.AbstractSyntaxTrees.SelectCommandComplex;
+import Triangle.AbstractSyntaxTrees.SelectCommandSimple;
 import Triangle.AbstractSyntaxTrees.SequentialCase;
+import Triangle.AbstractSyntaxTrees.SequentialCaseLiterals;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
 import Triangle.AbstractSyntaxTrees.SequentialPackage;
@@ -70,6 +78,7 @@ import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
 import Triangle.AbstractSyntaxTrees.SingleCase;
+import Triangle.AbstractSyntaxTrees.SingleCaseLiterals;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.SinglePackage;
@@ -634,11 +643,9 @@ public class WriterVisitor implements Visitor {
          @Override
      public Object visitProgram(Program ast, Object obj) {
         writeLineHTML("<Program>");
-        if (ast.P != null){
-             ast.P.visit(this, null);
-        }   
-        //ast.P.visit(this, null);
-        ast.C.visit(this, null);
+        //compere p is null
+       
+        ast.B.visit(this, null);
         writeLineHTML("</Program>");
         return null;
     }
@@ -745,16 +752,23 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    /*
-     @Override
-     public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
-        writeLineHTML("<PackageDeclaration>");
-        aThis.I.visit(this, null);
-        aThis.D.visit(this, null);
-        writeLineHTML("</PackageDeclaration>");
+    @Override
+    public Object visitBodySingle(BodySingle aThis, Object o) {
+        writeLineHTML("<BodySingle>");        
+        aThis.C.visit(this, null);
+        writeLineHTML("</BodySingle>");
         return null;
-    }*/
-     
+    }
+
+    @Override
+    public Object visitBodyComplex(BodyComplex aThis, Object o) {
+        writeLineHTML("<BodyComplex>");      
+        aThis.P.visit(this, null);  
+        aThis.C.visit(this, null);        
+        writeLineHTML("</BodyComplex>");
+        return null;
+    }
+
     @Override
     public Object visitSinglePackageDeclaration(SinglePackage aThis, Object o) {
         writeLineHTML("<PackageDeclaration>");
@@ -781,16 +795,7 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("<PackageIdentifier value=\"" + packageIdentifier.spelling + "\"/>");
         return null;
     }
-    
-    /*
-         @Override
-     public Object visitLongIdentifier(LongIdentifier ast, Object o) {
-        writeLineHTML("<LongIdentifier>");
-        ast.I.visit(this, null);
-        writeLineHTML("</LongIdentifier>");
-        return null;
-    }*/
-        
+
     
          @Override
      public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
@@ -864,17 +869,23 @@ public class WriterVisitor implements Visitor {
 
     
          @Override
-     public Object visitSelectCommand(SelectCommand aThis, Object o) {
+     public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
         writeLineHTML("<SelectCommand>");
         aThis.E.visit(this, null);
         aThis.C.visit(this, null);
-        if (aThis.elseCommand != null){
-            aThis.elseCommand.visit(this, null);
-        }
-        
         writeLineHTML("</SelectCommand>");
         return null;
     }
+
+    @Override
+    public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
+        writeLineHTML("<SelectCommand>");
+        aThis.E.visit(this, null);
+        aThis.C.visit(this, null);
+        aThis.elseCommand.visit(this, null);            
+        writeLineHTML("</SelectCommand>");
+        return null;
+   }
 
     @Override
     public Object visitSequentialCase(SequentialCase aThis, Object o) {
@@ -888,43 +899,65 @@ public class WriterVisitor implements Visitor {
     @Override
     public Object visitSingleCase(SingleCase aThis, Object o) {
         writeLineHTML("<Case>");
-        aThis.caseLiteralsAST.visit(this, null);
+        aThis.caseLiterals.visit(this, null);
         aThis.commandAST.visit(this, null);
         writeLineHTML("</Case>");
         return null;
     }
 
+
     @Override
-    public Object visitCaseRange(CaseRange aThis, Object o) {
-        writeLineHTML("<CaseRange>");
-        if (aThis.caseRange != null){
-            aThis.caseRange.visit(this, null);
-        }else if(aThis.caseLiteral1 != null){
-            aThis.caseLiteral1.visit(this, null);
-        }else if (aThis.caseRange2 != null){
-            aThis.caseRange2.visit(this, null);
-        }else if(aThis.caseLiteral2 != null){
-            aThis.caseLiteral2.visit(this, null);
-        }
-        
-        
-        
-        writeLineHTML("</CaseRange>");
+    public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
+        writeLineHTML("<SequentialCaseLiterals>");
+        aThis.caseLiteral1.visit(this, null);
+        aThis.caseLiteral2.visit(this, null);
+        writeLineHTML("</SequentialCaseLiterals>");
         return null;
     }
 
     @Override
-    public Object visitCaseLiteral(CaseLiteral aThis, Object o) {
-        writeLineHTML("<CaseLiteral>");
-        if (aThis.characterLiteralAST != null){
-            aThis.characterLiteralAST.visit(this, null);
-        }else{
-            aThis.integerLiteralAST.visit(this, null);
-        }
+    public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
+        writeLineHTML("<SingleCaseLiterals>");
+        aThis.caseRange.visit(this, null);
+        writeLineHTML("</SingleCaseLiterals>");
+        return null;
 
-        writeLineHTML("</CaseLiteral>");
+    }
+
+    @Override
+    public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
+        writeLineHTML("<CaseRangeSimple>");
+        aThis.caseLiteral1.visit(this, null);
+        writeLineHTML("</CaseRangeSimple>");
         return null;
     }
+
+    @Override
+    public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
+        writeLineHTML("<CaseRangeComplex>");
+        aThis.caseLiteral1.visit(this, null);
+        aThis.caseLiteral2.visit(this, null);
+        writeLineHTML("</CaseRangeComplex>");
+        return null;
+    }
+
+    @Override
+    public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
+        writeLineHTML("<CaseLiteralInteger>");
+        aThis.literal.visit(this, null);
+        writeLineHTML("</CaseLiteralInteger>");
+        return null;
+    }
+
+    @Override
+    public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
+        writeLineHTML("<CaseLiteralChar>");
+        aThis.literal.visit(this, null);
+        writeLineHTML("</CaseLiteralChar>");
+        return null;
+    }
+
+ 
 
 
 

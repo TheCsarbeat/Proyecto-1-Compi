@@ -12,11 +12,17 @@ import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
 import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
+import Triangle.AbstractSyntaxTrees.BodyComplex;
+import Triangle.AbstractSyntaxTrees.BodySingle;
 import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CallCommand;
 import Triangle.AbstractSyntaxTrees.CallExpression;
 import Triangle.AbstractSyntaxTrees.CaseLiteral;
+import Triangle.AbstractSyntaxTrees.CaseLiteralChar;
+import Triangle.AbstractSyntaxTrees.CaseLiteralInteger;
 import Triangle.AbstractSyntaxTrees.CaseRange;
+import Triangle.AbstractSyntaxTrees.CaseRangeComplex;
+import Triangle.AbstractSyntaxTrees.CaseRangeSimple;
 import Triangle.AbstractSyntaxTrees.CharTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CharacterExpression;
 import Triangle.AbstractSyntaxTrees.CharacterLiteral;
@@ -66,8 +72,10 @@ import Triangle.AbstractSyntaxTrees.RECDeclaration;
 import Triangle.AbstractSyntaxTrees.RecordExpression;
 import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
 import Triangle.AbstractSyntaxTrees.RepeatTimes;
-import Triangle.AbstractSyntaxTrees.SelectCommand;
+import Triangle.AbstractSyntaxTrees.SelectCommandComplex;
+import Triangle.AbstractSyntaxTrees.SelectCommandSimple;
 import Triangle.AbstractSyntaxTrees.SequentialCase;
+import Triangle.AbstractSyntaxTrees.SequentialCaseLiterals;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
 import Triangle.AbstractSyntaxTrees.SequentialPackage;
@@ -76,6 +84,7 @@ import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
 import Triangle.AbstractSyntaxTrees.SingleCase;
+import Triangle.AbstractSyntaxTrees.SingleCaseLiterals;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.SinglePackage;
@@ -177,7 +186,11 @@ public class TreeVisitor implements Visitor {
         return (createBinary("Do Until Loop", aThis.C, aThis.E));
     }
 
-    public Object visitSelectCommand(SelectCommand aThis, Object o) {
+    public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
+        return (createTernary("Select Command", aThis.E, aThis.C, aThis.elseCommand)); // fix
+    }
+
+    public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
         return (createBinary("Select Command", aThis.E, aThis.C)); // fix
     }
     // </editor-fold>
@@ -446,8 +459,8 @@ public class TreeVisitor implements Visitor {
     }
 
     public Object visitProgram(Program ast, Object obj) {
-        DefaultMutableTreeNode ach = createUnary("Program", ast.C);
-        return (createUnary("Program", ast.C));
+        //DefaultMutableTreeNode ach = createUnary("Program", ast.C);
+        return (createUnary("Program",ast.B));
     }
     // </editor-fold>
 
@@ -474,7 +487,7 @@ public class TreeVisitor implements Visitor {
      */
     public DefaultMutableTreeNode createUnary(String caption, AST child1) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
-        DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode) child1.visit(this, null);
+        //DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode) child1.visit(this, null);
         t.add((DefaultMutableTreeNode) child1.visit(this, null));
 
         return (t);
@@ -490,7 +503,6 @@ public class TreeVisitor implements Visitor {
      */
     public DefaultMutableTreeNode createBinary(String caption, AST child1, AST child2) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
-        DefaultMutableTreeNode fdsdf = (DefaultMutableTreeNode) child1.visit(this, null);
         t.add((DefaultMutableTreeNode) child1.visit(this, null));
         t.add((DefaultMutableTreeNode) child2.visit(this, null));
 
@@ -560,46 +572,70 @@ public class TreeVisitor implements Visitor {
 
     // </editor-fold>
 
-    @Override
+    //@Override
     public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
     throw new UnsupportedOperationException("Not supported yet."); //To change
-    body of generated methods, choose Tools | Templates.
+    //body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Object visitSequentialCase(SequentialCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        return (createBinary("Sequential Case", aThis.Case1, aThis.Case2));
     }
 
     @Override
     public Object visitSingleCase(SingleCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+        return (createBinary("Single Case", aThis.caseLiterals, aThis.commandAST));
     }
 
     @Override
-    public Object visitCaseRange(CaseRange aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    public Object visitSinglePackageDeclaration(SinglePackage ast, Object o) {
+        return (createBinary("Package Declaration", ast.I, ast.D));
     }
 
     @Override
-    public Object visitCaseLiteral(CaseLiteral aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    public Object visitSequentialPackageDeclaration(SequentialPackage ast, Object o) {
+        return (createBinary("Sequential Package", ast.package1, ast.package2));
     }
 
     @Override
-    public Object visitSinglePackageDeclaration(SinglePackage aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    public Object visitBodySingle(BodySingle aThis, Object o) {
+        return (createUnary("Body Single", aThis.C));
     }
 
     @Override
-    public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose
-                                                                       // Tools | Templates.
+    public Object visitBodyComplex(BodyComplex aThis, Object o) {
+        return (createBinary("Body Complex", aThis.P, aThis.C));
+    }
+
+    @Override
+    public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
+        return (createBinary("Sequential Case Literals", aThis.caseLiteral1, aThis.caseLiteral2));
+    }
+
+    @Override
+    public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
+        return (createUnary("Single Case Literals", aThis.caseRange));
+    }
+
+    @Override
+    public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
+        return (createUnary("Case Range Simple", aThis.caseLiteral1));
+    }
+
+    @Override
+    public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
+        return (createBinary("Case Range Complex", aThis.caseLiteral1, aThis.caseLiteral2));
+    }
+
+    @Override
+    public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
+        return (createUnary("Case Literal Integer", aThis.literal));
+    }
+
+    @Override
+    public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
+        return (createUnary("Case Literal Char", aThis.literal));
     }
 
 }
