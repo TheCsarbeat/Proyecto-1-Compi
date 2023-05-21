@@ -139,7 +139,9 @@ public interface Visitor {
 
 
   //SelectCommand visitor
-  public Object visitSelectCommand(SelectCommand aThis, Object o);
+  public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o);
+
+  public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o);
   //public Object visitCase(Case c, Object o);
 
   //SequentialCase visitor
@@ -148,18 +150,30 @@ public interface Visitor {
   //SingleCase visitor
   public Object visitSingleCase(SingleCase aThis, Object o);
 
-  //CaseRange visitor
-  public Object visitCaseRange(CaseRange aThis, Object o);
-
-  //CaseLiteral visitor
-  public Object visitCaseLiteral(CaseLiteral aThis, Object o);
-
   //bodySingle
   public Object visitBodySingle(BodySingle aThis, Object o);
 
   //BodyComplex
   public Object visitBodyComplex(BodyComplex aThis, Object o);
 
+  //sequentialcaseliterals
+  public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o);
+
+  //singlecaseliterals
+  public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o);
+
+
+  //caseRangeSimple
+  public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o);
+
+  //caseRangeComplex
+  public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o);
+
+  //caseLietralInteger
+  public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o);
+
+  //caseLiteralChar
+  public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o);
   
 
 }

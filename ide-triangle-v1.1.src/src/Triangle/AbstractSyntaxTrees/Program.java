@@ -29,6 +29,5 @@ public class Program extends AST {
   }
 
   public BodyProgram B;
-  public PackageDeclaration P;
-  public Command C;
+
 }

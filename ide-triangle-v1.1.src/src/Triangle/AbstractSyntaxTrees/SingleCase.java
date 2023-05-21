@@ -13,17 +13,16 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
  */
 public class SingleCase extends Case{
 
-    public SingleCase(CaseRange caseL, Command cAST, SourcePosition thePosition) {
+    public SingleCase(CaseLiterals caseL, Command command1, SourcePosition thePosition) {
         super(thePosition);
-        caseLiteralsAST = caseL;
-        commandAST = cAST;
+        caseLiterals = caseL;
+        commandAST = command1;
     }
 
     @Override
     public Object visit(Visitor v, Object o) {
         return v.visitSingleCase(this, o);
     }
-    
-    public CaseRange caseLiteralsAST;
+    public CaseLiterals caseLiterals;
     public Command commandAST; 
 }

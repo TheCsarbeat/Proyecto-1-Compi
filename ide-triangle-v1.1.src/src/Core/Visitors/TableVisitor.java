@@ -17,7 +17,11 @@ import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CallCommand;
 import Triangle.AbstractSyntaxTrees.CallExpression;
 import Triangle.AbstractSyntaxTrees.CaseLiteral;
+import Triangle.AbstractSyntaxTrees.CaseLiteralChar;
+import Triangle.AbstractSyntaxTrees.CaseLiteralInteger;
 import Triangle.AbstractSyntaxTrees.CaseRange;
+import Triangle.AbstractSyntaxTrees.CaseRangeComplex;
+import Triangle.AbstractSyntaxTrees.CaseRangeSimple;
 import Triangle.AbstractSyntaxTrees.CharTypeDenoter;
 import Triangle.AbstractSyntaxTrees.CharacterExpression;
 import Triangle.AbstractSyntaxTrees.CharacterLiteral;
@@ -67,8 +71,10 @@ import Triangle.AbstractSyntaxTrees.RECDeclaration;
 import Triangle.AbstractSyntaxTrees.RecordExpression;
 import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
 import Triangle.AbstractSyntaxTrees.RepeatTimes;
-import Triangle.AbstractSyntaxTrees.SelectCommand;
+import Triangle.AbstractSyntaxTrees.SelectCommandComplex;
+import Triangle.AbstractSyntaxTrees.SelectCommandSimple;
 import Triangle.AbstractSyntaxTrees.SequentialCase;
+import Triangle.AbstractSyntaxTrees.SequentialCaseLiterals;
 import Triangle.AbstractSyntaxTrees.SequentialCommand;
 import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
 import Triangle.AbstractSyntaxTrees.SequentialPackage;
@@ -77,6 +83,7 @@ import Triangle.AbstractSyntaxTrees.SimpleVname;
 import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
 import Triangle.AbstractSyntaxTrees.SingleCase;
+import Triangle.AbstractSyntaxTrees.SingleCaseLiterals;
 import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.SinglePackage;
@@ -607,7 +614,7 @@ public class TableVisitor implements Visitor {
   // <editor-fold defaultstate="collapsed" desc=" Table Creation Methods ">
   // Programs
   public Object visitProgram(Program ast, Object o) { 
-      ast.C.visit(this, null);
+      ast.B.visit(this, null);
       
       return(null);
   }
@@ -727,10 +734,7 @@ public class TableVisitor implements Visitor {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Object visitSelectCommand(SelectCommand aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
 
     @Override
     public Object visitSequentialCase(SequentialCase aThis, Object o) {
@@ -743,35 +747,71 @@ public class TableVisitor implements Visitor {
     }
 
     @Override
-    public Object visitCaseRange(CaseRange aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitCaseLiteral(CaseLiteral aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Object visitSinglePackageDeclaration(SinglePackage aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.D.visit(this, null);
+        aThis.I.visit(this, null);
+        return null;
+
     }
 
     @Override
     public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.package1.visit(this, null);
+        aThis.package2.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitBodySingle(BodySingle aThis, Object o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visitBodySingle'");
+        aThis.C.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitBodyComplex(BodyComplex aThis, Object o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'visitBodyComplex'");
+        aThis.P.visit(this, null);
+        aThis.P.visit(null, null);
+        return null;
+    }
+
+    @Override
+    public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
    
