@@ -239,9 +239,9 @@ public final class Checker implements Visitor {
 
   // for Identifier in Expression do Command end
   public Object visitForInCommand(ForInCommand ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    TypeDenoter eType = (TypeDenoter) ast.E1.visit(this, null);
     if (! eType.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E.position);
+      reporter.reportError("Integer expression expected here", "", ast.E1.position);
     idTable.openScope();
     ast.C.visit(this, null);
     idTable.closeScope();
@@ -798,6 +798,11 @@ public final class Checker implements Visitor {
     return binding;
   }
 
+  public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
+    ast.I.visit(this, null);
+    return null;
+  }
+
   // Value-or-variable names
 
   // Determines the address of a named object (constant or variable).
@@ -882,6 +887,13 @@ public final class Checker implements Visitor {
     ast.B.visit(this, null);
     return null;
   }
+
+  public Object visitBodySingle(BodySingle ast, Object o) {
+    ast.C.visit(this, null);
+    return null;
+  }
+
+  
 
   // Checks whether the source program, represented by its AST, satisfies the
   // language's scope rules and type rules.
@@ -1107,11 +1119,6 @@ public final class Checker implements Visitor {
   }
 
   @Override
-  public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
   public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
@@ -1134,11 +1141,6 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public Object visitBodySingle(BodySingle aThis, Object o) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
