@@ -189,6 +189,110 @@ public final class Checker implements Visitor {
     return null;
   }
 
+  // for Identifier := Expression .. Expression do Command end
+  public Object visitForCommand(ForCommand ast, Object o) {
+    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    if (! e1Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+    if (! e2Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E2.position);
+    idTable.openScope();
+    ast.C.visit(this, null);
+    idTable.closeScope();
+    return null;
+  }
+
+  // for Identifier  := Expression .. Expression while Expression do Command end
+  public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+    if (! e1Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+    if (! e2Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E2.position);
+    if (! e3Type.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E3.position);
+    idTable.openScope();
+    ast.C.visit(this, null);
+    idTable.closeScope();
+    return null;
+  }
+
+  // for Identifier  := Expression .. Expression until Expression do Command end
+  public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+    if (! e1Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+    if (! e2Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E2.position);
+    if (! e3Type.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E3.position);
+    idTable.openScope();
+    ast.C.visit(this, null);
+    idTable.closeScope();
+    return null;
+  }
+
+  // for Identifier in Expression do Command end
+  public Object visitForInCommand(ForInCommand ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E1.visit(this, null);
+    if (! eType.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+    idTable.openScope();
+    ast.C.visit(this, null);
+    idTable.closeScope();
+    return null;
+  }
+
+  // repeat while Expression do Command end
+  public Object visitWhileLoop(WhileLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat until Expression do Command end
+  public Object visitUntilLoop(UntilLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat do Command  while Expression end
+  public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat do Command  until Expression end
+  public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat Expression times do Command end
+  public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
   // Expressions
 
   // Returns the TypeDenoter denoting the type of the expression. Does
@@ -202,10 +306,7 @@ public final class Checker implements Visitor {
     return ast.type;
   }
 
-  public Object visitBinaryExpression(BinaryExpression ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForCommand'");
-    /*
+  public Object visitBinaryExpression(BinaryExpression ast, Object o) {  
     TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
     TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
     Declaration binding = (Declaration) ast.O.visit(this, null);
@@ -231,7 +332,7 @@ public final class Checker implements Visitor {
       ast.type = bbinding.RES;
     }
     return ast.type;
-    */
+    
   }
 
   public Object visitCallExpression(CallExpression ast, Object o) {
@@ -697,6 +798,11 @@ public final class Checker implements Visitor {
     return binding;
   }
 
+  public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
+    ast.I.visit(this, null);
+    return null;
+  }
+
   // Value-or-variable names
 
   // Determines the address of a named object (constant or variable).
@@ -781,6 +887,13 @@ public final class Checker implements Visitor {
     ast.B.visit(this, null);
     return null;
   }
+
+  public Object visitBodySingle(BodySingle ast, Object o) {
+    ast.C.visit(this, null);
+    return null;
+  }
+
+  
 
   // Checks whether the source program, represented by its AST, satisfies the
   // language's scope rules and type rules.
@@ -977,37 +1090,14 @@ public final class Checker implements Visitor {
 
   }
 
+  //Commands to be implemented
 
-  @Override
-  public Object visitForCommand(ForCommand ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForCommand'");
-  }
+
   public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitPackageDeclaration'");
   }
 
-
-  @Override
-  public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForWhileCommand'");
-  }
-
-
-  @Override
-  public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForUntilCommand'");
-  }
-
-
-  @Override
-  public Object visitForInCommand(ForInCommand ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForInCommand'");
-  }
   public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitPackageIdentifier'");
@@ -1025,36 +1115,6 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public Object visitWhileLoop(WhileLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitUntilLoop(UntilLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
@@ -1081,11 +1141,6 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public Object visitBodySingle(BodySingle aThis, Object o) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
