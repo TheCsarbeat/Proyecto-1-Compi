@@ -239,12 +239,57 @@ public final class Checker implements Visitor {
 
   // for Identifier in Expression do Command end
   public Object visitForInCommand(ForInCommand ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E1.visit(this, null);
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (! eType.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+      reporter.reportError("Integer expression expected here", "", ast.E.position);
     idTable.openScope();
     ast.C.visit(this, null);
     idTable.closeScope();
+    return null;
+  }
+
+  // repeat while Expression do Command end
+  public Object visitWhileLoop(WhileLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat until Expression do Command end
+  public Object visitUntilLoop(UntilLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat do Command  while Expression end
+  public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat do Command  until Expression end
+  public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
+    return null;
+  }
+
+  // repeat Expression times do Command end
+  public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", aThis.E.position);
+    aThis.C.visit(this, null);
     return null;
   }
 
@@ -1034,31 +1079,6 @@ public final class Checker implements Visitor {
   }
 
   //Commands to be implemented
-
-  @Override
-  public Object visitWhileLoop(WhileLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitUntilLoop(UntilLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
-
-  @Override
-  public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-  }
 
 
   public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
