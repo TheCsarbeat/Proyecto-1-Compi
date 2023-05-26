@@ -530,6 +530,15 @@ public final class Checker implements Visitor {
     return null;
   }
 
+  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    idTable.enter(ast.I.spelling, ast);
+    if (ast.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            ast.I.spelling, ast.position);
+    return null;
+  }
+
   // Array Aggregates
 
   // Returns the TypeDenoter for the Array Aggregate. Does not use the
@@ -889,6 +898,9 @@ public final class Checker implements Visitor {
       } else if (binding instanceof ForVarDeclaration) {
         ast.type = ((ForVarDeclaration) binding).E1.type;
         ast.variable = false;
+      } else if (binding instanceof VariableInitializedDeclaration) {
+        ast.type = ((VariableInitializedDeclaration) binding).E.type;
+        ast.variable = true;
       } else if (binding instanceof VarDeclaration) {
         ast.type = ((VarDeclaration) binding).T;
         ast.variable = true;
@@ -1145,13 +1157,6 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
- 
-
-  @Override
-  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
