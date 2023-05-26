@@ -104,5 +104,23 @@ public final class IdentificationTable {
 
     return attr;
   }
+  /* Para privateDeclaration*/
+  public void discardLocal (IdEntry beforeD1, IdEntry beforeD2) {
+
+    IdEntry entry, tmp;
+
+    tmp = this.latest;
+    while (tmp.previous != beforeD2) {
+      entry = tmp;
+      tmp = entry.previous;
+    }
+    tmp.previous = beforeD1;
+  }
+
+  public IdEntry latestEntry() {
+
+    return this.latest;
+  }
+
 
 }
