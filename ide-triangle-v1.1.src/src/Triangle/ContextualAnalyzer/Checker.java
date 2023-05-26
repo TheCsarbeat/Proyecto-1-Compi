@@ -195,13 +195,13 @@ public final class Checker implements Visitor {
     // cast ast.D to ForDeclaration
     ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
     TypeDenoter e1Type = (TypeDenoter) forDecl.E1.visit(this, null);
+    ast.D.visit(this, null);
     TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
     if (! e1Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", forDecl.E1.position);
     if (! e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", ast.E2.position);
     idTable.openScope();
-    ast.D.visit(this, null);
     ast.C.visit(this, null);
     idTable.closeScope();
     return null;
@@ -209,11 +209,15 @@ public final class Checker implements Visitor {
 
   // for Identifier  := Expression .. Expression while Expression do Command end
   public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    TypeDenoter e1Type = (TypeDenoter) forDecl.E1.visit(this, null);
     TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    ast.D.visit(this, null);
+    idTable.openScope();
     TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+    idTable.closeScope();
     if (! e1Type.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+      reporter.reportError("Integer expression expected here", "", forDecl.E1.position);
     if (! e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", ast.E2.position);
     if (! e3Type.equals(StdEnvironment.booleanType))
@@ -226,11 +230,13 @@ public final class Checker implements Visitor {
 
   // for Identifier  := Expression .. Expression until Expression do Command end
   public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    TypeDenoter e1Type = (TypeDenoter) forDecl.E1.visit(this, null);
     TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    ast.D.visit(this, null);
     TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
     if (! e1Type.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+      reporter.reportError("Integer expression expected here", "", forDecl.E1.position);
     if (! e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", ast.E2.position);
     if (! e3Type.equals(StdEnvironment.booleanType))

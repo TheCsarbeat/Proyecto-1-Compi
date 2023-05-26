@@ -398,7 +398,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             Command cAST = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
-                            commandAST = new ForWhileCommand(iAST, e1AST, e2AST, e3AST, cAST, commandPos);
+                            commandAST = new ForWhileCommand(fvdAST, e2AST, e3AST, cAST, commandPos);
                             break;
                         }
                         case Token.UNTIL:
@@ -409,7 +409,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             Command cAST = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
-                            commandAST = new ForUntilCommand(iAST, e1AST, e2AST, e3AST, cAST, commandPos);
+                            commandAST = new ForUntilCommand(fvdAST, e2AST, e3AST, cAST, commandPos);
                             break;
                         }
                         default:
