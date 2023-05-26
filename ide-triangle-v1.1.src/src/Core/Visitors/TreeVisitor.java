@@ -152,16 +152,15 @@ public class TreeVisitor implements Visitor {
     }
 
     public Object visitForCommand(ForCommand ast, Object o) {
-        //return (createQuaternary("For Command", ast.I, ast.E1, ast.E2, ast.C));
-        throw new UnsupportedOperationException("Not supported yet.");
+        return (createTernary("For Command", ast.D, ast.E2, ast.C));
     }
 
     public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-        return (createQuinary("For While Command", ast.I, ast.E1, ast.E2, ast.E3, ast.C));
+        return (createQuaternary("For While Command", ast.D, ast.E2, ast.E3, ast.C));
     }
 
     public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-        return (createQuinary("For Until Command", ast.I, ast.E1, ast.E2, ast.E3, ast.C));
+        return (createQuaternary("For Until Command", ast.D, ast.E2, ast.E3, ast.C));
     }
 
     public Object visitForInCommand(ForInCommand ast, Object o) {
@@ -288,6 +287,10 @@ public class TreeVisitor implements Visitor {
 
     public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
         return (createBinary("Initialized Variable Declaration", ast.I, ast.E));
+    }
+
+    public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
+        return (createBinary("For Variable Declaration", aThis.I, aThis.E1));
     }
     // </editor-fold>
 
@@ -638,11 +641,6 @@ public class TreeVisitor implements Visitor {
     @Override
     public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
         return (createUnary("Case Literal Char", aThis.literal));
-    }
-
-    @Override
-    public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
