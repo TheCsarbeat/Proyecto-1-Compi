@@ -818,8 +818,7 @@ public final class Checker implements Visitor {
   }
 
   public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-    ast.I.visit(this, null);
-    return null;
+    return ast.I.visit(this, null);
   }
 
   // Value-or-variable names
