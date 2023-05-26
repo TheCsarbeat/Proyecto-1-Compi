@@ -462,7 +462,26 @@ public final class Checker implements Visitor {
     idTable.closeScope();
     return null;
   }
+  
+  
+  /* Agregar declaración private Dec1 in Dec2 end*/
+  
+  public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
 
+    IdEntry beforeD1 = idTable.latestEntry(); /* el Ref1 indicado abajo */
+    ast.D1.visit(this, null);
+
+    IdEntry beforeD2 = idTable.latestEntry(); /* el Ref2 indicado abajo */
+    ast.D2.visit(this, null);
+
+    /* Ref3 corresponde a idTable.latestEntry() en este punto */
+
+    idTable.discardLocal(beforeD1, beforeD2);
+
+    return null;
+  }
+
+  
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
     ast.D1.visit(this, null);
     ast.D2.visit(this, null);
@@ -1108,10 +1127,7 @@ public final class Checker implements Visitor {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  @Override
-  public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+ 
 
   @Override
   public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
