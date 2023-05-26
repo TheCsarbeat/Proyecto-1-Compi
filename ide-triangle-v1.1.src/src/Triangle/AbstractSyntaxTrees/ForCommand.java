@@ -8,7 +8,7 @@ public class ForCommand extends Command{
                   Command cAST, SourcePosition thePosition) {
     super (thePosition);
     D = d1AST;
-    E1 = e1AST;
+    E2 = e1AST;
     C = cAST;
   }
   
@@ -17,6 +17,6 @@ public class ForCommand extends Command{
   }
 
   public Declaration D;
-  public Expression E1;
+  public Expression E2;
   public Command C;
 }

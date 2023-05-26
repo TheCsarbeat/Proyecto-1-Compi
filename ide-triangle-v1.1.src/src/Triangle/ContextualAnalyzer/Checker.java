@@ -192,13 +192,16 @@ public final class Checker implements Visitor {
 
   // for Identifier := Expression .. Expression do Command end
   public Object visitForCommand(ForCommand ast, Object o) {
+    // cast ast.D to ForDeclaration
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    TypeDenoter e1Type = (TypeDenoter) forDecl.E1.visit(this, null);
+    TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    if (! e1Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", forDecl.E1.position);
+    if (! e2Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected here", "", ast.E2.position);
     idTable.openScope();
     ast.D.visit(this, null);
-    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
-    idTable.closeScope();
-    if (! e1Type.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
-    idTable.openScope();
     ast.C.visit(this, null);
     idTable.closeScope();
     return null;
@@ -513,12 +516,11 @@ public final class Checker implements Visitor {
   }
 
   public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
-    aThis.E1.visit(this, null);
-    idTable.enter (aThis.I.spelling, aThis);
+    TypeDenoter eType = (TypeDenoter) aThis.E1.visit(this, null);
+    idTable.enter(aThis.I.spelling, aThis);
     if (aThis.duplicated)
       reporter.reportError ("identifier \"%\" already declared",
                             aThis.I.spelling, aThis.position);
-
     return null;
   }
 
@@ -829,8 +831,7 @@ public final class Checker implements Visitor {
   }
 
   public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-    ast.I.visit(this, null);
-    return null;
+    return ast.I.visit(this, null);
   }
 
   // Value-or-variable names
@@ -878,6 +879,9 @@ public final class Checker implements Visitor {
     else
       if (binding instanceof ConstDeclaration) {
         ast.type = ((ConstDeclaration) binding).E.type;
+        ast.variable = false;
+      } else if (binding instanceof ForVarDeclaration) {
+        ast.type = ((ForVarDeclaration) binding).E1.type;
         ast.variable = false;
       } else if (binding instanceof VarDeclaration) {
         ast.type = ((VarDeclaration) binding).T;

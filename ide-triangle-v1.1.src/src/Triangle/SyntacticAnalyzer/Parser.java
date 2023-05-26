@@ -377,6 +377,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                 {
                     acceptIt();
                     Expression e1AST = parseExpression();
+                    ForVarDeclaration fvdAST = new ForVarDeclaration(iAST, e1AST, commandPos);
                     accept(Token.DOTDOT);
                     Expression e2AST = parseExpression();
                     switch (currentToken.kind) {
@@ -386,7 +387,6 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             Command cAST = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
-                            ForVarDeclaration fvdAST = new ForVarDeclaration(iAST, e1AST, commandPos);
                             commandAST = new ForCommand(fvdAST, e2AST, cAST, commandPos);
                             break;
                         }
