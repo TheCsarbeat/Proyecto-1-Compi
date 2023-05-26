@@ -52,6 +52,7 @@ import Triangle.AbstractSyntaxTrees.FieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ForCommand;
 import Triangle.AbstractSyntaxTrees.ForInCommand;
 import Triangle.AbstractSyntaxTrees.ForUntilCommand;
+import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
 import Triangle.AbstractSyntaxTrees.ForWhileCommand;
 import Triangle.AbstractSyntaxTrees.FormalParameter;
 import Triangle.AbstractSyntaxTrees.FormalParameterSequence;
@@ -191,10 +192,13 @@ public final class Checker implements Visitor {
 
   // for Identifier := Expression .. Expression do Command end
   public Object visitForCommand(ForCommand ast, Object o) {
-    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    // cast ast.D to ForDeclaration
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    TypeDenoter e1Type = (TypeDenoter) forDecl.E1.visit(this, null);
+    ast.D.visit(this, null);
     TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
     if (! e1Type.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+      reporter.reportError("Integer expression expected here", "", forDecl.E1.position);
     if (! e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", ast.E2.position);
     idTable.openScope();
@@ -205,11 +209,15 @@ public final class Checker implements Visitor {
 
   // for Identifier  := Expression .. Expression while Expression do Command end
   public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    TypeDenoter e1Type = (TypeDenoter) forDecl.E1.visit(this, null);
     TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    ast.D.visit(this, null);
+    idTable.openScope();
     TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+    idTable.closeScope();
     if (! e1Type.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+      reporter.reportError("Integer expression expected here", "", forDecl.E1.position);
     if (! e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", ast.E2.position);
     if (! e3Type.equals(StdEnvironment.booleanType))
@@ -222,11 +230,13 @@ public final class Checker implements Visitor {
 
   // for Identifier  := Expression .. Expression until Expression do Command end
   public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-    TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    TypeDenoter e1Type = (TypeDenoter) forDecl.E1.visit(this, null);
     TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    ast.D.visit(this, null);
     TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
     if (! e1Type.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
+      reporter.reportError("Integer expression expected here", "", forDecl.E1.position);
     if (! e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", ast.E2.position);
     if (! e3Type.equals(StdEnvironment.booleanType))
@@ -464,7 +474,7 @@ public final class Checker implements Visitor {
   }
   
   
-  /* Agregar declaración private Dec1 in Dec2 end*/
+  /* Agregar declaraciï¿½n private Dec1 in Dec2 end*/
   
   public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
 
@@ -508,6 +518,15 @@ public final class Checker implements Visitor {
       reporter.reportError ("identifier \"%\" already declared",
                             ast.I.spelling, ast.position);
 
+    return null;
+  }
+
+  public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E1.visit(this, null);
+    idTable.enter(aThis.I.spelling, aThis);
+    if (aThis.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            aThis.I.spelling, aThis.position);
     return null;
   }
 
@@ -818,8 +837,7 @@ public final class Checker implements Visitor {
   }
 
   public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-    ast.I.visit(this, null);
-    return null;
+    return ast.I.visit(this, null);
   }
 
   // Value-or-variable names
@@ -867,6 +885,9 @@ public final class Checker implements Visitor {
     else
       if (binding instanceof ConstDeclaration) {
         ast.type = ((ConstDeclaration) binding).E.type;
+        ast.variable = false;
+      } else if (binding instanceof ForVarDeclaration) {
+        ast.type = ((ForVarDeclaration) binding).E1.type;
         ast.variable = false;
       } else if (binding instanceof VarDeclaration) {
         ast.type = ((VarDeclaration) binding).T;
