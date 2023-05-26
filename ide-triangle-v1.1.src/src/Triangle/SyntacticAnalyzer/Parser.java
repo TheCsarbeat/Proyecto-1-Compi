@@ -386,7 +386,8 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             Command cAST = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
-                            commandAST = new ForCommand(iAST, e1AST, e2AST, cAST, commandPos);
+                            ForVarDeclaration fvdAST = new ForVarDeclaration(iAST, e1AST, commandPos);
+                            commandAST = new ForCommand(fvdAST, e2AST, cAST, commandPos);
                             break;
                         }
                         case Token.WHILE:

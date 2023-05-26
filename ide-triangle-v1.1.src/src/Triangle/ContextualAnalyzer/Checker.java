@@ -52,6 +52,7 @@ import Triangle.AbstractSyntaxTrees.FieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ForCommand;
 import Triangle.AbstractSyntaxTrees.ForInCommand;
 import Triangle.AbstractSyntaxTrees.ForUntilCommand;
+import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
 import Triangle.AbstractSyntaxTrees.ForWhileCommand;
 import Triangle.AbstractSyntaxTrees.FormalParameter;
 import Triangle.AbstractSyntaxTrees.FormalParameterSequence;
@@ -191,12 +192,12 @@ public final class Checker implements Visitor {
 
   // for Identifier := Expression .. Expression do Command end
   public Object visitForCommand(ForCommand ast, Object o) {
+    idTable.openScope();
+    ast.D.visit(this, null);
     TypeDenoter e1Type = (TypeDenoter) ast.E1.visit(this, null);
-    TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+    idTable.closeScope();
     if (! e1Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected here", "", ast.E1.position);
-    if (! e2Type.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E2.position);
     idTable.openScope();
     ast.C.visit(this, null);
     idTable.closeScope();
@@ -464,7 +465,7 @@ public final class Checker implements Visitor {
   }
   
   
-  /* Agregar declaración private Dec1 in Dec2 end*/
+  /* Agregar declaraciï¿½n private Dec1 in Dec2 end*/
   
   public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
 
@@ -507,6 +508,16 @@ public final class Checker implements Visitor {
     if (ast.duplicated)
       reporter.reportError ("identifier \"%\" already declared",
                             ast.I.spelling, ast.position);
+
+    return null;
+  }
+
+  public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
+    aThis.E1.visit(this, null);
+    idTable.enter (aThis.I.spelling, aThis);
+    if (aThis.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            aThis.I.spelling, aThis.position);
 
     return null;
   }

@@ -1,14 +1,14 @@
 package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
+import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
 
 public class ForCommand extends Command{
-    public ForCommand (Identifier iAST, Expression e1AST, Expression e2AST, 
+    public ForCommand (ForVarDeclaration d1AST, Expression e1AST, 
                   Command cAST, SourcePosition thePosition) {
     super (thePosition);
-    I = iAST;
+    D = d1AST;
     E1 = e1AST;
-    E2 = e2AST;
     C = cAST;
   }
   
@@ -16,7 +16,7 @@ public class ForCommand extends Command{
     return v.visitForCommand(this, o);
   }
 
-  public Identifier I;
-  public Expression E1, E2;
+  public Declaration D;
+  public Expression E1;
   public Command C;
 }

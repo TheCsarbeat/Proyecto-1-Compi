@@ -40,6 +40,7 @@ import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ForCommand;
 import Triangle.AbstractSyntaxTrees.ForInCommand;
 import Triangle.AbstractSyntaxTrees.ForUntilCommand;
+import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
 import Triangle.AbstractSyntaxTrees.ForWhileCommand;
 import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
@@ -151,7 +152,8 @@ public class TreeVisitor implements Visitor {
     }
 
     public Object visitForCommand(ForCommand ast, Object o) {
-        return (createQuaternary("For Command", ast.I, ast.E1, ast.E2, ast.C));
+        //return (createQuaternary("For Command", ast.I, ast.E1, ast.E2, ast.C));
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
@@ -636,6 +638,11 @@ public class TreeVisitor implements Visitor {
     @Override
     public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
         return (createUnary("Case Literal Char", aThis.literal));
+    }
+
+    @Override
+    public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
