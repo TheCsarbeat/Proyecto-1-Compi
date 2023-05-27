@@ -462,9 +462,67 @@ public final class Checker implements Visitor {
     idTable.closeScope();
     return null;
   }
+  /*Agregar declaracion RecDeclaration*/
+  
+  public Object visitRecDeclaration(RECDeclaration ast, Object o) {
+    SequentialDeclaration seqAST = (SequentialDeclaration) ast.PFS;
+    
+    visitRecDeclarationAux(seqAST); // Inserta todos los identificadores en idTable con el uso de los métodos explicados abajo
+    
+    idTable.openScope(); // segunda mini pasada, procesa los cuerpos y PFS
+    ast.PFS.visit(this, null); // se visitan los cuerpos
+    idTable.closeScope();
+    
+    return null;
+  }
+  
+  private void visitRecDeclarationAux(SequentialDeclaration seqDeclAST){ // revisa si d1 y d2 son proc o func y los inserta en idTable de utilizando entreProc y entreFunc (recorrido a proc func)
+    if(seqDeclAST.D1 instanceof ProcDeclaration){ // si d1 es proc
+      ProcDeclaration procAST = (ProcDeclaration) seqDeclAST.D1;
+      enterProc(procAST); // lo inserta a la tabla
+    }
+    else if (seqDeclAST.D1 instanceof FuncDeclaration){ // si d1 es func 
+      FuncDeclaration funcAST = (FuncDeclaration) seqDeclAST.D1;
+      enterFunc(funcAST); // lo inserta a la tabla
+    }
+    else{
+      visitRecDeclarationAux((SequentialDeclaration) seqDeclAST.D1); // si no cumple ninguna se hace  llamada recursiva pasando d1 como SequentialDeclaration
+    }
+    
+    if(seqDeclAST.D2 instanceof ProcDeclaration){ // si d2 es proc
+      ProcDeclaration procAST = (ProcDeclaration) seqDeclAST.D2;
+      enterProc(procAST); // lo inserta a la tabla
+    }
+    else{
+      FuncDeclaration funcAST = (FuncDeclaration) seqDeclAST.D2;  // si d2 es func 
+      enterFunc(funcAST); // lo inserta a la tabla
+    }
+  }
+  
+  private void enterProc(ProcDeclaration procAST){ //recibe proc y lo guarda en idTable es la primer mini pasada (cuando se hace enter al ast completo)
+    idTable.enter (procAST.I.spelling, procAST);
+    if (procAST.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            procAST.I.spelling, procAST.position);
+    idTable.openScope();
+    procAST.FPS.visit(this, null);
+    idTable.closeScope();
+  }
+  
+  private void enterFunc(FuncDeclaration funcAST){ // recibe func y lo guarda en idTable es la primer mini pasada (cuando se hace enter al ast completo)
+    funcAST.T = (TypeDenoter)funcAST.T.visit(this, null);
+    idTable.enter (funcAST.I.spelling, funcAST);
+    if (funcAST.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            funcAST.I.spelling, funcAST.position);
+    idTable.openScope();
+    funcAST.FPS.visit(this, null);
+    idTable.closeScope();
+  }
+
   
   
-  /* Agregar declaración private Dec1 in Dec2 end*/
+  /* Agregar declaracion private Dec1 in Dec2 end*/
   
   public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
 
@@ -480,7 +538,8 @@ public final class Checker implements Visitor {
 
     return null;
   }
-
+    
+ 
   
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
     ast.D1.visit(this, null);
@@ -1122,13 +1181,8 @@ public final class Checker implements Visitor {
     throw new UnsupportedOperationException("Unimplemented method 'visitPackageIdentifier'");
   }
 
-  @Override
-  public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
- 
-
+  
+  
   @Override
   public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
