@@ -884,8 +884,8 @@ public final class Checker implements Visitor {
   }
 
   public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-    ast.I.visit(this, null);
-    return null;
+    
+    return ast.I.visit(this, null);
   }
 
   // Value-or-variable names
@@ -936,6 +936,9 @@ public final class Checker implements Visitor {
         ast.variable = false;
       } else if (binding instanceof VarDeclaration) {
         ast.type = ((VarDeclaration) binding).T;
+        ast.variable = true;
+      }else if (binding instanceof VariableInitializedDeclaration) {
+        ast.type = ((VariableInitializedDeclaration) binding).E.type;
         ast.variable = true;
       } else if (binding instanceof ConstFormalParameter) {
         ast.type = ((ConstFormalParameter) binding).T;
