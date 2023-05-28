@@ -34,6 +34,7 @@ import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ForCommand;
 import Triangle.AbstractSyntaxTrees.ForInCommand;
 import Triangle.AbstractSyntaxTrees.ForUntilCommand;
+import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
 import Triangle.AbstractSyntaxTrees.ForWhileCommand;
 import Triangle.AbstractSyntaxTrees.FuncActualParameter;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
@@ -678,8 +679,7 @@ public class WriterVisitor implements Visitor {
          @Override
      public Object visitForCommand(ForCommand ast, Object o) {
         writeLineHTML("<ForCommand>");
-        ast.I.visit(this, null);
-        ast.E1.visit(this, null);
+        ast.D.visit(this, null);
         ast.E2.visit(this, null);
         ast.C.visit(this, null);
         writeLineHTML("</ForCommand>");
@@ -690,8 +690,7 @@ public class WriterVisitor implements Visitor {
          @Override
      public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
         writeLineHTML("<ForWhileCommand>");
-        ast.I.visit(this, null);
-        ast.E1.visit(this, null);
+        ast.D.visit(this, null);
         ast.E2.visit(this, null);
         ast.E3.visit(this, null);
         ast.C.visit(this, null);
@@ -703,8 +702,7 @@ public class WriterVisitor implements Visitor {
          @Override
      public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
         writeLineHTML("<ForUntilCommand>");
-        ast.I.visit(this, null);
-        ast.E1.visit(this, null);
+        ast.D.visit(this, null);
         ast.E2.visit(this, null);
         ast.E3.visit(this, null);
         ast.C.visit(this, null);
@@ -954,6 +952,15 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("<CaseLiteralChar>");
         aThis.literal.visit(this, null);
         writeLineHTML("</CaseLiteralChar>");
+        return null;
+    }
+
+    @Override
+    public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
+        writeLineHTML("<ForVarDeclaration>");
+        aThis.I.visit(this, null);
+        aThis.E1.visit(this, null);
+        writeLineHTML("</ForVarDeclaration>");
         return null;
     }
 

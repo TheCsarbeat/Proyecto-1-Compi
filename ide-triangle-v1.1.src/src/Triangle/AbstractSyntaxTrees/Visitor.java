@@ -55,6 +55,7 @@ public interface Visitor {
   public abstract Object visitRecDeclaration(RECDeclaration ast, Object o); // se agreg�
   public abstract Object visitPrivateDeclaration(PrivateDeclaration ast, Object o); // se agreg�
   public abstract Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o); // se agreg�
+  public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o);
 
   // Array Aggregates
   public abstract Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object o);

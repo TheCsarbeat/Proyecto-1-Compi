@@ -377,6 +377,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                 {
                     acceptIt();
                     Expression e1AST = parseExpression();
+                    ForVarDeclaration fvdAST = new ForVarDeclaration(iAST, e1AST, commandPos);
                     accept(Token.DOTDOT);
                     Expression e2AST = parseExpression();
                     switch (currentToken.kind) {
@@ -386,7 +387,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             Command cAST = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
-                            commandAST = new ForCommand(iAST, e1AST, e2AST, cAST, commandPos);
+                            commandAST = new ForCommand(fvdAST, e2AST, cAST, commandPos);
                             break;
                         }
                         case Token.WHILE:
@@ -397,7 +398,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             Command cAST = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
-                            commandAST = new ForWhileCommand(iAST, e1AST, e2AST, e3AST, cAST, commandPos);
+                            commandAST = new ForWhileCommand(fvdAST, e2AST, e3AST, cAST, commandPos);
                             break;
                         }
                         case Token.UNTIL:
@@ -408,7 +409,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                             Command cAST = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
-                            commandAST = new ForUntilCommand(iAST, e1AST, e2AST, e3AST, cAST, commandPos);
+                            commandAST = new ForUntilCommand(fvdAST, e2AST, e3AST, cAST, commandPos);
                             break;
                         }
                         default:
