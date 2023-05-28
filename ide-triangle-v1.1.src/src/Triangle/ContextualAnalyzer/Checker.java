@@ -1349,13 +1349,10 @@ public final class Checker implements Visitor {
     // casting of the selectContextualInstace
     SelectContextual selectInstace = (SelectContextual) o;
     ast.type = StdEnvironment.integerType;
-
     // verify the type of the literal
-    if (!ast.type.equals(selectInstace.type)) {
-      reporter.reportError("The type of the literal is not the same as the type of the expression", "",
-          ast.literal.position);
-    }
-
+    if (!ast.type.equals(selectInstace.type)) 
+      reporter.reportError("The type of the literal is not the same as the type of the expression", "", ast.literal.position);
+    
     return ast.literal.spelling;
   }
 
@@ -1363,15 +1360,10 @@ public final class Checker implements Visitor {
   public Object visitCaseLiteralChar(CaseLiteralChar ast, Object o) {
     // casting of the selectContextualInstace
     SelectContextual selectInstace = (SelectContextual) o;
-
     ast.type = StdEnvironment.charType;
-
     // verify the type of the literal
-    if (!ast.type.equals(selectInstace.type)) {
-      reporter.reportError("The type of the literal is not the same as the type of the expression", "",
-          ast.literal.position);
-    }
-
+    if (!ast.type.equals(selectInstace.type)) 
+      reporter.reportError("The type of the literal is not the same as the type of the expression", "", ast.literal.position);    
     return ast.literal.spelling;
   }
 
