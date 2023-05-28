@@ -1217,8 +1217,8 @@ public final class Checker implements Visitor {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!((eType.equals(StdEnvironment.integerType)) || (eType.equals(StdEnvironment.charType))))
       reporter.reportError("Integer or Char expression expected here", "", ast.E.position);
+
     SelectContextual selectInstace = new SelectContextual(eType);
-    Set literalsRagne = new HashSet();
     ast.C.visit(this, selectInstace);
 
     return null;
