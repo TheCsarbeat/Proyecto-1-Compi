@@ -1,6 +1,6 @@
-select 1 from
+select 'a' from
 
-  when 0 then putint (1)
+  when 'a' then putint (1)
 
 end
 

@@ -1195,8 +1195,19 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitSelectCommandComplex(SelectCommandComplex ast, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+    // Verify the type of the expression
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (!((eType.equals(StdEnvironment.integerType)) || (eType.equals(StdEnvironment.charType))))
+      reporter.reportError("Integer or Char expression expected here", "", ast.E.position);
+    SelectContextual selectInstace = new SelectContextual(eType);
+    Set literalsRagne = new HashSet();
+    ast.C.visit(this, selectInstace);
+    
+    idTable.openScope();
+    ast.elseCommand.visit(this, null);
+    idTable.closeScope();
+
+    return null;
   }
 
   @Override
@@ -1277,7 +1288,7 @@ public final class Checker implements Visitor {
 
     } else {
       // if caseLitera is instace of Char
-      char literal = ((String) ast.caseLiteral1.visit(this, selectInstace)).charAt(0);
+      char literal = ((String) ast.caseLiteral1.visit(this, selectInstace)).charAt(1);
       // verify literal is not in the set
       if (selectInstace.set.contains(literal))
         reporter.reportError("The literal " + literal + " is overlapping with other literal case", "", ast.position);
@@ -1313,8 +1324,8 @@ public final class Checker implements Visitor {
       }
     } else {
       // if caseLitera is instace of Char
-      char literal1 = ((String) ast.caseLiteral1.visit(this, selectInstace)).charAt(0);
-      char literal2 = ((String) ast.caseLiteral2.visit(this, selectInstace)).charAt(0);
+      char literal1 = ((String)ast.caseLiteral1.visit(this, selectInstace)).charAt(1);
+      char literal2 = ((String) ast.caseLiteral2.visit(this, selectInstace)).charAt(1);
       // verify if the range is valid
       if (literal1 > literal2) {
         reporter.reportError("The range is not valid", "", ast.position);
@@ -1353,7 +1364,7 @@ public final class Checker implements Visitor {
     // casting of the selectContextualInstace
     SelectContextual selectInstace = (SelectContextual) o;
 
-    ast.type = StdEnvironment.integerType;
+    ast.type = StdEnvironment.charType;
 
     // verify the type of the literal
     if (!ast.type.equals(selectInstace.type)) {
