@@ -539,7 +539,14 @@ public final class Checker implements Visitor {
     return null;
   }
     
- 
+  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    idTable.enter(ast.I.spelling, ast);
+    if (ast.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            ast.I.spelling, ast.position);
+    return null;
+  }
   
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
     ast.D1.visit(this, null);
@@ -1183,10 +1190,10 @@ public final class Checker implements Visitor {
 
   
   
-  @Override
+  /*@Override
   public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
+  } */
 
   @Override
   public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {

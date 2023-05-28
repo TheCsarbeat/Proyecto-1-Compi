@@ -1245,7 +1245,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
     accept(Token.PIPELINE);
     Declaration pf2AST = parse_ProcFunc_Declaration();
     
-    declarationAST = new SequentialDeclaration(declarationAST, pf2AST, declarationPos);
+    declarationAST = new SequentialDeclaration(declarationAST, pf2AST, declarationPos); // error
     
     while(currentToken.kind == Token.PIPELINE){
       acceptIt();
