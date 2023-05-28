@@ -16,4 +16,6 @@ public abstract class CaseLiteral extends AST{
         super (thePosition);
 
     }    
+
+    public TypeDenoter type;
 }
