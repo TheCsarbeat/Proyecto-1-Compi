@@ -475,12 +475,14 @@ public final class Checker implements Visitor {
     return null;
   }
 
-  /*Agregar declaracion RecDeclaration*/
+  /*Agregar declaracion RecDeclaration
+   * Fernanda Murillo
+  */
   
   public Object visitRecDeclaration(RECDeclaration ast, Object o) {
     SequentialDeclaration seqAST = (SequentialDeclaration) ast.PFS;
     
-    visitRecDeclarationAux(seqAST); // Inserta todos los identificadores en idTable con el uso de los m�todos explicados abajo
+    visitRecDeclarationAux(seqAST); // Inserta todos los identificadores en idTable con el uso de los metodos explicados abajo
     
     idTable.openScope(); // segunda mini pasada, procesa los cuerpos y PFS
     ast.PFS.visit(this, null); // se visitan los cuerpos
@@ -535,9 +537,9 @@ public final class Checker implements Visitor {
 
   
   
-  /* Agregar declaracion private Dec1 in Dec2 end*/
-  
-
+  /* Agregar declaracion private Dec1 in Dec2 end
+   * Fernanda Murillo
+  */
 
   public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
 
