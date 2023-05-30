@@ -541,6 +541,16 @@ public final class Checker implements Visitor {
     return null;
   }
 
+  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+    ast.T = (TypeDenoter) ast.E.visit(this, null);
+    idTable.enter(ast.I.spelling, ast);
+    if (ast.duplicated)
+      reporter.reportError("identifier \"%\" already declared",
+          ast.I.spelling, ast.position);
+
+    return null;
+  }
+
   public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
     TypeDenoter eType = (TypeDenoter) aThis.E1.visit(this, null);
     idTable.enter(aThis.I.spelling, aThis);
@@ -920,6 +930,9 @@ public final class Checker implements Visitor {
     } else if (binding instanceof ForControl) {
       ast.type = ((ForControl) binding).T;
       ast.variable = false;
+    } else if (binding instanceof VariableInitializedDeclaration) {
+      ast.type = ((VariableInitializedDeclaration) binding).E.type;
+      ast.variable = true;
     } else
       reporter.reportError("\"%\" is not a const or var identifier",
           ast.I.getSimpleIdentifier().spelling, ast.I.position);
@@ -1176,12 +1189,6 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
-  }
-
-  @Override
-  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
     throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
                                                                    // | Templates.
   }

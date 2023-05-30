@@ -25,5 +25,6 @@ public class VariableInitializedDeclaration extends Declaration {
     
   public Identifier I;
   public Expression E;
+  public TypeDenoter T;
     
 }
