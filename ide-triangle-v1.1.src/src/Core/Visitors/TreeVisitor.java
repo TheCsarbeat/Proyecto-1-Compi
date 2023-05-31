@@ -151,7 +151,7 @@ public class TreeVisitor implements Visitor {
     public Object visitWhileCommand(WhileCommand ast, Object obj) {
         return (createBinary("While Command", ast.E, ast.C));
     }
-
+    // Comando por los for
     public Object visitForCommand(ForCommand ast, Object o) {
         return (createTernary("For Command", ast.D, ast.E2, ast.C));
     }
@@ -188,13 +188,7 @@ public class TreeVisitor implements Visitor {
         return (createBinary("Do Until Loop", aThis.C, aThis.E));
     }
 
-    public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
-        return (createTernary("Select Command", aThis.E, aThis.C, aThis.elseCommand)); // fix
-    }
-
-    public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
-        return (createBinary("Select Command", aThis.E, aThis.C)); // fix
-    }
+   
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc=" Expressions ">
@@ -582,68 +576,66 @@ public class TreeVisitor implements Visitor {
 
     // </editor-fold>
 
-    //@Override
     public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change
-    //body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); //To change
+        //body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Object visitSequentialCase(SequentialCase aThis, Object o) {
-        return (createBinary("Sequential Case", aThis.Case1, aThis.Case2));
-    }
-
-    @Override
-    public Object visitSingleCase(SingleCase aThis, Object o) {
-        return (createBinary("Single Case", aThis.caseLiterals, aThis.commandAST));
-    }
-
-    @Override
+   
+    //Visit of Package Declaration
     public Object visitSinglePackageDeclaration(SinglePackage ast, Object o) {
         return (createBinary("Package Declaration", ast.I, ast.D));
     }
 
-    @Override
     public Object visitSequentialPackageDeclaration(SequentialPackage ast, Object o) {
         return (createBinary("Sequential Package", ast.package1, ast.package2));
     }
-
-    @Override
+    //Visit of Boddy Program
     public Object visitBodySingle(BodySingle aThis, Object o) {
         return (createUnary("Body Single", aThis.C));
     }
 
-    @Override
     public Object visitBodyComplex(BodyComplex aThis, Object o) {
         return (createBinary("Body Complex", aThis.P, aThis.C));
+    }    
+
+     //Visitors of selectCommand
+    public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
+        return (createTernary("Select Command", aThis.E, aThis.C, aThis.elseCommand)); // fix
     }
 
-    @Override
+    public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
+        return (createBinary("Select Command", aThis.E, aThis.C)); // fix
+    }
+    
+    public Object visitSequentialCase(SequentialCase aThis, Object o) {
+        return (createBinary("Sequential Case", aThis.Case1, aThis.Case2));
+    }
+
+    public Object visitSingleCase(SingleCase aThis, Object o) {
+        return (createBinary("Single Case", aThis.caseLiterals, aThis.commandAST));
+    }
+
     public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
         return (createBinary("Sequential Case Literals", aThis.caseLiteral1, aThis.caseLiteral2));
     }
 
-    @Override
     public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
         return (createUnary("Single Case Literals", aThis.caseRange));
     }
 
-    @Override
     public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
         return (createUnary("Case Range Simple", aThis.caseLiteral1));
     }
 
-    @Override
     public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
         return (createBinary("Case Range Complex", aThis.caseLiteral1, aThis.caseLiteral2));
     }
 
-    @Override
     public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
         return (createUnary("Case Literal Integer", aThis.literal));
     }
 
-    @Override
     public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
         return (createUnary("Case Literal Char", aThis.literal));
     }
