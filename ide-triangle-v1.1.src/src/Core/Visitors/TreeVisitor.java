@@ -38,6 +38,7 @@ import Triangle.AbstractSyntaxTrees.EmptyExpression;
 import Triangle.AbstractSyntaxTrees.EmptyFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ForCommand;
+import Triangle.AbstractSyntaxTrees.ForControl;
 import Triangle.AbstractSyntaxTrees.ForInCommand;
 import Triangle.AbstractSyntaxTrees.ForUntilCommand;
 import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
@@ -164,7 +165,7 @@ public class TreeVisitor implements Visitor {
     }
 
     public Object visitForInCommand(ForInCommand ast, Object o) {
-        return (createTernary("For In Command", ast.I, ast.E1, ast.C));
+        return (createBinary("For In Command", ast.IEI, ast.C));
     }
 
     public Object visitWhileLoop(WhileLoop aThis, Object o) {
@@ -291,6 +292,10 @@ public class TreeVisitor implements Visitor {
 
     public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
         return (createBinary("For Variable Declaration", aThis.I, aThis.E1));
+    }
+
+    public Object visitForControl(ForControl v, Object o) {
+        return (createBinary("For Control", v.I, v.E));
     }
     // </editor-fold>
 
