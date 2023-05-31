@@ -14,8 +14,6 @@
 
 package Triangle.AbstractSyntaxTrees;
 
-import Triangle.SyntacticAnalyzer.SourcePosition;
-
 public interface Visitor {
 
   // Commands
@@ -32,7 +30,6 @@ public interface Visitor {
   public abstract Object visitForWhileCommand(ForWhileCommand ast, Object o);
   public abstract Object visitForUntilCommand(ForUntilCommand ast, Object o);
   public abstract Object visitForInCommand(ForInCommand ast, Object o);
-  public abstract Object visitForControl(ForControl v, Object o);
   // Expressions
   public abstract Object visitArrayExpression(ArrayExpression ast, Object o);
   public abstract Object visitBinaryExpression(BinaryExpression ast, Object o);

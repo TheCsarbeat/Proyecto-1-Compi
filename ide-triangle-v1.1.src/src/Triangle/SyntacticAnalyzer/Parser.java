@@ -372,7 +372,6 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
       {
         acceptIt();
         Identifier iAST = parseIdentifier();
-        SourcePosition declarationPos = new SourcePosition();
         switch (currentToken.kind) {
             case Token.BECOMES:
                 {
@@ -427,8 +426,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                     Command cAST = parseCommand();
                     accept(Token.END);
                     finish(commandPos);
-                    ForControl ieiAST = new ForControl(iAST,e1AST,declarationPos);
-                    commandAST = new ForInCommand(ieiAST,cAST, commandPos);
+                    commandAST = new ForInCommand(iAST, e1AST, cAST, commandPos);
                     break;
                 }
             default:

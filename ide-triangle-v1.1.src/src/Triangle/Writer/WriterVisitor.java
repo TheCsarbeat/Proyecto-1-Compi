@@ -32,7 +32,6 @@ import Triangle.AbstractSyntaxTrees.EmptyExpression;
 import Triangle.AbstractSyntaxTrees.EmptyFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ForCommand;
-import Triangle.AbstractSyntaxTrees.ForControl;
 import Triangle.AbstractSyntaxTrees.ForInCommand;
 import Triangle.AbstractSyntaxTrees.ForUntilCommand;
 import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
@@ -715,8 +714,8 @@ public class WriterVisitor implements Visitor {
          @Override
      public Object visitForInCommand(ForInCommand ast, Object o) {
         writeLineHTML("<ForInCommand>");
-        ast.IEI.I.visit(this, null);
-        ast.IEI.E.visit(this, null);
+        ast.I.visit(this, null);
+        ast.E1.visit(this, null);
         ast.C.visit(this, null);
         writeLineHTML("</ForInCommand>");
         return null;
@@ -963,11 +962,6 @@ public class WriterVisitor implements Visitor {
         aThis.E1.visit(this, null);
         writeLineHTML("</ForVarDeclaration>");
         return null;
-    }
-
-    @Override
-    public Object visitForControl(ForControl v, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
  
