@@ -51,6 +51,7 @@ import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
 import Triangle.AbstractSyntaxTrees.FieldTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ForCommand;
 import Triangle.AbstractSyntaxTrees.ForInCommand;
+import Triangle.AbstractSyntaxTrees.ForControl;
 import Triangle.AbstractSyntaxTrees.ForUntilCommand;
 import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
 import Triangle.AbstractSyntaxTrees.ForWhileCommand;
@@ -249,14 +250,33 @@ public final class Checker implements Visitor {
     return null;
   }
 
+  public Object visitForControl(ForControl ast, Object o) {
+    ast.T = (TypeDenoter) ast.E.visit(this, null);
+    return ast.T;
+  }
+
   // for Identifier in Expression do Command end
+  /*
+   * Sebastian Chaves
+   */
   public Object visitForInCommand(ForInCommand ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E1.visit(this, null);
-    if (!eType.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", ast.E1.position);
-    idTable.openScope();
-    ast.C.visit(this, null);
-    idTable.closeScope();
+    TypeDenoter eType = (TypeDenoter) ast.IEI.visit(this, null); // Se obtiene el tipo de la Expression
+    ForControl controlForIn = (ForControl) ast.IEI;
+    if (eType != StdEnvironment.errorType) {
+      if (!(eType instanceof ArrayTypeDenoter)) // Se valida que la Expression sea un arreglo
+        reporter.reportError("array expected here", "", ast.IEI.position);
+      else
+        controlForIn.T = ((ArrayTypeDenoter) eType).T;
+      idTable.openScope();
+      idTable.enter(controlForIn.I.spelling, controlForIn);
+      if (controlForIn.duplicated) {
+        reporter.reportError("Identifier already exists", "", controlForIn.position);
+      }
+      ast.C.visit(this, null);
+      idTable.closeScope();
+    } else {
+      reporter.reportError("array expected here", "", ast.IEI.position);
+    }
     return null;
   }
 
@@ -274,7 +294,7 @@ public final class Checker implements Visitor {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!eType.equals(StdEnvironment.booleanType))
       reporter.reportError("Boolean expression expected here", "", ast.E.position);
-    ast.C.visit(this, null);
+    ast.C.visit(this, null);n
     return null;
   }
 
@@ -296,7 +316,7 @@ public final class Checker implements Visitor {
     return null;
   }
 
-  // repeat Expression times do Command end
+  // repeat Expression times do Command endhis, null);
   public Object visitRepeatTimes(RepeatTimes ast, Object o) {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!eType.equals(StdEnvironment.integerType))
@@ -475,6 +495,7 @@ public final class Checker implements Visitor {
     return null;
   }
 
+
   /*Agregar declaracion RecDeclaration
    * Fernanda Murillo
   */
@@ -586,21 +607,22 @@ public final class Checker implements Visitor {
     return null;
   }
 
-  public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E1.visit(this, null);
+  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+    ast.T = (TypeDenoter) ast.E.visit(this, null);
     idTable.enter(ast.I.spelling, ast);
     if (ast.duplicated)
       reporter.reportError("identifier \"%\" already declared",
           ast.I.spelling, ast.position);
+
     return null;
   }
 
-  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    idTable.enter(ast.I.spelling, ast);
-    if (ast.duplicated)
+  public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
+    TypeDenoter eType = (TypeDenoter) aThis.E1.visit(this, null);
+    idTable.enter(aThis.I.spelling, aThis);
+    if (aThis.duplicated)
       reporter.reportError("identifier \"%\" already declared",
-          ast.I.spelling, ast.position);
+          aThis.I.spelling, aThis.position);
     return null;
   }
 
@@ -957,25 +979,30 @@ public final class Checker implements Visitor {
     Declaration binding = (Declaration) ast.I.visit(this, null);
     if (binding == null)
       reportUndeclared(ast.I.getSimpleIdentifier());
-    else
-      if (binding instanceof ConstDeclaration) {
-        ast.type = ((ConstDeclaration) binding).E.type;
-        ast.variable = false;
-      } else if (binding instanceof VarDeclaration) {
-        ast.type = ((VarDeclaration) binding).T;
-        ast.variable = true;
-      }else if (binding instanceof VariableInitializedDeclaration) {
-        ast.type = ((VariableInitializedDeclaration) binding).E.type;
-        ast.variable = true;
-      } else if (binding instanceof ConstFormalParameter) {
-        ast.type = ((ConstFormalParameter) binding).T;
-        ast.variable = false;
-      } else if (binding instanceof VarFormalParameter) {
-        ast.type = ((VarFormalParameter) binding).T;
-        ast.variable = true;
-      } else
-        reporter.reportError ("\"%\" is not a const or var identifier",
-                              ast.I.getSimpleIdentifier().spelling, ast.I.position);
+    else if (binding instanceof ConstDeclaration) {
+      ast.type = ((ConstDeclaration) binding).E.type;
+      ast.variable = false;
+    } else if (binding instanceof ForVarDeclaration) {
+      ast.type = ((ForVarDeclaration) binding).E1.type;
+      ast.variable = false;
+    } else if (binding instanceof VarDeclaration) {
+      ast.type = ((VarDeclaration) binding).T;
+      ast.variable = true;
+    } else if (binding instanceof ConstFormalParameter) {
+      ast.type = ((ConstFormalParameter) binding).T;
+      ast.variable = false;
+    } else if (binding instanceof VarFormalParameter) {
+      ast.type = ((VarFormalParameter) binding).T;
+      ast.variable = true;
+    } else if (binding instanceof ForControl) {
+      ast.type = ((ForControl) binding).T;
+      ast.variable = false;
+    } else if (binding instanceof VariableInitializedDeclaration) {
+      ast.type = ((VariableInitializedDeclaration) binding).E.type;
+      ast.variable = true;
+    } else
+      reporter.reportError("\"%\" is not a const or var identifier",
+          ast.I.getSimpleIdentifier().spelling, ast.I.position);
     return ast.type;
   }
 
@@ -1004,10 +1031,8 @@ public final class Checker implements Visitor {
   }
 
   public Object visitBodySingle(BodySingle ast, Object o) {
-
     return ast.C.visit(this, null);
   }
-
   // Checks whether the source program, represented by its AST, satisfies the
   // language's scope rules and type rules.
   // Also decorates the AST as follows:
@@ -1226,6 +1251,7 @@ public final class Checker implements Visitor {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitPackageIdentifier'");
   }
+
 
 
   @Override
