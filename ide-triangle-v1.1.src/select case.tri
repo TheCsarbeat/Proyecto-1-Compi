@@ -1,8 +1,27 @@
-
-select n>1
-from
-when 1 .. 10 | 100 .. 110 | 200 .. 210 then skip
-when 2 .. 20 then skip
-when 3 then skip
-else skip
-end
+
+select 1
+
+from
+
+when 1 .. 10 | 100 .. 110 | 200 .. 210 then skip
+
+when 500 .. 550 then select 1 from
+
+	when 1..10 | 11..20 then skip
+
+	when 5 then put('E')
+
+	end
+
+when 1000 then skip
+
+else select 'a' from
+
+	when 'a'..'b' | 'c'..'d' then skip
+
+	when 'r' then put('E')
+
+	end
+
+end
+

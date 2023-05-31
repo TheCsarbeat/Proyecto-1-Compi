@@ -121,6 +121,7 @@ import Triangle.AbstractSyntaxTrees.VnameExpression;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
 import Triangle.AbstractSyntaxTrees.WhileLoop;
 import Triangle.SyntacticAnalyzer.SourcePosition;
+import java.util.*;
 
 public final class Checker implements Visitor {
 
@@ -276,52 +277,51 @@ public final class Checker implements Visitor {
     } else {
       reporter.reportError("array expected here", "", ast.IEI.position);
     }
-
     return null;
   }
 
   // repeat while Expression do Command end
-  public Object visitWhileLoop(WhileLoop aThis, Object o) {
-    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+  public Object visitWhileLoop(WhileLoop ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
-    aThis.C.visit(this, null);
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
   // repeat until Expression do Command end
-  public Object visitUntilLoop(UntilLoop aThis, Object o) {
-    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+  public Object visitUntilLoop(UntilLoop ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
-    aThis.C.visit(this, null);
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);n
     return null;
   }
 
   // repeat do Command while Expression end
-  public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
-    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+  public Object visitDoWhileLoop(DoWhileLoop ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
-    aThis.C.visit(this, null);
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
   // repeat do Command until Expression end
-  public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
-    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+  public Object visitDoUntilLoop(DoUntilLoop ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", aThis.E.position);
-    aThis.C.visit(this, null);
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
-  // repeat Expression times do Command end
-  public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
-    TypeDenoter eType = (TypeDenoter) aThis.E.visit(this, null);
+  // repeat Expression times do Command endhis, null);
+  public Object visitRepeatTimes(RepeatTimes ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!eType.equals(StdEnvironment.integerType))
-      reporter.reportError("Integer expression expected here", "", aThis.E.position);
-    aThis.C.visit(this, null);
+      reporter.reportError("Integer expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
@@ -495,7 +495,72 @@ public final class Checker implements Visitor {
     return null;
   }
 
-  /* Agregar declaraci�n private Dec1 in Dec2 end */
+
+  /*Agregar declaracion RecDeclaration
+   * Fernanda Murillo
+  */
+  
+  public Object visitRecDeclaration(RECDeclaration ast, Object o) {
+    SequentialDeclaration seqAST = (SequentialDeclaration) ast.PFS;
+    
+    visitRecDeclarationAux(seqAST); // Inserta todos los identificadores en idTable con el uso de los metodos explicados abajo
+    
+    idTable.openScope(); // segunda mini pasada, procesa los cuerpos y PFS
+    ast.PFS.visit(this, null); // se visitan los cuerpos
+    idTable.closeScope();
+    
+    return null;
+  }
+  
+  private void visitRecDeclarationAux(SequentialDeclaration seqDeclAST){ // revisa si d1 y d2 son proc o func y los inserta en idTable de utilizando entreProc y entreFunc (recorrido a proc func)
+    if(seqDeclAST.D1 instanceof ProcDeclaration){ // si d1 es proc
+      ProcDeclaration procAST = (ProcDeclaration) seqDeclAST.D1;
+      enterProc(procAST); // lo inserta a la tabla
+    }
+    else if (seqDeclAST.D1 instanceof FuncDeclaration){ // si d1 es func 
+      FuncDeclaration funcAST = (FuncDeclaration) seqDeclAST.D1;
+      enterFunc(funcAST); // lo inserta a la tabla
+    }
+    else{
+      visitRecDeclarationAux((SequentialDeclaration) seqDeclAST.D1); // si no cumple ninguna se hace  llamada recursiva pasando d1 como SequentialDeclaration
+    }
+    
+    if(seqDeclAST.D2 instanceof ProcDeclaration){ // si d2 es proc
+      ProcDeclaration procAST = (ProcDeclaration) seqDeclAST.D2;
+      enterProc(procAST); // lo inserta a la tabla
+    }
+    else{
+      FuncDeclaration funcAST = (FuncDeclaration) seqDeclAST.D2;  // si d2 es func 
+      enterFunc(funcAST); // lo inserta a la tabla
+    }
+  }
+  
+  private void enterProc(ProcDeclaration procAST){ //recibe proc y lo guarda en idTable es la primer mini pasada (cuando se hace enter al ast completo)
+    idTable.enter (procAST.I.spelling, procAST);
+    if (procAST.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            procAST.I.spelling, procAST.position);
+    idTable.openScope();
+    procAST.FPS.visit(this, null);
+    idTable.closeScope();
+  }
+  
+  private void enterFunc(FuncDeclaration funcAST){ // recibe func y lo guarda en idTable es la primer mini pasada (cuando se hace enter al ast completo)
+    funcAST.T = (TypeDenoter)funcAST.T.visit(this, null);
+    idTable.enter (funcAST.I.spelling, funcAST);
+    if (funcAST.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+                            funcAST.I.spelling, funcAST.position);
+    idTable.openScope();
+    funcAST.FPS.visit(this, null);
+    idTable.closeScope();
+  }
+
+  
+  
+  /* Agregar declaracion private Dec1 in Dec2 end
+   * Fernanda Murillo
+  */
 
   public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
 
@@ -511,6 +576,7 @@ public final class Checker implements Visitor {
 
     return null;
   }
+  
 
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
     ast.D1.visit(this, null);
@@ -867,6 +933,7 @@ public final class Checker implements Visitor {
   }
 
   public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
+
     return ast.I.visit(this, null);
   }
 
@@ -964,10 +1031,8 @@ public final class Checker implements Visitor {
   }
 
   public Object visitBodySingle(BodySingle ast, Object o) {
-    ast.C.visit(this, null);
-    return null;
+    return ast.C.visit(this, null);
   }
-
   // Checks whether the source program, represented by its AST, satisfies the
   // language's scope rules and type rules.
   // Also decorates the AST as follows:
@@ -1177,7 +1242,7 @@ public final class Checker implements Visitor {
 
   // Commands to be implemented
 
-  public Object visitPackageDeclaration(PackageDeclaration aThis, Object o) {
+  public Object visitPackageDeclaration(PackageDeclaration ast, Object o) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitPackageDeclaration'");
   }
@@ -1187,11 +1252,7 @@ public final class Checker implements Visitor {
     throw new UnsupportedOperationException("Unimplemented method 'visitPackageIdentifier'");
   }
 
-  @Override
-  public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
-  }
+
 
   @Override
   public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
@@ -1200,81 +1261,195 @@ public final class Checker implements Visitor {
   }
 
   @Override
-  public Object visitSequentialCase(SequentialCase aThis, Object o) {
+  public Object visitSinglePackageDeclaration(SinglePackage ast, Object o) {
     throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
                                                                    // | Templates.
   }
 
   @Override
-  public Object visitSingleCase(SingleCase aThis, Object o) {
+  public Object visitSequentialPackageDeclaration(SequentialPackage ast, Object o) {
     throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
                                                                    // | Templates.
   }
 
   @Override
-  public Object visitSinglePackageDeclaration(SinglePackage aThis, Object o) {
+  public Object visitBodyComplex(BodyComplex ast, Object o) {
     throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
                                                                    // | Templates.
   }
 
   @Override
-  public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSelectCommandComplex(SelectCommandComplex ast, Object o) {
+    // Verify the type of the expression
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (!((eType.equals(StdEnvironment.integerType)) || (eType.equals(StdEnvironment.charType))))
+      reporter.reportError("Integer or Char expression expected here", "", ast.E.position);
+    SelectContextual selectInstace = new SelectContextual(eType);
+    Set literalsRagne = new HashSet();
+    ast.C.visit(this, selectInstace);
+    
+    idTable.openScope();
+    ast.elseCommand.visit(this, null);
+    idTable.closeScope();
+
+    return null;
   }
 
   @Override
-  public Object visitBodyComplex(BodyComplex aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSelectCommandSimple(SelectCommandSimple ast, Object o) {
+
+    // Verify the type of the expression
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (!((eType.equals(StdEnvironment.integerType)) || (eType.equals(StdEnvironment.charType))))
+      reporter.reportError("Integer or Char expression expected here", "", ast.E.position);
+
+    SelectContextual selectInstace = new SelectContextual(eType);
+    ast.C.visit(this, selectInstace);
+
+    return null;
   }
 
   @Override
-  public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSequentialCase(SequentialCase ast, Object o) {
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+    // visit the first case
+    ast.Case1.visit(this, selectInstace);
+    // visit the second case
+    ast.Case2.visit(this, selectInstace);
+    return null;
   }
 
   @Override
-  public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSingleCase(SingleCase ast, Object o) {
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+    // get the range of the case
+    ast.caseLiterals.visit(this, selectInstace);
+    // visit the command
+    idTable.openScope();
+    ast.commandAST.visit(this, null);
+    idTable.closeScope();
+    return null;
   }
 
   @Override
-  public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSequentialCaseLiterals(SequentialCaseLiterals ast, Object o) {
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+    // visit the first case
+    ast.caseLiteral1.visit(this, selectInstace);
+    // visit the second case
+    ast.caseLiteral2.visit(this, selectInstace);
+    return null;
   }
 
   @Override
-  public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSingleCaseLiterals(SingleCaseLiterals ast, Object o) {
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+    // get the range of the case
+    ast.caseRange.visit(this, selectInstace);
+    return null;
+
   }
 
   @Override
-  public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitCaseRangeSimple(CaseRangeSimple ast, Object o) {
+
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+
+    // if caseLitera is instace of Integer
+    if (ast.caseLiteral1 instanceof CaseLiteralInteger) {
+      int literal = Integer.parseInt((String) ast.caseLiteral1.visit(this, selectInstace));
+
+      // verify literal is not in the set
+      if (selectInstace.set.contains(literal))
+        reporter.reportError("The literal " + literal + " is overlapping with other literal case", "", ast.position);
+
+      // add the literal to the set
+      selectInstace.set.add(literal);
+
+    } else {
+      // if caseLitera is instace of Char
+      char literal = ((String) ast.caseLiteral1.visit(this, selectInstace)).charAt(1);
+      // verify literal is not in the set
+      if (selectInstace.set.contains(literal))
+        reporter.reportError("The literal " + literal + " is overlapping with other literal case", "", ast.position);
+
+      // add the literal to the set
+      selectInstace.set.add(literal);
+    }
+
+    return null;
+
   }
 
   @Override
-  public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitCaseRangeComplex(CaseRangeComplex ast, Object o) {
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+
+    // if caseLitera is instace of Integer
+    if (ast.caseLiteral1 instanceof CaseLiteralInteger) {
+      int literal1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, selectInstace));
+      int literal2 = Integer.parseInt((String) ast.caseLiteral2.visit(this, selectInstace));
+
+      // verify if the range is valid
+      if (literal1 > literal2) {
+        reporter.reportError("The range is not valid", "", ast.position);
+      }
+      // add the range to the set
+      for (int i = literal1; i <= literal2; i++) {
+        // verify if literal is not in the set
+        if (selectInstace.set.contains(i))
+          reporter.reportError("The literal " + i + " is overlapping with other literal case", "", ast.position);
+        selectInstace.set.add(i);
+      }
+    } else {
+      // if caseLitera is instace of Char
+      char literal1 = ((String)ast.caseLiteral1.visit(this, selectInstace)).charAt(1);
+      char literal2 = ((String) ast.caseLiteral2.visit(this, selectInstace)).charAt(1);
+      // verify if the range is valid
+      if (literal1 > literal2) {
+        reporter.reportError("The range is not valid", "", ast.position);
+      }
+      // add the range to the set
+      for (char i = literal1; i <= literal2; i++) {
+        // verify if literal is not in the set
+        if (selectInstace.set.contains(i))
+          reporter.reportError("The literal " + i + " is overlapping with other literal case", "", ast.position);
+
+        selectInstace.set.add(i);
+      }
+    }
+
+    return null;
+
   }
 
   @Override
-  public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitCaseLiteralInteger(CaseLiteralInteger ast, Object o) {
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+    ast.type = StdEnvironment.integerType;
+    // verify the type of the literal
+    if (!ast.type.equals(selectInstace.type)) 
+      reporter.reportError("The type of the literal is not the same as the type of the expression", "", ast.literal.position);
+    
+    return ast.literal.spelling;
   }
 
   @Override
-  public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitCaseLiteralChar(CaseLiteralChar ast, Object o) {
+    // casting of the selectContextualInstace
+    SelectContextual selectInstace = (SelectContextual) o;
+    ast.type = StdEnvironment.charType;
+    // verify the type of the literal
+    if (!ast.type.equals(selectInstace.type)) 
+      reporter.reportError("The type of the literal is not the same as the type of the expression", "", ast.literal.position);    
+    return ast.literal.spelling;
   }
 
 }

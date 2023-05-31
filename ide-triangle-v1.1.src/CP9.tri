@@ -1,0 +1,19 @@
+let 
+   private   
+  	var x := 1;
+  	var a := 2
+   in   
+  	private   
+  		var fernanda := x+1;
+  		var maynor := 2
+   	in   
+  		var y := fernanda;
+   		var b := maynor
+   	end  ;
+	var cesar := a
+
+   end   
+in
+ skip    
+end
+
