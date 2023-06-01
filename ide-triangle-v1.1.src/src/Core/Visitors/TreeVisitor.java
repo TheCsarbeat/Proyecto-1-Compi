@@ -272,6 +272,8 @@ public class TreeVisitor implements Visitor {
         return (createBinary("Variable Declaration", ast.I, ast.T));
     }
 
+    //visit of rec and procfunc
+
     public Object visitRecDeclaration(RECDeclaration ast, Object o) {
         return (createUnary("Recursive Declaration", ast.PFS));
     }
