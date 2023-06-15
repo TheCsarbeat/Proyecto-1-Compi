@@ -1,0 +1,7 @@
+repeat until 1 ! condición no booleana
+  do
+
+    putint (1)
+
+end
+

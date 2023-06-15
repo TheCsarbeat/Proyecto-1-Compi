@@ -1,0 +1,9 @@
+for x in [0, 1, 2, 4, 8, 16] do 
+    putint (x); ! x es un entero del arreglo
+    
+    for x in ['a', 'b', 'c'] do ! re-declara a x como Char
+        put (x) ! x es un caracter del arreglo. Esta x es más local que la externa, la x externa no es visible ahora.
+    end
+end
+
+!OK

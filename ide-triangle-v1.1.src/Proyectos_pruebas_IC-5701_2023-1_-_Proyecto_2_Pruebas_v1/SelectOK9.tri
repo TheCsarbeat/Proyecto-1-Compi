@@ -1,0 +1,9 @@
+select 0 from 
+  when 2 then putint (2)
+  when 4 then
+    ! select anidado
+    select 1 from
+      when 2 then putint (2) ! no importa que se repita, está en select anidado 
+      else putint (1)
+    end
+end

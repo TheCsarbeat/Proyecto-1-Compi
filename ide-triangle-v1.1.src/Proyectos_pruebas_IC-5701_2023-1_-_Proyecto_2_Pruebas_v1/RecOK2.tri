@@ -1,0 +1,18 @@
+! Revisa el tipo de declaracion recursiva - varias alternativas
+! Posterior (c) ve a anterior (b)
+
+let
+
+rec
+
+  proc a() ~ put ('Z') end 
+  |
+  func b() : Integer ~ 5
+  |
+  proc c() ~ putint (b()) end ! c ve a b
+
+end
+
+in
+  putint(1)
+end

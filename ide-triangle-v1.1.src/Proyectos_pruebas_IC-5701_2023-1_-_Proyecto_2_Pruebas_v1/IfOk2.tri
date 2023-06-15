@@ -1,0 +1,7 @@
+if 1=1 then puteol()
+| 2=2 then puteol()	! '|' agregado para un nuevo comando
+| 3=3 then puteol()	! '|' agregado para un nuevo comando
+else puteol()
+end
+
+! OK

@@ -1,0 +1,13 @@
+let
+
+  var k : Boolean
+
+in
+
+  for i := k .. 10 while i < 5 do ! k debe ser entera
+
+    putint (1) ! no es un error
+
+  end
+
+end

@@ -1,0 +1,16 @@
+select 'a' from
+
+  when 'b' then 
+    select '1' from
+
+      when '3' then putint (12)
+      
+      when 'a' then put ('a')
+
+      when '3' then putint (2) ! etiqueta repetida
+
+    end
+
+  when 'c' then putint (2)
+
+end

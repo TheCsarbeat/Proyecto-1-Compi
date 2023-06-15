@@ -1,0 +1,11 @@
+select 1 from
+
+  when 0 .. 8 then putint (1) 
+
+  when 17 then putint(2)
+
+  else put ('E')
+
+end
+
+! OK

@@ -1,0 +1,7 @@
+select 1 from
+
+  when 1 then putint (1) 
+
+  else putint (2)
+
+end ! OK contextual. Imprime 1 al ejecutar.

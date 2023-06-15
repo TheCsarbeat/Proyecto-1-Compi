@@ -1,0 +1,14 @@
+select 'a' from
+
+  when 'b' then 
+    select '1' from
+
+      when 3 then putint (12) ! 3 no es un caracter 
+
+      when '4' then putint (2)
+
+    end
+
+  when 'c' then putint (2)
+
+end

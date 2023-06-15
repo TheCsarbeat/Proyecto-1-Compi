@@ -1,0 +1,6 @@
+repeat 'h' times do ! error: 'h':Char no :Integer
+
+    putint (1) 
+
+end
+

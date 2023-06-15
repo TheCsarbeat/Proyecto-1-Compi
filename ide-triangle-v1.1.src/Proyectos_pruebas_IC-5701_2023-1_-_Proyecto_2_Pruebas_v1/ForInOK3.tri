@@ -1,0 +1,10 @@
+let 
+    var x := 'a'
+in
+    put(x); ! x es un caracter
+    for x in [0, 1, 2, 4, 8, 16] do ! x re-declarada
+        putint (x) ! x es un entero del arreglo. Es local y 'opaca' la x declarada arriba
+    end
+end
+
+! OK

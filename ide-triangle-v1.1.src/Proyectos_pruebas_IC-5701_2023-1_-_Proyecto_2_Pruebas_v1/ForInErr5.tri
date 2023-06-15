@@ -1,0 +1,7 @@
+for x in [0, 1, 2, 4, 8, 16] do 
+    putint (x); ! x es un entero del arreglo
+    
+    for x in ['a', 'b', 'c'] do ! x re-declarada
+        putint (x) ! x es un caracter del arreglo. error: para imprimir debería ser put(x)
+    end
+end

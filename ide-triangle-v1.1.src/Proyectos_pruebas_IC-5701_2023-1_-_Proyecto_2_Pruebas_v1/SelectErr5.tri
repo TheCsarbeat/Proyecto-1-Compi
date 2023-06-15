@@ -1,0 +1,12 @@
+select 1 * (2 + 2) from
+  when 2 .. 13 then putint (1213)
+  when 4 then ! error: 4 está en el rango 2 .. 13
+    select 3 from
+      when 5 then putint (1) ! no importa que se repita, porque está en select anidado
+      else putint (2)
+    end
+  else
+    put('E')
+end
+
+! Error en primer select: 4 está en el rango 2 .. 13
