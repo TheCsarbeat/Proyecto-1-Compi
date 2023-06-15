@@ -1,0 +1,4 @@
+for x in [0, 1, 3, 4, 8, 16] do 
+    putint(x);
+    x := x + 1 ! x no puede ser modificada
+end 

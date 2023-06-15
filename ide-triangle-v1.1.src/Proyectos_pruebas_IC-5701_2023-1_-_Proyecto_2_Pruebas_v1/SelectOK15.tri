@@ -1,0 +1,13 @@
+select 1 * (2 + 2) from
+  when 2 .. 13 then putint (123)
+  when 24 then
+    select 2 - 1 from
+      ! no importa que se repita 3 (interseca con range 2 .. 13), pero no hay conflicto, pues está en select anidado
+      when 3 then putint (243) 
+      else putint (241)
+    end
+  else
+    put('E')
+end
+
+! Ok

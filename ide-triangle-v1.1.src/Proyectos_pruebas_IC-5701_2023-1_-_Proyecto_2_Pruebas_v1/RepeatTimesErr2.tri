@@ -1,0 +1,6 @@
+repeat x * 10 times do ! Expresión está sintácticamente bien, pero variable x no está declarada
+
+    putint (1) 
+
+end
+

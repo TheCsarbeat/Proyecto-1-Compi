@@ -1,0 +1,11 @@
+let
+
+  const a ~ 1
+
+in
+
+  a := a + 1 ; ! debe dar un error, porque a fue declarada como una constante: no puede ser asignada
+  putint (a)
+
+end
+

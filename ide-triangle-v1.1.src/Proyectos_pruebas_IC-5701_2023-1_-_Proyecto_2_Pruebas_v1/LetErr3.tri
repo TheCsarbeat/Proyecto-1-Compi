@@ -1,0 +1,18 @@
+!  lets anidados, con error
+let
+
+  var a := 1 ! debe inferir que a : Integer
+
+in
+
+  let
+    const b ~ a ; ! es visible aquí, debe inferir que b es entera
+    var   a := chr(b + 1) ! debe inferir que nueva a : Char
+  in
+    putint (a) !ERROR: esta es la _nueva_ a, que es de tipo Char, falla como parámetro de putint
+  end
+
+end
+ 
+
+

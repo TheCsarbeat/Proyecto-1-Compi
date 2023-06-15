@@ -1,0 +1,10 @@
+let
+
+  var a := 1 ! el generador de código debe generar LOADL 1 en este punto
+
+in
+
+  putint (a) ! imprime 1
+
+end
+

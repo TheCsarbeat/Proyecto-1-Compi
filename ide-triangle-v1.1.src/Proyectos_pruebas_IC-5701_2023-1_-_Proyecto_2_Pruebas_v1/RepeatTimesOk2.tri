@@ -1,0 +1,8 @@
+repeat 
+ (let const x ~ 20 in x + 2) ! x está visible en x + 2
+ times do ! Expresión let está bien, además declara a x y es de tipo Integer
+
+    putint (1) 
+
+end
+

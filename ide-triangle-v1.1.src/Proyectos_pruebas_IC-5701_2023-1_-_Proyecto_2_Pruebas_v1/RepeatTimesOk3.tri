@@ -1,0 +1,5 @@
+repeat 'x' times do ! Expresión 'x' está sintácticamente bien, contextualmente mal
+    putint (1) 
+
+end
+
