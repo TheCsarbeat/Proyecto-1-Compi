@@ -356,7 +356,25 @@ public final class Encoder implements Visitor {
     patch(jumpAddr, nextInstrAddr);
     return new Integer(0);
   }
+  
+  /*
+    Varianble inicializada:
+        var Id := Exp
+    Fernanda Murillo
+  */
+  
+    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+        Frame frame = (Frame) o;
+        int extraSize;
 
+        extraSize = ((Integer) ast.E.visit(this, frame)).intValue(); // visita e para ver su tamaño
+        ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size); // se sabe donde está entonces se usa KnownAndress
+         
+        writeTableDetails(ast);
+        return new Integer(extraSize);
+  }
+    
+ 
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
     Frame frame = (Frame) o;
     int extraSize1, extraSize2;
@@ -749,7 +767,7 @@ public final class Encoder implements Visitor {
 
   // Programs
   public Object visitProgram(Program ast, Object o) {
-    ast.B.visit(this, null);
+    ast.B.visit(this, o);
     return null;
   }
 
@@ -1031,6 +1049,7 @@ public final class Encoder implements Visitor {
     }
   }
   
+  
   public Object visitForControl(ForCommand ast, Object o) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitForCommand'");
@@ -1076,10 +1095,7 @@ public final class Encoder implements Visitor {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
     @Override
     public Object visitWhileLoop(WhileLoop aThis, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -1107,7 +1123,8 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return ast.I.visit(this, o);
     }
 
     @Override
@@ -1140,7 +1157,7 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitBodySingle(BodySingle aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return aThis.C.visit(this, o);    
     }
 
     @Override

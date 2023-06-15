@@ -680,7 +680,10 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      ast.I.visit(this, o);
+      ast.E.visit(this, o);
+      ast.T.visit(this, o);
+      return null;
     }
 
     @Override
@@ -728,7 +731,7 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ast.I.visit(this, o);
     }
 
     @Override
@@ -765,8 +768,8 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitBodySingle(BodySingle aThis, Object o) {
-        aThis.C.visit(this, null);
-        return null;
+        
+        return aThis.C.visit(this, null);
     }
 
     @Override
