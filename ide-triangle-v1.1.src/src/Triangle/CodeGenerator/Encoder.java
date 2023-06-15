@@ -374,6 +374,22 @@ public final class Encoder implements Visitor {
         return new Integer(extraSize);
   }
     
+    /*
+    Private Declaration
+    Fernanda Murillo
+   */
+    
+    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
+        Frame frame = (Frame) o;
+        int extraSize1, extraSize2;
+
+        extraSize1 = ((Integer) ast.D1.visit(this, frame)).intValue(); // Cuanto crece la pila por D1
+        Frame frame1 = new Frame (frame, extraSize1); // se pone el valor de "extraSize" más de donde estaba
+        extraSize2 = ((Integer) ast.D2.visit(this, frame1)).intValue(); // Cuanto crece la pila por D2, frame1 ya toma en cuenta a D1.
+        return new Integer(extraSize1 + extraSize2); // la pila crece D1 + D2
+    }
+    
+    
  
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
     Frame frame = (Frame) o;
@@ -1090,10 +1106,6 @@ public final class Encoder implements Visitor {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
    
     @Override
