@@ -314,7 +314,7 @@ public final class Encoder implements Visitor {
     return new Integer(extraSize);
   }
 
-  public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {
+  public Object visitFuncDeclaration(FuncDeclaration ast, Object o) { // no hace crecer la pila
     Frame frame = (Frame) o;
     int jumpAddr = nextInstrAddr;
     int argsSize = 0, valSize = 0;
@@ -335,7 +335,7 @@ public final class Encoder implements Visitor {
     return new Integer(0);
   }
 
-  public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
+  public Object visitProcDeclaration(ProcDeclaration ast, Object o) { // no hace crecer la pila
     Frame frame = (Frame) o;
     int jumpAddr = nextInstrAddr;
     int argsSize = 0;
@@ -389,6 +389,27 @@ public final class Encoder implements Visitor {
         return new Integer(extraSize1 + extraSize2); // la pila crece D1 + D2
     }
     
+    /*
+    Rec Declaration
+    Fernanda Murillo
+   */
+    
+  
+    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
+        Frame frame = (Frame) o;
+        
+        int recAddr = nextInstrAddr; // recAddre contiene el punto entrada
+       
+        ast.PFS.visit(this, frame); // Crea entities y pone los puntos de entrada (encuentra entities incompletas y hace calls incompletas)
+        nextInstrAddr  = recAddr; // actualizar direccion
+        
+        ast.PFS.visit(this, frame); // Sobreescribir lo anterior, se "parcha" llamadas que no se conocia porque los entities están completos, emite calls
+        nextInstrAddr  = recAddr; // actualizar direccion
+        
+        ast.PFS.visit(this, frame); 
+        
+        return new Integer(0); // proc y func son de tamaño 0
+    }
     
  
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
@@ -1100,13 +1121,6 @@ public final class Encoder implements Visitor {
     public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
    
     @Override
     public Object visitWhileLoop(WhileLoop aThis, Object o) {
