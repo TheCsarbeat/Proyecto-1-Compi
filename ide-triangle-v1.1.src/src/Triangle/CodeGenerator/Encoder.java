@@ -767,7 +767,7 @@ public final class Encoder implements Visitor {
 
   // Programs
   public Object visitProgram(Program ast, Object o) {
-    ast.B.visit(this, null);
+    ast.B.visit(this, o);
     return null;
   }
 
@@ -1123,7 +1123,8 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return ast.I.visit(this, o);
     }
 
     @Override
@@ -1156,7 +1157,8 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitBodySingle(BodySingle aThis, Object o) {
-        return aThis.C.visit(this, o);    }
+        return aThis.C.visit(this, o);    
+    }
 
     @Override
     public Object visitBodyComplex(BodyComplex aThis, Object o) {
