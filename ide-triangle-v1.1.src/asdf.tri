@@ -1,9 +1,1 @@
-select 1 from
-
-  when 0 then putint (1)
-
-  when 7 then putint(2)
-
-end
-
-! OK
+for x in [1,2] do putint(x) end
