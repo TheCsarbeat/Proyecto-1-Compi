@@ -197,14 +197,32 @@ public final class Encoder implements Visitor {
   public Object visitForCommand(ForCommand ast, Object o) {
     // Frame frame = (Frame) o;
     // int jumpAddr, loopAddr;
-
+    
+    // ast.E2.visit(this, frame);
+    // ast.E1.visit(this, frame);
+    
     // jumpAddr = nextInstrAddr;
     // emit(Machine.JUMPop, 0, Machine.CBr, 0);
     // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
+    
+    // ast.C.visit(this, new Frame(frame, 2));
+    
+    // emit(Machine.LOADop, 1, displayRegister(frame.level, frame.level), frame.size + 1);
+    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+    // emit(Machine.STOREop, 1, displayRegister(frame.level, frame.level), frame.size + 1);
+    
     // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
+    
+    // emit(Machine.LOADop, 1, displayRegister(frame.level,
+	  //    frame.level), frame.size + 1);
+    // emit(Machine.LOADop, 1, displayRegister(frame.level,
+	  //    frame.level), frame.size);
+    
+    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.leDisplacement);
     // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    
+    // emit(Machine.POPop, 0, 0, 2);
+
     return null;
   }
 
@@ -237,6 +255,8 @@ public final class Encoder implements Visitor {
   }
 
   //repeat loops
+  
+  //repeat while E do C end
   public Object visitWhileLoop(WhileLoop aThis, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
@@ -244,13 +264,14 @@ public final class Encoder implements Visitor {
     jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
     loopAddr = nextInstrAddr;
-    ast.C.visit(this, frame);
+    aThis.C.visit(this, frame);
     patch(jumpAddr, nextInstrAddr);
-    ast.E.visit(this, frame);
+    aThis.E.visit(this, frame);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
+  ////repeat until E do C end
   public Object visitUntilLoop(UntilLoop aThis, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
@@ -258,14 +279,14 @@ public final class Encoder implements Visitor {
     jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
     loopAddr = nextInstrAddr;
-    ast.C.visit(this, frame);
+    aThis.C.visit(this, frame);
     patch(jumpAddr, nextInstrAddr);
-    ast.E.visit(this, frame);
-    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    aThis.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
     return null;
   }
 
-
+  // repeat Exp times do Com end
   public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
@@ -273,40 +294,32 @@ public final class Encoder implements Visitor {
     jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
     loopAddr = nextInstrAddr;
-    ast.C.visit(this, frame);
+    aThis.C.visit(this, frame);
     patch(jumpAddr, nextInstrAddr);
-    ast.E.visit(this, frame);
+    aThis.E.visit(this, frame);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
-
+  // repeat do C while E end
   public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
     Frame frame = (Frame) o;
-    int jumpAddr, loopAddr;
-
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    int loopAddr;
     loopAddr = nextInstrAddr;
-    ast.C.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
-    ast.E.visit(this, frame);
+    aThis.C.visit(this, frame);
+    aThis.E.visit(this, frame);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
-
+  // repeat do C until E end
   public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
     Frame frame = (Frame) o;
-    int jumpAddr, loopAddr;
-
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    int loopAddr;
     loopAddr = nextInstrAddr;
-    ast.C.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
-    ast.E.visit(this, frame);
-    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    aThis.C.visit(this, frame);
+    aThis.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
     return null;
   }
 
