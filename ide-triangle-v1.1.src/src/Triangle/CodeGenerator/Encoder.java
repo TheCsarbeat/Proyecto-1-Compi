@@ -193,6 +193,123 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  //For Loops
+  public Object visitForCommand(ForCommand ast, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
+  public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
+  public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
+  //repeat loops
+  public Object visitWhileLoop(WhileLoop aThis, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
+  public Object visitUntilLoop(UntilLoop aThis, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
+
+  public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
+
+  public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
+
+  public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
+    // Frame frame = (Frame) o;
+    // int jumpAddr, loopAddr;
+
+    // jumpAddr = nextInstrAddr;
+    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    // loopAddr = nextInstrAddr;
+    // ast.C.visit(this, frame);
+    // patch(jumpAddr, nextInstrAddr);
+    // ast.E.visit(this, frame);
+    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    return null;
+  }
+
   // Expressions
   public Object visitArrayExpression(ArrayExpression ast, Object o) {
     ast.type.visit(this, null);
@@ -367,8 +484,8 @@ public final class Encoder implements Visitor {
         Frame frame = (Frame) o;
         int extraSize;
 
-        extraSize = ((Integer) ast.E.visit(this, frame)).intValue(); // visita e para ver su tamaÒo
-        ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size); // se sabe donde est· entonces se usa KnownAndress
+        extraSize = ((Integer) ast.E.visit(this, frame)).intValue(); // visita e para ver su tama√±o
+        ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size); // se sabe donde est√° entonces se usa KnownAndress
          
         writeTableDetails(ast);
         return new Integer(extraSize);
@@ -384,7 +501,7 @@ public final class Encoder implements Visitor {
         int extraSize1, extraSize2;
 
         extraSize1 = ((Integer) ast.D1.visit(this, frame)).intValue(); // Cuanto crece la pila por D1
-        Frame frame1 = new Frame (frame, extraSize1); // se pone el valor de "extraSize" m·s de donde estaba
+        Frame frame1 = new Frame (frame, extraSize1); // se pone el valor de "extraSize" m√°s de donde estaba
         extraSize2 = ((Integer) ast.D2.visit(this, frame1)).intValue(); // Cuanto crece la pila por D2, frame1 ya toma en cuenta a D1.
         return new Integer(extraSize1 + extraSize2); // la pila crece D1 + D2
     }
@@ -403,12 +520,12 @@ public final class Encoder implements Visitor {
         ast.PFS.visit(this, frame); // Crea entities y pone los puntos de entrada (encuentra entities incompletas y hace calls incompletas)
         nextInstrAddr  = recAddr; // actualizar direccion
         
-        ast.PFS.visit(this, frame); // Sobreescribir lo anterior, se "parcha" llamadas que no se conocia porque los entities est·n completos, emite calls
+        ast.PFS.visit(this, frame); // Sobreescribir lo anterior, se "parcha" llamadas que no se conocia porque los entities est√°n completos, emite calls
         nextInstrAddr  = recAddr; // actualizar direccion
         
         ast.PFS.visit(this, frame); 
         
-        return new Integer(0); // proc y func son de tamaÒo 0
+        return new Integer(0); // proc y func son de tama√±o 0
     }
     
  
@@ -807,6 +924,10 @@ public final class Encoder implements Visitor {
     ast.B.visit(this, o);
     return null;
   }
+  
+  public Object visitBodySingle(BodySingle aThis, Object o) {
+    return aThis.C.visit(this, null);
+  }
 
   public Encoder (ErrorReporter reporter) {
     this.reporter = reporter;
@@ -1091,24 +1212,6 @@ public final class Encoder implements Visitor {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitForCommand'");
   }
-  
-  @Override
-  public Object visitForCommand(ForCommand ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForCommand'");
-  }
-
-  @Override
-  public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForWhileCommand'");
-  }
-
-  @Override
-  public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'visitForUntilCommand'");
-  }
 
   @Override
   public Object visitForInCommand(ForInCommand ast, Object o) {
@@ -1121,30 +1224,20 @@ public final class Encoder implements Visitor {
     public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-   
+
     @Override
-    public Object visitWhileLoop(WhileLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Object visitUntilLoop(UntilLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
