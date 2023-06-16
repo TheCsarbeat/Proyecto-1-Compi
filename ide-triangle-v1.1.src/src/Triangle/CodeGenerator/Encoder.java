@@ -238,75 +238,75 @@ public final class Encoder implements Visitor {
 
   //repeat loops
   public Object visitWhileLoop(WhileLoop aThis, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
 
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
-    // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
   public Object visitUntilLoop(UntilLoop aThis, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
 
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
-    // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
 
   public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
 
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
-    // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
 
   public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
 
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
-    // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
 
   public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
 
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
-    // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
@@ -926,7 +926,7 @@ public final class Encoder implements Visitor {
   }
   
   public Object visitBodySingle(BodySingle aThis, Object o) {
-    return aThis.C.visit(this, null);
+    return aThis.C.visit(this, o);
   }
 
   public Encoder (ErrorReporter reporter) {
@@ -1226,21 +1226,6 @@ public final class Encoder implements Visitor {
     }
 
     @Override
-    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
         
         return ast.I.visit(this, o);
@@ -1272,11 +1257,6 @@ public final class Encoder implements Visitor {
     @Override
     public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitBodySingle(BodySingle aThis, Object o) {
-        return aThis.C.visit(this, o);    
     }
 
     @Override
