@@ -510,7 +510,6 @@ public final class Encoder implements Visitor {
     Rec Declaration
     Fernanda Murillo
    */
-    
   
     public Object visitRecDeclaration(RECDeclaration ast, Object o) {
         Frame frame = (Frame) o;
@@ -1222,21 +1221,6 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
