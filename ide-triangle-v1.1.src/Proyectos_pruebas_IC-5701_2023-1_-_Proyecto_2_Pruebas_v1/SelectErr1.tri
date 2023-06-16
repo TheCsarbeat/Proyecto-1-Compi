@@ -1,0 +1,7 @@
+select 1 from
+
+  when 'a' then putint (1) ! no debería ser literal de caracter
+
+  when 2 then putint (2)
+
+end

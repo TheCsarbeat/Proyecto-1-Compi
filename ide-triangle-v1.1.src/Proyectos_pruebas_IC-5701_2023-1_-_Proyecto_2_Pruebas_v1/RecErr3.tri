@@ -1,0 +1,24 @@
+! Nombre de función repetido 
+
+
+let
+
+  rec
+
+    func f (): Integer ~ 1
+
+    |
+
+    func g (b : Integer): Integer ~ 3
+
+    |
+
+    func f (a : Integer): Integer ~ 2 ! es inválido repetir nombres en una declaración mutuamente recursiva
+
+  end
+
+in
+
+  putint(f(10)) ! aquí­ también podrí­a haber alguna dificultad, depende de cuál f está visible en la Tabla de Identificación
+
+end

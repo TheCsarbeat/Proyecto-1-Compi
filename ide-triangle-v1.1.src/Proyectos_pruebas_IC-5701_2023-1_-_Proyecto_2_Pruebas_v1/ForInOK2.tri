@@ -1,0 +1,10 @@
+for x in [0, 1, 2, 4, 8, 16] do 
+    putint (x); ! x es un entero del arreglo
+    let 
+        var x := 'a' ! x re-declarada como (literal de) Char
+    in
+        put(x) ! x es un caracter. put es válido
+    end
+end
+
+! OK

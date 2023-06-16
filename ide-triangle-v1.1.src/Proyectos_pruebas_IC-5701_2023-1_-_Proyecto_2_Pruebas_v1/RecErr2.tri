@@ -1,0 +1,20 @@
+! Declaraciones mutuamente recursivas, con número de parámetros incorrecto
+
+
+let
+
+  rec
+
+    func f (a : Integer): Integer ~ if a > 0 then g(a - 1) else 0 ! if expression no lleva end. Error: llama a g con solo un parámetro
+
+    |
+
+    func g (b : Integer, c: Boolean): Integer ~ if c then f(1) else 0 ! if expression no lleva end
+
+  end
+
+in
+
+  putint(f(10)) 
+
+end

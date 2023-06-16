@@ -1,0 +1,5 @@
+for x in [0, 1, 2, 4, 8, 16] do 
+    putint (x); ! x es un entero del arreglo
+    
+    getint(var x)  ! la variable protegida x no debe pasarse por variable
+end

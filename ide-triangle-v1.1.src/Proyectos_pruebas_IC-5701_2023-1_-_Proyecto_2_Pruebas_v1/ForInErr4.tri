@@ -1,0 +1,4 @@
+for x in [0, 1, 3, 4, 8, 16] do 
+    putint(x)
+end; ! termina alcance de x
+putint(x) ! x no es visible aquí­

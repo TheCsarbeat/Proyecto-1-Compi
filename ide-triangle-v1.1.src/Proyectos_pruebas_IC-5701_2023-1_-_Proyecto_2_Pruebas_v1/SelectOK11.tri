@@ -1,0 +1,11 @@
+select 0 from 
+  when 1 then putint (1)
+  when 4 then
+    select 1 from
+      ! no importa que se repita, está en select anidado
+      when 1 .. 3 then putint (1) 
+      else putint (2)
+    end
+  else
+    put('E')
+end

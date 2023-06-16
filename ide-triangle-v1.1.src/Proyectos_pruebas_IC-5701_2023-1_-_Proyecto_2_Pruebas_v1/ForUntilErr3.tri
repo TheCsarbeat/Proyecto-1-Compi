@@ -1,0 +1,15 @@
+let
+
+  var k : Boolean
+
+in
+
+  for i := 1 .. k until i > 5 do ! k debería ser entera: error, porque es booleana
+
+    k := k + 1 ; 
+
+    putint (1) ! no es un error
+
+  end
+
+end

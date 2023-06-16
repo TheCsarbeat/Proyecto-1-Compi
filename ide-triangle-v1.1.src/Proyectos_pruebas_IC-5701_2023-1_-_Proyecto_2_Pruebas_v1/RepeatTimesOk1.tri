@@ -1,0 +1,6 @@
+repeat 101 times do ! Ok 101:Integer
+
+    putint (1) 
+
+end
+

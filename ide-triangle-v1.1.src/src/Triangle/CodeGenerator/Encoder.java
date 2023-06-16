@@ -431,7 +431,7 @@ public final class Encoder implements Visitor {
     return new Integer(extraSize);
   }
 
-  public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {
+  public Object visitFuncDeclaration(FuncDeclaration ast, Object o) { // no hace crecer la pila
     Frame frame = (Frame) o;
     int jumpAddr = nextInstrAddr;
     int argsSize = 0, valSize = 0;
@@ -452,7 +452,7 @@ public final class Encoder implements Visitor {
     return new Integer(0);
   }
 
-  public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
+  public Object visitProcDeclaration(ProcDeclaration ast, Object o) { // no hace crecer la pila
     Frame frame = (Frame) o;
     int jumpAddr = nextInstrAddr;
     int argsSize = 0;
@@ -473,7 +473,62 @@ public final class Encoder implements Visitor {
     patch(jumpAddr, nextInstrAddr);
     return new Integer(0);
   }
+  
+  /*
+    Varianble inicializada:
+        var Id := Exp
+    Fernanda Murillo
+  */
+  
+    public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
+        Frame frame = (Frame) o;
+        int extraSize;
 
+        extraSize = ((Integer) ast.E.visit(this, frame)).intValue(); // visita e para ver su tamaño
+        ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size); // se sabe donde está entonces se usa KnownAndress
+         
+        writeTableDetails(ast);
+        return new Integer(extraSize);
+  }
+    
+    /*
+    Private Declaration
+    Fernanda Murillo
+   */
+    
+    public Object visitPrivateDeclaration(PrivateDeclaration ast, Object o) {
+        Frame frame = (Frame) o;
+        int extraSize1, extraSize2;
+
+        extraSize1 = ((Integer) ast.D1.visit(this, frame)).intValue(); // Cuanto crece la pila por D1
+        Frame frame1 = new Frame (frame, extraSize1); // se pone el valor de "extraSize" más de donde estaba
+        extraSize2 = ((Integer) ast.D2.visit(this, frame1)).intValue(); // Cuanto crece la pila por D2, frame1 ya toma en cuenta a D1.
+        return new Integer(extraSize1 + extraSize2); // la pila crece D1 + D2
+    }
+    
+    /*
+    Rec Declaration
+    Fernanda Murillo
+   */
+    
+  
+    public Object visitRecDeclaration(RECDeclaration ast, Object o) {
+        Frame frame = (Frame) o;
+        
+        int recAddr = nextInstrAddr; // recAddre contiene el punto entrada
+       
+        ast.PFS.visit(this, frame); // Crea entities y pone los puntos de entrada (encuentra entities incompletas y hace calls incompletas)
+        nextInstrAddr  = recAddr; // actualizar direccion
+        
+        ast.PFS.visit(this, frame); // Sobreescribir lo anterior, se "parcha" llamadas que no se conocia porque los entities están completos, emite calls
+        nextInstrAddr  = recAddr; // actualizar direccion
+        
+        ast.PFS.visit(this, frame); 
+        
+        return new Integer(0); // proc y func son de tamaño 0
+    }
+    
+ 
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
     Frame frame = (Frame) o;
     int extraSize1, extraSize2;
@@ -866,7 +921,7 @@ public final class Encoder implements Visitor {
 
   // Programs
   public Object visitProgram(Program ast, Object o) {
-    ast.B.visit(this, null);
+    ast.B.visit(this, o);
     return null;
   }
   
@@ -1152,6 +1207,7 @@ public final class Encoder implements Visitor {
     }
   }
   
+  
   public Object visitForControl(ForCommand ast, Object o) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitForCommand'");
@@ -1186,7 +1242,8 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return ast.I.visit(this, o);
     }
 
     @Override
@@ -1215,6 +1272,11 @@ public final class Encoder implements Visitor {
     @Override
     public Object visitSequentialPackageDeclaration(SequentialPackage aThis, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object visitBodySingle(BodySingle aThis, Object o) {
+        return aThis.C.visit(this, o);    
     }
 
     @Override
