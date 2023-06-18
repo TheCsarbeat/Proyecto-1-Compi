@@ -452,6 +452,29 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
 
       case Token.REPEAT: {
         acceptIt();
+        Expression eAST = null;
+        try {
+            eAST = parseExpression();
+        } catch (SyntaxError s) {
+            syntacticError("\"%\" is not a valid token after a REPEAT command", currentToken.spelling);
+        }
+
+        if (eAST != null) {
+            switch (currentToken.kind) {
+                case Token.TIMES: {
+                    acceptIt();
+                    accept(Token.DO);
+                    Command cAST = parseCommand();
+                    accept(Token.END);
+                    finish(commandPos);
+                    commandAST = new RepeatTimes(eAST, cAST, commandPos);
+                }
+                break;
+                default:
+                    syntacticError("\"%\" is not a valid token after an expression in a REPEAT command", currentToken.spelling);
+                    break;
+            }
+        } else {
         switch (currentToken.kind) {
 
           case Token.DO: {
@@ -460,7 +483,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
             switch (currentToken.kind) {
               case Token.WHILE: {
                 acceptIt();
-                Expression eAST = parseExpression();
+                eAST = parseExpression();
                 accept(Token.END);
                 finish(commandPos);
                 commandAST = new DoWhileLoop(cAST, eAST, commandPos);
@@ -468,7 +491,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                 break;
               case Token.UNTIL: {
                 acceptIt();
-                Expression eAST = parseExpression();
+                eAST = parseExpression();
                 accept(Token.END);
                 finish(commandPos);
                 commandAST = new DoUntilLoop(cAST, eAST, commandPos);
@@ -483,7 +506,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
             break;
           case Token.WHILE: {
             acceptIt();
-            Expression eAST = parseExpression();
+            eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
             accept(Token.END);
@@ -493,7 +516,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
             break;
           case Token.UNTIL: {
             acceptIt();
-            Expression eAST = parseExpression();
+            eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
             accept(Token.END);
@@ -503,7 +526,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
             break;
 
           case Token.IDENTIFIER: {
-            Expression eAST = parseExpression();
+            eAST = parseExpression();
             accept(Token.TIMES);
             accept(Token.DO);
             Command cAST = parseCommand();
@@ -519,8 +542,8 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
             break;
         }
       }
-        break;
-
+    }
+      break;
       /*
         Agregar:
         | "let" Declaration "in" Command "end"

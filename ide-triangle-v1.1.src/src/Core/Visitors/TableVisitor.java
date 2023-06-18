@@ -175,6 +175,54 @@ public class TableVisitor implements Visitor {
       
       return(null);
   }
+  
+   
+  public Object visitForCommand(ForCommand ast, Object o) {
+      ast.D.visit(this, null);
+      ast.E2.visit(this, null);
+      ast.C.visit(this, null);
+      
+      return(null);
+  }
+  
+  public Object visitWhileLoop(WhileLoop ast, Object o) {
+      ast.E.visit(this, null);
+      ast.C.visit(this, null);
+      
+      return(null);
+  }
+
+    @Override
+    public Object visitUntilLoop(UntilLoop ast, Object o) {
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);
+
+        return(null);
+    }
+
+    @Override
+    public Object visitRepeatTimes(RepeatTimes ast, Object o) {
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);
+
+        return(null);
+    }
+
+    @Override
+    public Object visitDoWhileLoop(DoWhileLoop ast, Object o) {
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);
+
+        return(null);
+    }
+
+    @Override
+    public Object visitDoUntilLoop(DoUntilLoop ast, Object o) {
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);
+
+        return(null);
+    }
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" Expressions ">
@@ -281,6 +329,32 @@ public class TableVisitor implements Visitor {
 
       return(null);
   }
+  
+  public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+      String name = ast.I.spelling;
+      String type = "N/A";
+      try {
+        int size = (ast.entity!=null?ast.entity.size:0);
+        int level = -1;
+        int displacement = -1;
+        int value = -1;
+      
+        if (ast.entity instanceof KnownValue) {
+              type = "KnownValue";
+              value = ((KnownValue)ast.entity).value;
+          }
+          else if (ast.entity instanceof UnknownValue) {
+              type = "UnknownValue";
+              level = ((UnknownValue)ast.entity).address.level;
+              displacement = ((UnknownValue)ast.entity).address.displacement;
+          }
+          addIdentifier(name, type, size, level, displacement, value);
+      } catch (NullPointerException e) { }
+      
+      ast.E1.visit(this, null);
+      ast.I.visit(this, null);
+
+      return(null);}
   
   public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {    
       try {
@@ -690,11 +764,6 @@ public class TableVisitor implements Visitor {
     }
 
     @Override
-    public Object visitForCommand(ForCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -707,29 +776,6 @@ public class TableVisitor implements Visitor {
     @Override
     public Object visitForInCommand(ForInCommand ast, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    public Object visitWhileLoop(WhileLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitUntilLoop(UntilLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitRepeatTimes(RepeatTimes aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitDoWhileLoop(DoWhileLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Object visitDoUntilLoop(DoUntilLoop aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
@@ -819,11 +865,6 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitForVarDeclaration(ForVarDeclaration aThis, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
