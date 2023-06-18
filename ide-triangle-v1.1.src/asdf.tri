@@ -1,10 +1,3 @@
-let
+if 9 = 9 then putint(1) else putint(2) end
 
-  var a := 1 ! el generador de código debe generar LOADL 1 en este punto
-
-in
-
-  putint (a) ! imprime 1
-
-end
-
+! OK, if then else simple

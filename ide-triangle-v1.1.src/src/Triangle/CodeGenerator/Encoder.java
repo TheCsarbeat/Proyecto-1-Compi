@@ -332,8 +332,10 @@ public final class Encoder implements Visitor {
   public Object visitBinaryExpression(BinaryExpression ast, Object o) {
     Frame frame = (Frame) o;
     Integer valSize = (Integer) ast.type.visit(this, null);
+    //ast.E1.visit(this, frame);
     int valSize1 = ((Integer) ast.E1.visit(this, frame)).intValue();
     Frame frame1 = new Frame(frame, valSize1);
+    //ast.E2.visit(this, frame1);
     int valSize2 = ((Integer) ast.E2.visit(this, frame1)).intValue();
     Frame frame2 = new Frame(frame.level, valSize1 + valSize2);
     ast.O.visit(this, frame2);
@@ -1250,15 +1252,7 @@ public final class Encoder implements Visitor {
 
     
 
-    @Override
-    public Object visitSequentialCase(SequentialCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    @Override
-    public Object visitSingleCase(SingleCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
 
     @Override
@@ -1276,14 +1270,65 @@ public final class Encoder implements Visitor {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+
+    //Select Command
+    /*
+     * Maynor Martínez
+     */
+
+
     @Override
-    public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object visitSelectCommandComplex(SelectCommandComplex ast, Object o) {
+        // get the frame of the select command
+        Frame frame = (Frame) o;
+        ast.E.visit(this, frame); //evaluate the expression       
+        ast.C.visit(this, frame); //evaluate the cases
+
+        int jumpAddrElse = nextInstrAddr;
+        emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the else command
+        
+        ast.elseCommand.visit(this, frame); //evaluate the else command
+        patch(jumpAddrElse, nextInstrAddr);
+        return null;
     }
 
     @Override
-    public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object visitSelectCommandSimple(SelectCommandSimple ast, Object o) {
+        // get the frame of the select command
+        Frame frame = (Frame) o;
+        ast.E.visit(this, frame); //evaluate the expression       
+        ast.C.visit(this, frame); //evaluate the cases
+
+        
+        return null;
+        
+    }
+
+    @Override
+    public Object visitSequentialCase(SequentialCase ast, Object o) {
+      ast.Case1.visit(this, o);
+      ast.Case2.visit(this, o);
+      return null;
+    }
+
+    @Override
+    public Object visitSingleCase(SingleCase ast, Object o) {
+        // get the frame of the case 
+        Frame frame = (Frame) o;
+        ast.caseLiterals.visit(this, frame);
+
+        int jumpAddrCase = nextInstrAddr;
+        emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
+
+        // pop de dup value
+        emit(Machine.POPop, 0, 0, 1);
+        ast.commandAST.visit(this, frame);
+        patch(jumpAddrCase, nextInstrAddr);
+
+      
+        return null;
+
+
     }
 
     @Override
@@ -1293,22 +1338,38 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
+        // get the frame of the case
+        Frame frame = (Frame) o;
+        //evaluate the case range
+        aThis.caseRange.visit(this, frame);
+        
+        return null;
+    }
+
+    @Override
+    public Object visitCaseRangeSimple(CaseRangeSimple ast, Object o) {
+        // get the frame of the case
+        Frame frame = (Frame) o;
+        //evaluate the caseLiteral 1 and store it in the stack
+        int valueLiteral = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+        int displacement = 17; //displacement of the eq instruction
+            
+        emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST]   
+        emit(Machine.LOADLop, 0, 0, valueLiteral); // LOADL the value of the caseLiteral1  
+        emit(Machine.LOADLop, 0, 0, 1); // LOADL the size of the frame   
+        emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement); //call the function to compare the value of the expression with the value of the caseLiteral1
+       
+        return null;
+    }
+
+    @Override
+    public Object visitCaseRangeComplex(CaseRangeComplex ast, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object visitCaseLiteralInteger(CaseLiteralInteger ast, Object o) {
+        return ast.literal.spelling;
     }
 
     @Override

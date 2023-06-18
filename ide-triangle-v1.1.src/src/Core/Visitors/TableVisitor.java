@@ -746,12 +746,16 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitSequentialCase(SequentialCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.Case1.visit(this, null);
+        aThis.Case2.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitSingleCase(SingleCase aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.caseLiterals.visit(this, null);
+        aThis.commandAST.visit(this, null);       
+        return null;
     }
 
     @Override
@@ -784,42 +788,55 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.E.visit(this, null);
+        aThis.C.visit(this, null);
+        aThis.elseCommand.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.E.visit(this, null);
+        aThis.C.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.caseLiteral1.visit(this, null);
+        aThis.caseLiteral2.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.caseRange.visit(this, null);        
+        return null;
     }
 
     @Override
     public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.caseLiteral1.visit(this, null);       
+        return null;
     }
 
     @Override
     public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.caseLiteral1.visit(this, null);
+        aThis.caseLiteral2.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.literal.visit(this, null);
+        return null;
     }
 
     @Override
     public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        aThis.literal.visit(this, null);
+        return null;
     }
 
     @Override

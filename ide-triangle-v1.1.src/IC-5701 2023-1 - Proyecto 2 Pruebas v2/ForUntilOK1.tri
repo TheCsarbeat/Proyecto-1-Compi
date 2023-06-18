@@ -1,6 +1,6 @@
 let
 
-  var k init 1
+  var k := 1
 
 in
 

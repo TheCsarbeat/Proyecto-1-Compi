@@ -1,4 +1,4 @@
-select 1 from
+select 1 from 
 
   when 0 then putint (1)
 
@@ -6,4 +6,4 @@ select 1 from
 
 end
 
-! else OK
+! else OK. No falla al ejecutar.

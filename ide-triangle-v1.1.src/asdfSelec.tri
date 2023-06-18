@@ -1,0 +1,16 @@
+let
+
+  var a := 8 ! el generador de c?digo debe generar LOADL 1 en este punto
+
+in
+
+	select a from 
+
+		when 1 then put('A')	
+		when 2 then put('B')
+		!when 3 then put('C')
+	!else  put('Z')
+	end
+	
+
+end

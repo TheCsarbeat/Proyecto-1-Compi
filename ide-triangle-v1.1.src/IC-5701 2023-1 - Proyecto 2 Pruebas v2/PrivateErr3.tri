@@ -1,0 +1,21 @@
+
+let
+
+  private
+    const a ~ 1
+  in
+
+    private
+      const b ~ a + 1 ! a visible aquí­
+    in
+      const c ~ b + a ! a y b visibles aquí
+    end
+    ;
+    const d ~ a + c ! a y c visibles aquí, b no es visible aquí
+  end
+
+in
+
+  putint(b) ! b no debe ser visible aquí­
+
+end

@@ -1,4 +1,4 @@
-select 1 from
+select 1 from 
 
   when 0 .. 1 then putint (1)
 
