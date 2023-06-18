@@ -1283,14 +1283,31 @@ public final class Encoder implements Visitor {
     public Object visitSelectCommandComplex(SelectCommandComplex ast, Object o) {
         // get the frame of the select command
         Frame frame = (Frame) o;
-        ast.E.visit(this, frame); //evaluate the expression       
-        ast.C.visit(this, frame); //evaluate the cases
+        ast.E.visit(this, frame); //evaluate the expression   
 
-        int jumpAddrElse = nextInstrAddr;
-        emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the else command
+        //create the selectEconcder object 
+        SelectEncoder selectEnconder =  new SelectEncoder(frame);
+        selectEnconder.elseCommand = ast.elseCommand;
+        if (ast.C instanceof SequentialCase){
+          selectEnconder.caseType = 0;
+          selectEnconder.caseLevel = 0;
+        }
+        else{
+          selectEnconder.caseType = 1;
+          selectEnconder.setLastCase(true);
+          
+        }
+        ast.C.visit(this, selectEnconder);
+        //case Type 0 means that the cases are sequential, 1 means that the cases are single        
+        System.out.println("jumpAddress: " + selectEnconder.jumpAddress);
+        //for to patch the jump address of the cases
+        for (int i = 0; i < selectEnconder.jumpAddress.size(); i++){
+          patch(selectEnconder.jumpAddress.get(i), nextInstrAddr);
+        }
+        //pop the value of the expression
+        //patch(jumpSelectEnd, nextInstrAddr);
+        emit(Machine.POPop, 0, 0, 1);
         
-        ast.elseCommand.visit(this, frame); //evaluate the else command
-        patch(jumpAddrElse, nextInstrAddr);
         return null;
     }
 
@@ -1298,29 +1315,24 @@ public final class Encoder implements Visitor {
     public Object visitSelectCommandSimple(SelectCommandSimple ast, Object o) {
         // get the frame of the select command
         Frame frame = (Frame) o;
-
         ast.E.visit(this, frame); //evaluate the expression   
-        //create the selectEconcder object 
-        SelectEconcder selectEconcder;
-        int jumpSelectEnd = 0;
+
+         SelectEncoder selectEnconder =  new SelectEncoder(frame);
         if (ast.C instanceof SequentialCase){
-          selectEconcder = new SelectEconcder(0, frame);
-          selectEconcder.caseLevel = 0;
+          selectEnconder.caseType = 0;
+          selectEnconder.caseLevel = 0;          
         }
         else{
-          selectEconcder = new SelectEconcder(1, frame);    
-          selectEconcder.setLastCase(true);
+          selectEnconder.caseType = 1;
+          selectEnconder.setLastCase(true);
+          
         }
-        selectEconcder.jumpAddress = new ArrayList<Integer>();;
-
-        //case Type 0 means that the cases are sequential, 1 means that the cases are single
-        ast.C.visit(this, selectEconcder); //evaluate the cases
-
-        System.out.println("jumpAddress: " + selectEconcder.jumpAddress);
-
+        ast.C.visit(this, selectEnconder);
+        //case Type 0 means that the cases are sequential, 1 means that the cases are single        
+        System.out.println("jumpAddress: " + selectEnconder.jumpAddress);
         //for to patch the jump address of the cases
-        for (int i = 0; i < selectEconcder.jumpAddress.size(); i++){
-          patch(selectEconcder.jumpAddress.get(i), nextInstrAddr);
+        for (int i = 0; i < selectEnconder.jumpAddress.size(); i++){
+          patch(selectEnconder.jumpAddress.get(i), nextInstrAddr);
         }
         //pop the value of the expression
         //patch(jumpSelectEnd, nextInstrAddr);
@@ -1332,8 +1344,8 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitSequentialCase(SequentialCase ast, Object o) {
-      SelectEconcder selectEconcder;
-      selectEconcder = (SelectEconcder) o;
+      SelectEncoder selectEconcder;
+      selectEconcder = (SelectEncoder) o;
       //get the frame of the select command
       Frame frame = (Frame) selectEconcder.o;
       //list of integer to store the jump address of the cases
@@ -1346,26 +1358,22 @@ public final class Encoder implements Visitor {
         ast.Case1.visit(this, selectEconcder);
         
         selectEconcder.setLastCase(true);
-        jumpAddress.add((Integer)ast.Case2.visit(this, selectEconcder));
+        ast.Case2.visit(this, selectEconcder);
       }
       else{
         selectEconcder.caseLevel++;
-        if (ast.Case1 instanceof SingleCase){
-          int temp = (Integer) ast.Case1.visit(this, selectEconcder);
-          jumpAddress.add(temp);
-        }else
           ast.Case1.visit(this, selectEconcder);     
-        jumpAddress.add((Integer)ast.Case2.visit(this, selectEconcder));
+          ast.Case2.visit(this, selectEconcder);
       }
       return null;
     }
 
     @Override
     public Object visitSingleCase(SingleCase ast, Object o) {
-        SelectEconcder selectEconcder;
-        selectEconcder = (SelectEconcder) o;
+        SelectEncoder selectEnconder;
+        selectEnconder = (SelectEncoder) o;
         //get the frame of the select command
-        Frame frame = (Frame) selectEconcder.o;
+        Frame frame = (Frame) selectEnconder.o;
 
         int value = (Integer) ast.caseLiterals.visit(this, frame);
 
@@ -1373,17 +1381,26 @@ public final class Encoder implements Visitor {
         int jumpAddrNextCase = 0;
         int jumpSelectEnd = 0;
         
-        if (selectEconcder.lastCase){
+        if (selectEnconder.lastCase){
           System.out.println("last case true "+value);
           emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST]   
           jumpAddrCommandCase = nextInstrAddr;
           emit(Machine.JUMPIFop, value, Machine.CBr, 0); //jump to the command case          
-          emit(Machine.POPop, 0, 0, 1);// pop de dup value         
-          emit(Machine.HALTop, 0, 0, 19); //halt 
+          //check if encoder has else command
+          if (selectEnconder.elseCommand != null){
+            selectEnconder.elseCommand.visit(this, frame);
+            jumpSelectEnd = nextInstrAddr;
+            selectEnconder.jumpAddress.add(jumpSelectEnd);
+            emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command
+          }else{
+            emit(Machine.POPop, 0, 0, 1);// pop de dup value         
+            emit(Machine.HALTop, 0, 0, 19); //halt 
+          }
 
           patch(jumpAddrCommandCase, nextInstrAddr);
           ast.commandAST.visit(this, frame); // evaluate the command and patch the jump
           jumpSelectEnd = nextInstrAddr;
+          selectEnconder.jumpAddress.add(jumpSelectEnd);
           //emit the jump to the end of the select command
           emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command
 
@@ -1397,11 +1414,13 @@ public final class Encoder implements Visitor {
 
 
           jumpAddrNextCase = nextInstrAddr;
+          
           emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); //jump to the command case 
 
           ast.commandAST.visit(this, frame); // evaluate the command and patch the jump
 
           jumpSelectEnd = nextInstrAddr;
+          selectEnconder.jumpAddress.add(jumpSelectEnd);
           emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command          
           patch(jumpAddrNextCase, nextInstrAddr);
 
