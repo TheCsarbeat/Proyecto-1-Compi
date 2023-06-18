@@ -202,7 +202,10 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitRepeatTimes(RepeatTimes ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);
+
+        return(null);
     }
 
     @Override

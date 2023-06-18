@@ -292,12 +292,18 @@ public final class Encoder implements Visitor {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
 
+    aThis.E.visit(this, frame);
+    emit (Machine.LOADLop, 0, 0, 1);
+
     jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
     loopAddr = nextInstrAddr;
+
     aThis.C.visit(this, frame);
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
     patch(jumpAddr, nextInstrAddr);
-    aThis.E.visit(this, frame);
+    emit(Machine.LOADop, 2, Machine.STr, -2);
+    emit(Machine.CALLop, 0, Machine.PBr, Machine.geDisplacement);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
