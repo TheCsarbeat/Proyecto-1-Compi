@@ -18,6 +18,8 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import TAM.Instruction;
 import TAM.Machine;
@@ -1296,9 +1298,33 @@ public final class Encoder implements Visitor {
     public Object visitSelectCommandSimple(SelectCommandSimple ast, Object o) {
         // get the frame of the select command
         Frame frame = (Frame) o;
-        ast.E.visit(this, frame); //evaluate the expression       
-        ast.C.visit(this, frame); //evaluate the cases
 
+        ast.E.visit(this, frame); //evaluate the expression   
+        //create the selectEconcder object 
+        SelectEconcder selectEconcder;
+        int jumpSelectEnd = 0;
+        if (ast.C instanceof SequentialCase){
+          selectEconcder = new SelectEconcder(0, frame);
+          selectEconcder.caseLevel = 0;
+        }
+        else{
+          selectEconcder = new SelectEconcder(1, frame);    
+          selectEconcder.setLastCase(true);
+        }
+        selectEconcder.jumpAddress = new ArrayList<Integer>();;
+
+        //case Type 0 means that the cases are sequential, 1 means that the cases are single
+        ast.C.visit(this, selectEconcder); //evaluate the cases
+
+        System.out.println("jumpAddress: " + selectEconcder.jumpAddress);
+
+        //for to patch the jump address of the cases
+        for (int i = 0; i < selectEconcder.jumpAddress.size(); i++){
+          patch(selectEconcder.jumpAddress.get(i), nextInstrAddr);
+        }
+        //pop the value of the expression
+        //patch(jumpSelectEnd, nextInstrAddr);
+        emit(Machine.POPop, 0, 0, 1);
         
         return null;
         
@@ -1306,27 +1332,84 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitSequentialCase(SequentialCase ast, Object o) {
-      ast.Case1.visit(this, o);
-      ast.Case2.visit(this, o);
+      SelectEconcder selectEconcder;
+      selectEconcder = (SelectEconcder) o;
+      //get the frame of the select command
+      Frame frame = (Frame) selectEconcder.o;
+      //list of integer to store the jump address of the cases
+      List<Integer> jumpAddress = selectEconcder.jumpAddress;
+      
+      if (selectEconcder.caseLevel == 0){ // if to check if is th first level of cases
+
+        selectEconcder.caseLevel++;
+
+        ast.Case1.visit(this, selectEconcder);
+        
+        selectEconcder.setLastCase(true);
+        jumpAddress.add((Integer)ast.Case2.visit(this, selectEconcder));
+      }
+      else{
+        selectEconcder.caseLevel++;
+        if (ast.Case1 instanceof SingleCase){
+          int temp = (Integer) ast.Case1.visit(this, selectEconcder);
+          jumpAddress.add(temp);
+        }else
+          ast.Case1.visit(this, selectEconcder);     
+        jumpAddress.add((Integer)ast.Case2.visit(this, selectEconcder));
+      }
       return null;
     }
 
     @Override
     public Object visitSingleCase(SingleCase ast, Object o) {
-        // get the frame of the case 
-        Frame frame = (Frame) o;
-        ast.caseLiterals.visit(this, frame);
+        SelectEconcder selectEconcder;
+        selectEconcder = (SelectEconcder) o;
+        //get the frame of the select command
+        Frame frame = (Frame) selectEconcder.o;
 
-        int jumpAddrCase = nextInstrAddr;
-        emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
+        int value = (Integer) ast.caseLiterals.visit(this, frame);
 
-        // pop de dup value
-        emit(Machine.POPop, 0, 0, 1);
-        ast.commandAST.visit(this, frame);
-        patch(jumpAddrCase, nextInstrAddr);
+        int jumpAddrCommandCase = 0;
+        int jumpAddrNextCase = 0;
+        int jumpSelectEnd = 0;
+        
+        if (selectEconcder.lastCase){
+          System.out.println("last case true "+value);
+          emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST]   
+          jumpAddrCommandCase = nextInstrAddr;
+          emit(Machine.JUMPIFop, value, Machine.CBr, 0); //jump to the command case          
+          emit(Machine.POPop, 0, 0, 1);// pop de dup value         
+          emit(Machine.HALTop, 0, 0, 19); //halt 
 
-      
-        return null;
+          patch(jumpAddrCommandCase, nextInstrAddr);
+          ast.commandAST.visit(this, frame); // evaluate the command and patch the jump
+          jumpSelectEnd = nextInstrAddr;
+          //emit the jump to the end of the select command
+          emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command
+
+        }else{ // is not the last case
+          System.out.println("last case false "+value);
+          int displacement = 17; //displacement of the eq instruction
+          emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST] 
+          emit(Machine.LOADLop, 0, 0, value); // LOADL the value of the caseLiteral1  
+          emit(Machine.LOADLop, 0, 0, 1); // LOADL the size of the frame   
+          emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement); //call the function to compare the value of the expression with the value of the caseLiteral1
+
+
+          jumpAddrNextCase = nextInstrAddr;
+          emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); //jump to the command case 
+
+          ast.commandAST.visit(this, frame); // evaluate the command and patch the jump
+
+          jumpSelectEnd = nextInstrAddr;
+          emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command          
+          patch(jumpAddrNextCase, nextInstrAddr);
+
+          //llamar el resto de cases
+          //parsear con el final del case
+
+        }
+        return jumpSelectEnd;
 
 
     }
@@ -1341,9 +1424,9 @@ public final class Encoder implements Visitor {
         // get the frame of the case
         Frame frame = (Frame) o;
         //evaluate the case range
-        aThis.caseRange.visit(this, frame);
+        int value = (Integer)aThis.caseRange.visit(this, frame);
         
-        return null;
+        return value;
     }
 
     @Override
@@ -1353,13 +1436,13 @@ public final class Encoder implements Visitor {
         //evaluate the caseLiteral 1 and store it in the stack
         int valueLiteral = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
         int displacement = 17; //displacement of the eq instruction
-            
+        /*  
         emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST]   
         emit(Machine.LOADLop, 0, 0, valueLiteral); // LOADL the value of the caseLiteral1  
         emit(Machine.LOADLop, 0, 0, 1); // LOADL the size of the frame   
         emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement); //call the function to compare the value of the expression with the value of the caseLiteral1
-       
-        return null;
+       */
+        return valueLiteral;
     }
 
     @Override
