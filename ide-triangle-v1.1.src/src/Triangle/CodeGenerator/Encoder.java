@@ -210,8 +210,8 @@ public final class Encoder implements Visitor {
     
     jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    loopAddr = nextInstrAddr;
     
+    loopAddr = nextInstrAddr;
     ast.C.visit(this, frame2);
     
     emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
@@ -228,30 +228,70 @@ public final class Encoder implements Visitor {
   }
 
   public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr, jumpEndAddr;
+    
+    ast.E2.visit(this, frame);
+    Frame frame1 = new Frame(frame, 1);
 
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
-    // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    forDecl.E1.visit(this, frame1);
+    forDecl.entity = new UnknownValue(1, frame1.level, frame1.size);
+    Frame frame2 = new Frame(frame1, 1);
+    
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame2);
+    
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+    
+    patch(jumpAddr, nextInstrAddr);
+    emit(Machine.LOADop, 2, Machine.STr, -2);
+    emit(Machine.CALLop, 0, Machine.PBr, Machine.geDisplacement);
+    jumpEndAddr = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, jumpEndAddr);
+    ast.E3.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+
+    patch(jumpEndAddr, nextInstrAddr);
+    emit(Machine.POPop, 0, 0, 2);
+
     return null;
   }
 
   public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr, jumpEndAddr;
+    
+    ast.E2.visit(this, frame);
+    Frame frame1 = new Frame(frame, 1);
 
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
-    // ast.C.visit(this, frame);
-    // patch(jumpAddr, nextInstrAddr);
-    // ast.E.visit(this, frame);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    forDecl.E1.visit(this, frame1);
+    forDecl.entity = new UnknownValue(1, frame1.level, frame1.size);
+    Frame frame2 = new Frame(frame1, 1);
+    
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame2);
+    
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+    
+    patch(jumpAddr, nextInstrAddr);
+    emit(Machine.LOADop, 2, Machine.STr, -2);
+    emit(Machine.CALLop, 0, Machine.PBr, Machine.geDisplacement);
+    jumpEndAddr = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, jumpEndAddr);
+    ast.E3.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
+
+    patch(jumpEndAddr, nextInstrAddr);
+    emit(Machine.POPop, 0, 0, 2);
+
     return null;
   }
 
@@ -301,7 +341,7 @@ public final class Encoder implements Visitor {
 
     aThis.C.visit(this, frame);
     emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
-    patch(jumpAddr, nextInstrAddr);
+     
     emit(Machine.LOADop, 2, Machine.STr, -2);
     emit(Machine.CALLop, 0, Machine.PBr, Machine.geDisplacement);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);

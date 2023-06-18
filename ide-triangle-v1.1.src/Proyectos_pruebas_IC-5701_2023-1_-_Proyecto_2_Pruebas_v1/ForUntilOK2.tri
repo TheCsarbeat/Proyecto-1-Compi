@@ -8,7 +8,7 @@ in
 
     k := k + 1 ; 
 
-    putint (1) ! debe imprimir 2 unos
+    putint (1) ! debe imprimir 3 unos
 
   end
 

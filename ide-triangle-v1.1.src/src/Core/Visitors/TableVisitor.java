@@ -223,6 +223,26 @@ public class TableVisitor implements Visitor {
 
         return(null);
     }
+    
+    @Override
+    public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+      ast.D.visit(this, null);
+      ast.E2.visit(this, null);
+      ast.E3.visit(this, null);
+      ast.C.visit(this, null);
+      
+      return(null);
+    }
+
+    @Override
+    public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+      ast.D.visit(this, null);
+      ast.E2.visit(this, null);
+      ast.E3.visit(this, null);
+      ast.C.visit(this, null);
+      
+      return(null);
+    }
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" Expressions ">
@@ -761,16 +781,6 @@ public class TableVisitor implements Visitor {
       ast.E.visit(this, o);
       ast.T.visit(this, o);
       return null;
-    }
-
-    @Override
-    public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
