@@ -1,6 +1,6 @@
 let
   const b ~ 10;
-  var a init 15
+  var a := 15
 in
   repeat 
   while a > b do
