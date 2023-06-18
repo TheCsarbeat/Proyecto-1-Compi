@@ -194,34 +194,35 @@ public final class Encoder implements Visitor {
   }
 
   //For Loops
+
+  //for Id := Exp1 .. Exp2 do Com end
   public Object visitForCommand(ForCommand ast, Object o) {
-    // Frame frame = (Frame) o;
-    // int jumpAddr, loopAddr;
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
     
-    // ast.E2.visit(this, frame);
-    // ast.E1.visit(this, frame);
+    ast.E2.visit(this, frame);
+    Frame frame1 = new Frame(frame, 1);
+
+    ForVarDeclaration forDecl = (ForVarDeclaration) ast.D;
+    forDecl.E1.visit(this, frame1);
+    forDecl.entity = new UnknownValue(1, frame1.level, frame1.size);
+    Frame frame2 = new Frame(frame1, 1);
     
-    // jumpAddr = nextInstrAddr;
-    // emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    // loopAddr = nextInstrAddr;
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
     
-    // ast.C.visit(this, new Frame(frame, 2));
+    ast.C.visit(this, frame2);
     
-    // emit(Machine.LOADop, 1, displayRegister(frame.level, frame.level), frame.size + 1);
-    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
-    // emit(Machine.STOREop, 1, displayRegister(frame.level, frame.level), frame.size + 1);
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
     
-    // patch(jumpAddr, nextInstrAddr);
+    patch(jumpAddr, nextInstrAddr);
     
-    // emit(Machine.LOADop, 1, displayRegister(frame.level,
-	  //    frame.level), frame.size + 1);
-    // emit(Machine.LOADop, 1, displayRegister(frame.level,
-	  //    frame.level), frame.size);
-    
-    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.leDisplacement);
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
-    
-    // emit(Machine.POPop, 0, 0, 2);
+    emit(Machine.LOADop, 2, Machine.STr, -2);
+    emit(Machine.CALLop, 0, Machine.PBr, Machine.geDisplacement);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+
+    emit(Machine.POPop, 0, 0, 2);
 
     return null;
   }
