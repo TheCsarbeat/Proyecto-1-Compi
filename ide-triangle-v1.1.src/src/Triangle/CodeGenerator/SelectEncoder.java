@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Triangle.AbstractSyntaxTrees.Command;
+import Triangle.AbstractSyntaxTrees.TypeDenoter;
 
 public class SelectEncoder {
     public SelectEncoder(Object o) {
@@ -24,6 +25,7 @@ public class SelectEncoder {
     public Command elseCommand;
     public int intLiteral1, intLiteral2;
     public char charLiteral1, charLiteral2;
+    public TypeDenoter typeExpresion;
     
 }
 

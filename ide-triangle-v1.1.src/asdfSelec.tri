@@ -1,18 +1,18 @@
 let
 
-  var a := 1 ! el generador de c?digo debe generar LOADL 1 en este punto
+  var a := 89 ! el generador de c?digo debe generar LOADL 1 en este punto
 
 in
 	select a  from 
 
 		when 1 then put('A')	
 		when 11 then put('B')
-		!when 21 then put('C')
-		!when 31 then put('D')
-		!when 41 then put('E')
+		when 21 then put('C')
+		when 31 then put('D')
+		when 41 then put('E')
 		!when 51 then put('F')
 		!when 61 then put('G')
-	else  put('Z')
+	!else  put('Z')
 	end
 	
 

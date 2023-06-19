@@ -1227,6 +1227,7 @@ public final class Encoder implements Visitor {
           selectEnconder.setLastCase(true);
           
         }
+        selectEnconder.typeExpresion = ast.E.type;
         ast.C.visit(this, selectEnconder);
         //case Type 0 means that the cases are sequential, 1 means that the cases are single        
         System.out.println("jumpAddress: " + selectEnconder.jumpAddress);
@@ -1276,23 +1277,18 @@ public final class Encoder implements Visitor {
         Frame frame = (Frame) selectEnconder.o;
 
         
-        ast.caseLiterals.visit(this, selectEnconder);
-        int value = 0;
-        System.out.println("int literal 1:"+selectEnconder.intLiteral1);
-        System.out.println("int literal 2:"+selectEnconder.intLiteral2);
-        System.out.println("char literal 1:"+selectEnconder.charLiteral1);
-        System.out.println("char literal 2:"+selectEnconder.charLiteral2);
+        
 
         
         int jumpAddrCommandCase = 0;
         int jumpAddrNextCase = 0;
         int jumpSelectEnd = 0;
-        
+
+        emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST]
         if (selectEnconder.lastCase){
-          System.out.println("last case true "+value);
-          emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST]   
+             
           jumpAddrCommandCase = nextInstrAddr;
-          emit(Machine.JUMPIFop, value, Machine.CBr, 0); //jump to the command case          
+          ast.caseLiterals.visit(this, selectEnconder);         
           //check if encoder has else command
           if (selectEnconder.elseCommand != null){
             selectEnconder.elseCommand.visit(this, frame);
@@ -1312,10 +1308,8 @@ public final class Encoder implements Visitor {
           emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command
 
         }else{ // is not the last case
-          System.out.println("last case false "+value);
-          int displacement = 17; //displacement of the eq instruction
-          emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST] 
-          emit(Machine.LOADLop, 0, 0, value); // LOADL the value of the caseLiteral1  
+          int displacement = 17; //displacement of the eq instruction           
+          ast.caseLiterals.visit(this, selectEnconder); 
           emit(Machine.LOADLop, 0, 0, 1); // LOADL the size of the frame   
           emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement); //call the function to compare the value of the expression with the value of the caseLiteral1
 
@@ -1347,46 +1341,58 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
-        SelectEncoder selectEnconder;
-        selectEnconder = (SelectEncoder) o;
+        SelectEncoder selectEncoder;
+        selectEncoder = (SelectEncoder) o;
         //get the frame of the select command
-        Frame frame = (Frame) selectEnconder.o;
+        Frame frame = (Frame) selectEncoder.o;
         //evaluate the case range
-        aThis.caseRange.visit(this, selectEnconder);
+        aThis.caseRange.visit(this, selectEncoder);
         
         return null;
     }
 
     @Override
     public Object visitCaseRangeSimple(CaseRangeSimple ast, Object o) {
-        SelectEncoder selectEnconder;
-        selectEnconder = (SelectEncoder) o;
+        SelectEncoder selectEncoder;
+        selectEncoder = (SelectEncoder) o;
         //get the frame of the select command
-        Frame frame = (Frame) selectEnconder.o;
+        Frame frame = (Frame) selectEncoder.o;
 
         //parsing and store the caseLiteral 1 and 2 in the selectEncoder
         if (ast.caseLiteral1 instanceof CaseLiteralInteger){
-          selectEnconder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+          selectEncoder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+
+          if (selectEncoder.lastCase)
+            emit(Machine.JUMPIFop, selectEncoder.intLiteral1 , Machine.CBr, 0); //jump to the command case
+          else
+            emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral1); // LOADL the value of the caseLiteral1  
+          
         }else{
-          selectEnconder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
+          selectEncoder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
+          if (selectEncoder.lastCase)
+            emit(Machine.JUMPIFop, selectEncoder.charLiteral1 , Machine.CBr, 0); //jump to the command case
+          else
+            emit(Machine.LOADLop, 0, 0, selectEncoder.charLiteral1); // LOADL the value of the caseLiteral1
+
+          
         }
         return null;
     }
 
     @Override
     public Object visitCaseRangeComplex(CaseRangeComplex ast, Object o) {
-        SelectEncoder selectEnconder;
-        selectEnconder = (SelectEncoder) o;
+        SelectEncoder selectEncoder;
+        selectEncoder = (SelectEncoder) o;
         //get the frame of the select command
-        Frame frame = (Frame) selectEnconder.o;
+        Frame frame = (Frame) selectEncoder.o;
 
         //parsing and store the caseLiteral 1 and 2 in the selectEncoder
         if (ast.caseLiteral1 instanceof CaseLiteralInteger){
-          selectEnconder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
-          selectEnconder.intLiteral2 = Integer.parseInt((String) ast.caseLiteral2.visit(this, frame));
+          selectEncoder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+          selectEncoder.intLiteral2 = Integer.parseInt((String) ast.caseLiteral2.visit(this, frame));
         }else{
-          selectEnconder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
-          selectEnconder.charLiteral2 = (char) ast.caseLiteral2.visit(this, frame);
+          selectEncoder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
+          selectEncoder.charLiteral2 = (char) ast.caseLiteral2.visit(this, frame);
         }
         return null;
     }
