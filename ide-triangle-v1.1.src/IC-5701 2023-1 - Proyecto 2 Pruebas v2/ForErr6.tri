@@ -1,5 +1,0 @@
-for i := 1 .. 10 do 
-    i := i + 1; ! debe dar un error, variable protegida no debe poder ser asignada
-    putint (i) 
-end
-

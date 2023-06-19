@@ -1,0 +1,9 @@
+select '1' from 
+
+  when '4' then putint (4)
+
+  when '1' then putint (22) ! colocado como segunda opción
+
+end
+
+! OK: selecciona la segunda rama when e imprime 22

@@ -1,3 +1,0 @@
-if 1=1 then puteol() else puteol()
-
-! Error: Falta el end del if

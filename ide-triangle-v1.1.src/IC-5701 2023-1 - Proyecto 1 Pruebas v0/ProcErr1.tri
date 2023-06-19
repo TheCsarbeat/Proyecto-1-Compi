@@ -1,8 +1,0 @@
-let
-	proc p()
-		~ puteol(); puteol()
-in
-	skip
-end
-
-! Error: Falta el end del proc

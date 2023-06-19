@@ -1,4 +1,0 @@
-for i := 1 .. 10 while i + 5 do ! condición no booleana
-    putint (i) 
-end
-

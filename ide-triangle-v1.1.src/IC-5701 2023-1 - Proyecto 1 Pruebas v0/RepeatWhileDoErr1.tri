@@ -1,3 +1,0 @@
-while 1=1 do skip ; skip end
-
-! Error: vieja sintaxis de while

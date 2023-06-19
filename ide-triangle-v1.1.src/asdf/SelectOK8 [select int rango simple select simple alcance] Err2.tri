@@ -1,0 +1,13 @@
+select 6 * (2 + 2) from
+  when 2 .. 13 then putint (123)
+  when 24 then
+    select 2 - 1 from
+      ! no importa que 3 se repita (interseca con range 2 .. 13), pues está en select anidado
+      when 3 then putint (243) 
+      ! sin else, ERROR: debe abortar la ejecución = HALT con diagnóstico
+    end
+  else
+    put('E')
+end
+
+! Debe abortar en el select interno

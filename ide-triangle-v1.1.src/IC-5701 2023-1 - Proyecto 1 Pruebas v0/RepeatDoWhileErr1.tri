@@ -1,3 +1,0 @@
-repeat do do skip ; skip while 3=3 end
-
-! Error: Hay 2 do

@@ -1,0 +1,9 @@
+select 1 from
+
+  when 1 then putint (1) 
+
+  else putint (2) 
+
+end
+
+! imprime 1

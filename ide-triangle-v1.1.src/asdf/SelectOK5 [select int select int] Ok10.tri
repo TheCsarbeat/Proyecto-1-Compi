@@ -1,0 +1,12 @@
+select 10 - 6 from 
+  when 2 then putint (2)
+  when 4 then ! selecciona este caso
+    ! select anidado
+    select 1 from
+      when 2 then putint (2) ! no importa que se repita, está en select anidado 
+      else putint (41)
+    end
+end
+! selecciona caso en select externo y activa else en select interno. No hay error de ejecución. 
+
+! imprime 41

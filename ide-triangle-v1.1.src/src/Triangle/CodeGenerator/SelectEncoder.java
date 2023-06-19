@@ -28,6 +28,8 @@ public class SelectEncoder {
     public char charLiteral1, charLiteral2;
     public TypeDenoter typeExpresion;
     public Command commandCase;
+    public boolean lastCaseLiteral;
+    public int caseLiteralLevel;
 }
 
 

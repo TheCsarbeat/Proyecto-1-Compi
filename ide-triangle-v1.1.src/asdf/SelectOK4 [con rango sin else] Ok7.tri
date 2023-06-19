@@ -1,0 +1,9 @@
+select 1 from
+
+  when 0 .. 5 then putint (1) ! selecciona esta rama
+
+  when 7 then putint(7) 
+
+end
+
+! OK, imprime 1

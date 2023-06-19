@@ -1234,17 +1234,10 @@ public final class Encoder implements Visitor {
   public Object visitSequentialCase(SequentialCase ast, Object o) {
     SelectEncoder selectEconcder;
     selectEconcder = (SelectEncoder) o;
-    // get the frame of the select command
-    Frame frame = (Frame) selectEconcder.o;
-    // list of integer to store the jump address of the cases
-    List<Integer> jumpAddress = selectEconcder.jumpAddress;
 
     if (selectEconcder.caseLevel == 0) { // if to check if is th first level of cases
-
       selectEconcder.caseLevel++;
-
       ast.Case1.visit(this, selectEconcder);
-
       selectEconcder.setLastCase(true);
       ast.Case2.visit(this, selectEconcder);
     } else {
@@ -1257,27 +1250,45 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitSingleCase(SingleCase ast, Object o) {
-    SelectEncoder selectEnconder;
-    selectEnconder = (SelectEncoder) o;
+    SelectEncoder selectEncoder;
+    selectEncoder = (SelectEncoder) o;
     // get the frame of the select command
-    Frame frame = (Frame) selectEnconder.o;
+    Frame frame = (Frame) selectEncoder.o;
 
     int jumpAddrCommandCase = 0;
     int jumpAddrNextCase = 0;
     int jumpSelectEnd = 0;
 
-    emit(Machine.LOADop, 1, Machine.STr, -1); // dup clone the select expression DUP = LOAD (1) -1 [ST]
-    selectEnconder.commandCase = ast.commandAST;
-    ast.caseLiterals.visit(this, selectEnconder);
+    
+    selectEncoder.commandCase = ast.commandAST;
+    selectEncoder.caseLiteralLevel = 0;
+    if (ast.caseLiterals instanceof SingleCaseLiterals){
+      selectEncoder.lastCaseLiteral = true;
+    }
+    ast.caseLiterals.visit(this, selectEncoder);
 
     return null;
 
   }
 
   @Override
-  public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSequentialCaseLiterals(SequentialCaseLiterals ast, Object o) {
+    SelectEncoder selectEncoder;
+    selectEncoder = (SelectEncoder) o;
+
+    selectEncoder.lastCaseLiteral = false;
+
+    if (selectEncoder.caseLevel == 0) { // if to check if is th first level of cases
+      selectEncoder.caseLevel++;
+      ast.caseLiteral1.visit(this, selectEncoder);
+      selectEncoder.lastCaseLiteral = true;
+      ast.caseLiteral2.visit(this, selectEncoder);
+    } else {
+      selectEncoder.caseLevel++;
+      ast.caseLiteral1.visit(this, selectEncoder);
+      ast.caseLiteral2.visit(this, selectEncoder);
+    }
+    return null;
   }
 
   @Override
@@ -1290,8 +1301,9 @@ public final class Encoder implements Visitor {
     int jumpAddrCommandCase = 0;
     int jumpAddrNextCase = 0;
     int jumpSelectEnd = 0;
+    emit(Machine.LOADop, 1, Machine.STr, -1); // dup clone the select expression DUP = LOAD (1) -1 [ST]
     if (ast.caseRange instanceof CaseRangeSimple) {
-      if (selectEncoder.lastCase) {
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral) {
         jumpAddrCommandCase = nextInstrAddr;
         ast.caseRange.visit(this, selectEncoder);
         // check if encoder has else command
@@ -1330,15 +1342,15 @@ public final class Encoder implements Visitor {
 
     } else {
       ast.caseRange.visit(this, selectEncoder);
-      if (selectEncoder.lastCase){        
-        //check if encoder has else command
-        if (selectEncoder.elseCommand != null){
-          selectEncoder.elseCommand.visit(this, frame);              
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral) {
+        // check if encoder has else command
+        if (selectEncoder.elseCommand != null) {
+          selectEncoder.elseCommand.visit(this, frame);
           selectEncoder.jumpAddress.add(nextInstrAddr);
-          emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command
-        }else{
-          emit(Machine.POPop, 0, 0, 1);// pop de dup value         
-          emit(Machine.HALTop, 0, 0, 19); //halt 
+          emit(Machine.JUMPop, 0, Machine.CBr, 0); // jump to the end of the select command
+        } else {
+          emit(Machine.POPop, 0, 0, 1);// pop de dup value
+          emit(Machine.HALTop, 0, 0, 19); // halt
         }
       }
     }
@@ -1356,14 +1368,14 @@ public final class Encoder implements Visitor {
     if (ast.caseLiteral1 instanceof CaseLiteralInteger) {
       selectEncoder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
 
-      if (selectEncoder.lastCase)
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral)
         emit(Machine.JUMPIFop, selectEncoder.intLiteral1, Machine.CBr, 0); // jump to the command case
       else
         emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral1); // LOADL the value of the caseLiteral1
 
     } else {
-      selectEncoder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
-      if (selectEncoder.lastCase)
+      selectEncoder.charLiteral1 = ((String) ast.caseLiteral1.visit(this, frame)).charAt(1);
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral)
         emit(Machine.JUMPIFop, selectEncoder.charLiteral1, Machine.CBr, 0); // jump to the command case
       else
         emit(Machine.LOADLop, 0, 0, selectEncoder.charLiteral1); // LOADL the value of the caseLiteral1
@@ -1383,11 +1395,10 @@ public final class Encoder implements Visitor {
       selectEncoder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
       selectEncoder.intLiteral2 = Integer.parseInt((String) ast.caseLiteral2.visit(this, frame));
 
-      
       emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral2); // LOADL the literal2
       int displayment = 14; // le instruction
       emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
-                                                                    // expression with the value of the caseLiteral2
+                                                                   // expression with the value of the caseLiteral2
       int failJump = nextInstrAddr;
       emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
 
@@ -1396,7 +1407,7 @@ public final class Encoder implements Visitor {
       emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral1); // LOADL the literal1
       displayment = 15; // ge instruction
       emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
-                                                                    // expression with the value of the caseLiteral1
+                                                                   // expression with the value of the caseLiteral1
       int failJump2 = nextInstrAddr;
       emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
       selectEncoder.commandCase.visit(this, frame); // evaluate the command and patch the jump
@@ -1406,15 +1417,13 @@ public final class Encoder implements Visitor {
       patch(failJump, nextInstrAddr);
       patch(failJump2, nextInstrAddr);
 
-
     } else {
-      selectEncoder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
-      selectEncoder.charLiteral2 = (char) ast.caseLiteral2.visit(this, frame);
-      
+      selectEncoder.charLiteral1 = ((String) ast.caseLiteral1.visit(this, frame)).charAt(1);
+      selectEncoder.charLiteral2 = ((String) ast.caseLiteral2.visit(this, frame)).charAt(1);
       emit(Machine.LOADLop, 0, 0, selectEncoder.charLiteral2); // LOADL the literal2
       int displayment = 14; // le instruction
       emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
-                                                                    // expression with the value of the caseLiteral2
+                                                                   // expression with the value of the caseLiteral2
       int failJump = nextInstrAddr;
       emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
 
@@ -1423,7 +1432,7 @@ public final class Encoder implements Visitor {
       emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral1); // LOADL the literal1
       displayment = 15; // ge instruction
       emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
-                                                                    // expression with the value of the caseLiteral1
+                                                                   // expression with the value of the caseLiteral1
       int failJump2 = nextInstrAddr;
       emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
       selectEncoder.commandCase.visit(this, frame); // evaluate the command and patch the jump

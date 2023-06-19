@@ -1,0 +1,11 @@
+select 1 from
+
+  when 17 then putint(17)
+
+  when 0 .. 8 then putint (108)  ! selecciona y debe imprimir 108
+
+  else put ('E')
+
+end
+
+! OK: imprimir 108

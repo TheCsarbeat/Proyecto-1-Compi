@@ -1,0 +1,11 @@
+select 1 from 
+
+  when 0 .. 10 then putint (1) 
+
+  when 20 then putint(20)
+  
+  else putint (50) ! else está bien, pero no es seleccionado
+
+end
+
+! OK , imprime 1

@@ -1,7 +1,0 @@
-let
-	var lista : array 5 of Integer
-in
-	skip 
-end
-
-! OK
