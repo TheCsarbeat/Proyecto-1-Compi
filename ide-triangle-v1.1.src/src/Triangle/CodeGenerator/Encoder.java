@@ -1299,78 +1299,36 @@ public final class Encoder implements Visitor {
     // Limpia la pila
     emit(Machine.POPop, 0, 0, arraySize + elemSize + 1);
 
-    // ----------------------------------------------------------
-
-    // // Cargar tama�os
-
-    // emit(Machine.PUSHop, 0, Machine.PBr, elemSize); // Indice (empuja el tama�o
-    // del tipo de elemento en la pila)
-    //
-    // loopAddr = nextInstrAddr;
-    //
-    // // Revisa el indice
-    // emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
-    // emit(Machine.LOADop, 0, Machine.STr, -3); // carga tama�o
-    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.ltDisplacement); //
-    // los compara
-    //
-    // emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr); // index <
-    // arraySize
-    //
-    //// emit(Machine.JUMPIFop, Machine.CPr, Machine.PBr, endLoopAddr =
-    // nextInstrAddr); // mientras indice < arraySize
-    //
-    // // Carga el elemento segun el indice
-    // emit(Machine.LOADop, 0, Machine.STr, -4); // carga array
-    // emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
-    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.multDisplacement); //
-    // multiplica por el tama�o del elemento
-    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);
-    // emit(Machine.LOADIop, 0, Machine.PBr, 0); // carga el elemento
-    //
-    //
-    //
-    // // Aumento del indice
-    // emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
-    // emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement); //
-    // Utiliza succ para aumentar
-    // emit(Machine.STOREop, 0, Machine.STr, -2); // lo guarda de nuevo
-    //
-    // // Salta al inicio hasta que el if detecte que el indice > arraySize
-    // emit(Machine.JUMPop, 0, Machine.PBr, loopAddr);
-    //
-    // endLoopAddr = nextInstrAddr;
-    //
-    // // Limpia la pila
-    // emit(Machine.POPop, 0, 0, arraySize + index + 3);
-
     return null;
   }
 
-  @Override
-  public Object visitInitializedVariableDeclaration(VariableInitializedDeclaration ast, Object o) {
-    Frame frame = (Frame) o;
-    int extraSize;
+  // @Override
+  // public Object
+  // visitInitializedVariableDeclaration(VariableInitializedDeclaration ast,
+  // Object o) {
+  // Frame frame = (Frame) o;
+  // int extraSize;
 
-    // Visita el tipo de la variable para determinar cu�nto espacio necesita en la
-    // pila.
-    extraSize = ((Integer) ast.T.visit(this, null)).intValue();
+  // // Visita el tipo de la variable para determinar cu�nto espacio necesita en
+  // la
+  // // pila.
+  // extraSize = ((Integer) ast.T.visit(this, null)).intValue();
 
-    // Emite una instrucci�n para reservar espacio en la pila para la variable.
-    emit(Machine.PUSHop, 0, 0, extraSize);
-    ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
-    writeTableDetails(ast);
+  // // Emite una instrucci�n para reservar espacio en la pila para la variable.
+  // emit(Machine.PUSHop, 0, 0, extraSize);
+  // ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
+  // writeTableDetails(ast);
 
-    // A continuaci�n, procesa la expresi�n de inicializaci�n y emite una
-    // instrucci�n
-    // para almacenar el valor inicial en la ubicaci�n de la variable.
-    ast.E.visit(this, frame);
-    emit(Machine.STOREop, extraSize, frame.level, frame.size);
+  // // A continuaci�n, procesa la expresi�n de inicializaci�n y emite una
+  // // instrucci�n
+  // // para almacenar el valor inicial en la ubicaci�n de la variable.
+  // ast.E.visit(this, frame);
+  // emit(Machine.STOREop, extraSize, frame.level, frame.size);
 
-    return new Integer(extraSize);
-    // throw new UnsupportedOperationException("Not supported yet."); //To change
-    // body of generated methods, choose Tools | Templates.
-  }
+  // return new Integer(extraSize);
+  // // throw new UnsupportedOperationException("Not supported yet."); //To change
+  // // body of generated methods, choose Tools | Templates.
+  // }
 
   @Override
   public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
