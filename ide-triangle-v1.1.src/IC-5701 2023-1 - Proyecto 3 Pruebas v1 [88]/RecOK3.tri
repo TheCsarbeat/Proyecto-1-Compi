@@ -1,0 +1,25 @@
+! Funciones mutuamente recursivas; posterior (g) ve a anterior (f)
+
+
+let
+
+  rec
+
+    func f (a : Integer): Integer ~ 1 ! siempre devuelve 1
+
+    |
+
+    func g (b : Integer): Integer ~ if b > 0 then f(b - 1) else 0 ! si b <= 0 devuelve 0, de lo contrario llama a f y devolvería 1
+
+  end
+
+in
+
+  putint(f(10)) ;   ! imprime 1
+  putint(g(0))  ;   ! imprime 0
+  putint(20 * g(5)) ! imprime 20
+
+end
+
+! salida debe ser:
+! 1020

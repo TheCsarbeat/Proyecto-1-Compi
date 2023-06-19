@@ -1,0 +1,7 @@
+repeat 8 times do ! Ok 8:Integer
+
+    putint (2) 
+
+end
+
+! imprime 22222222

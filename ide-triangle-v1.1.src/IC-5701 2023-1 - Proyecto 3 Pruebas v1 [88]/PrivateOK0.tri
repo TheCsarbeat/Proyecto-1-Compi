@@ -1,0 +1,14 @@
+! Revisar TableDetails
+let
+
+  private
+    const a ~ 1
+  in
+    const b ~ a + 3 ! a visible aquí­
+  end
+
+in
+
+  putint(b) ! b visible aquí­, imprime 4
+
+end

@@ -1,0 +1,24 @@
+! private se elabora de manera que las declaraciones secuenciales se trabajan apropiadamente
+let
+
+  private
+      var a := 1;
+      const b ~ 1 
+
+  in
+      proc P()~ putint(a) end;  ! a visible aquí
+      func m(): Integer ~ b + 2 ! b visible aquí
+
+  end
+
+in
+
+  P() ;        ! imprime 1, P visible aquí
+  puteol () ;  ! salto de línea
+  putint (m()) ! imprime 3, m visible aquí
+
+end
+
+! salida debe lucir así:
+! 1
+! 3

@@ -1,0 +1,11 @@
+select 1 from
+
+  when 0 | 1 | 2 then putint (9012) 
+
+  when 17 then putint(2)
+
+  else put ('E')
+
+end
+
+! OK: imprime 9012

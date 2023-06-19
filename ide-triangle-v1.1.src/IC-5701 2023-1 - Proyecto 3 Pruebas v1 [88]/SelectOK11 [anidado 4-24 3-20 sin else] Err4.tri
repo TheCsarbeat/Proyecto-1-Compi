@@ -1,0 +1,14 @@
+select 1 * (2 + 3) from
+  when 0 .. 3 then putint (123) ! no selecciona esta rama
+  when 4 .. 24 then ! selecciona esta rama
+    select 2 - 1 from
+      ! no importa que se repita 3 (interseca con range 2 to 13), pero no hay conflicto, pues está en select anidado
+      when 3 .. 20 then putint (243) 
+      ! debe fallar porque no hay else
+    end
+  else
+    put('E')
+end
+
+! Ok SelectOK11 [anidado 3-20 sin else] Err4 
+! Debe abortar, porque no hay rama que concuerde ni cláusula else para atrapar esa situación

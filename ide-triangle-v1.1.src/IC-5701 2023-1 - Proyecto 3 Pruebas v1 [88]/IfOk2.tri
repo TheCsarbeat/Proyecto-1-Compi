@@ -1,0 +1,8 @@
+if 1=0 then puteol()
+|  2=0 then puteol()
+|  3=3 then put('T')
+else
+   puteol()
+end
+
+! OK, si imprime T y nada antes

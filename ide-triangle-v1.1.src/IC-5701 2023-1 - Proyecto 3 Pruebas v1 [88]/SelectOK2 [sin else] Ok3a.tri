@@ -1,0 +1,9 @@
+select '1' from 
+
+  when '1' then putint (11) 
+
+  when '4' then putint (2)
+
+end
+
+! OK: imprime 11

@@ -1,0 +1,12 @@
+select 6 * (2 + 5) from
+  when 2 .. 13 then putint (123)
+  when 24 then
+    select 2 - 1 from
+      ! no importa que se repita 3 (interseca con range 2 to 13), pues está en select anidado
+      when 3 then putint (243) 
+      else put('E')
+    end
+  ! sin else: ERROR en tiempo de ejecución = HALT con diagnóstico apropiado
+end
+
+! Aborta en select externo

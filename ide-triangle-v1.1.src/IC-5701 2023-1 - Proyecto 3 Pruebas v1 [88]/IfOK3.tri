@@ -1,0 +1,21 @@
+! con token | 
+
+let
+
+  var a : Integer
+
+in
+  getint (var a);
+  ! imprimir 0, 1 o 2, si se ingresa uno de esos números
+  ! caso contrario: imprimir 'n'
+  if a = 2 then
+       put ('2')
+  |  a = 1 then
+       put ('1')
+  |  a = 0 then
+       put ('0')
+  else
+       put ('n')
+  end ! del if compuesto
+
+end ! del let

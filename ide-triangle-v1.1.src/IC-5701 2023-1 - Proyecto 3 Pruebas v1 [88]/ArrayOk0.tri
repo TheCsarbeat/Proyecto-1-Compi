@@ -1,0 +1,7 @@
+let
+	var lista : array 10 of Integer 
+in
+	skip 
+end 
+
+! OK: vemos código TAM generado

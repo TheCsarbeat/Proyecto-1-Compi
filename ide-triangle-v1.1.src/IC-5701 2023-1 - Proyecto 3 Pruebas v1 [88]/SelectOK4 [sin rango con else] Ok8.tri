@@ -1,0 +1,9 @@
+select '1' from 
+
+  when '2' then putint (2)
+
+  else put ('e') ! selecciona el else e imprime e
+
+end ! debe seleccionar la rama del else
+
+! imprime 'e'
