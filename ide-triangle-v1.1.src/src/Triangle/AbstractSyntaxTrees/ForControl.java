@@ -28,4 +28,5 @@ public class ForControl extends Declaration{
     public Identifier I;
     public Expression E;
     public TypeDenoter T;
+    public int ArraySize;
 }
