@@ -25,107 +25,7 @@ import TAM.Instruction;
 import TAM.Machine;
 import Triangle.ErrorReporter;
 import Triangle.StdEnvironment;
-import Triangle.AbstractSyntaxTrees.AST;
-import Triangle.AbstractSyntaxTrees.AnyTypeDenoter;
-import Triangle.AbstractSyntaxTrees.ArrayExpression;
-import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
-import Triangle.AbstractSyntaxTrees.AssignCommand;
-import Triangle.AbstractSyntaxTrees.BinaryExpression;
-import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
-import Triangle.AbstractSyntaxTrees.BodyComplex;
-import Triangle.AbstractSyntaxTrees.BodySingle;
-import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
-import Triangle.AbstractSyntaxTrees.CallCommand;
-import Triangle.AbstractSyntaxTrees.CallExpression;
-import Triangle.AbstractSyntaxTrees.CaseLiteral;
-import Triangle.AbstractSyntaxTrees.CaseLiteralChar;
-import Triangle.AbstractSyntaxTrees.CaseLiteralInteger;
-import Triangle.AbstractSyntaxTrees.CaseRange;
-import Triangle.AbstractSyntaxTrees.CaseRangeComplex;
-import Triangle.AbstractSyntaxTrees.CaseRangeSimple;
-import Triangle.AbstractSyntaxTrees.CharTypeDenoter;
-import Triangle.AbstractSyntaxTrees.CharacterExpression;
-import Triangle.AbstractSyntaxTrees.CharacterLiteral;
-import Triangle.AbstractSyntaxTrees.ConstActualParameter;
-import Triangle.AbstractSyntaxTrees.ConstDeclaration;
-import Triangle.AbstractSyntaxTrees.ConstFormalParameter;
-import Triangle.AbstractSyntaxTrees.Declaration;
-import Triangle.AbstractSyntaxTrees.DoUntilLoop;
-import Triangle.AbstractSyntaxTrees.DoWhileLoop;
-import Triangle.AbstractSyntaxTrees.DotVname;
-import Triangle.AbstractSyntaxTrees.EmptyActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.EmptyCommand;
-import Triangle.AbstractSyntaxTrees.EmptyExpression;
-import Triangle.AbstractSyntaxTrees.EmptyFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
-import Triangle.AbstractSyntaxTrees.ForCommand;
-import Triangle.AbstractSyntaxTrees.ForInCommand;
-import Triangle.AbstractSyntaxTrees.ForControl;
-import Triangle.AbstractSyntaxTrees.ForUntilCommand;
-import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
-import Triangle.AbstractSyntaxTrees.ForWhileCommand;
-import Triangle.AbstractSyntaxTrees.FuncActualParameter;
-import Triangle.AbstractSyntaxTrees.FuncDeclaration;
-import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
-import Triangle.AbstractSyntaxTrees.Identifier;
-import Triangle.AbstractSyntaxTrees.IfCommand;
-import Triangle.AbstractSyntaxTrees.IfExpression;
-import Triangle.AbstractSyntaxTrees.IntTypeDenoter;
-import Triangle.AbstractSyntaxTrees.IntegerExpression;
-import Triangle.AbstractSyntaxTrees.IntegerLiteral;
-import Triangle.AbstractSyntaxTrees.LetCommand;
-import Triangle.AbstractSyntaxTrees.LetExpression;
-import Triangle.AbstractSyntaxTrees.LongIdentifier;
-import Triangle.AbstractSyntaxTrees.LongIdentifierComplex;
-import Triangle.AbstractSyntaxTrees.LongIdentifierSimple;
-import Triangle.AbstractSyntaxTrees.MultipleActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.MultipleArrayAggregate;
-import Triangle.AbstractSyntaxTrees.MultipleFieldTypeDenoter;
-import Triangle.AbstractSyntaxTrees.MultipleFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.MultipleRecordAggregate;
-import Triangle.AbstractSyntaxTrees.Operator;
-import Triangle.AbstractSyntaxTrees.PackageDeclaration;
-import Triangle.AbstractSyntaxTrees.PackageIdentifier;
-import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
-import Triangle.AbstractSyntaxTrees.ProcActualParameter;
-import Triangle.AbstractSyntaxTrees.ProcDeclaration;
-import Triangle.AbstractSyntaxTrees.ProcFormalParameter;
-import Triangle.AbstractSyntaxTrees.Program;
-import Triangle.AbstractSyntaxTrees.RECDeclaration;
-import Triangle.AbstractSyntaxTrees.RecordExpression;
-import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
-import Triangle.AbstractSyntaxTrees.RepeatTimes;
-import Triangle.AbstractSyntaxTrees.SelectCommandComplex;
-import Triangle.AbstractSyntaxTrees.SelectCommandSimple;
-import Triangle.AbstractSyntaxTrees.SequentialCase;
-import Triangle.AbstractSyntaxTrees.SequentialCaseLiterals;
-import Triangle.AbstractSyntaxTrees.SequentialCommand;
-import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
-import Triangle.AbstractSyntaxTrees.SequentialPackage;
-import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
-import Triangle.AbstractSyntaxTrees.SimpleVname;
-import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
-import Triangle.AbstractSyntaxTrees.SingleCase;
-import Triangle.AbstractSyntaxTrees.SingleCaseLiterals;
-import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
-import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.SinglePackage;
-import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
-import Triangle.AbstractSyntaxTrees.SubscriptVname;
-import Triangle.AbstractSyntaxTrees.TypeDeclaration;
-import Triangle.AbstractSyntaxTrees.UnaryExpression;
-import Triangle.AbstractSyntaxTrees.UnaryOperatorDeclaration;
-import Triangle.AbstractSyntaxTrees.UntilLoop;
-import Triangle.AbstractSyntaxTrees.VarActualParameter;
-import Triangle.AbstractSyntaxTrees.VarDeclaration;
-import Triangle.AbstractSyntaxTrees.VarFormalParameter;
-import Triangle.AbstractSyntaxTrees.VariableInitializedDeclaration;
-import Triangle.AbstractSyntaxTrees.Visitor;
-import Triangle.AbstractSyntaxTrees.Vname;
-import Triangle.AbstractSyntaxTrees.VnameExpression;
-import Triangle.AbstractSyntaxTrees.WhileCommand;
-import Triangle.AbstractSyntaxTrees.WhileLoop;
+import Triangle.AbstractSyntaxTrees.*;
 
 public final class Encoder implements Visitor {
 
@@ -1375,8 +1275,15 @@ public final class Encoder implements Visitor {
         //get the frame of the select command
         Frame frame = (Frame) selectEnconder.o;
 
-        int value = (Integer) ast.caseLiterals.visit(this, frame);
+        
+        ast.caseLiterals.visit(this, selectEnconder);
+        int value = 0;
+        System.out.println("int literal 1:"+selectEnconder.intLiteral1);
+        System.out.println("int literal 2:"+selectEnconder.intLiteral2);
+        System.out.println("char literal 1:"+selectEnconder.charLiteral1);
+        System.out.println("char literal 2:"+selectEnconder.charLiteral2);
 
+        
         int jumpAddrCommandCase = 0;
         int jumpAddrNextCase = 0;
         int jumpSelectEnd = 0;
@@ -1398,10 +1305,10 @@ public final class Encoder implements Visitor {
           }
 
           patch(jumpAddrCommandCase, nextInstrAddr);
+
           ast.commandAST.visit(this, frame); // evaluate the command and patch the jump
           jumpSelectEnd = nextInstrAddr;
           selectEnconder.jumpAddress.add(jumpSelectEnd);
-          //emit the jump to the end of the select command
           emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command
 
         }else{ // is not the last case
@@ -1418,7 +1325,6 @@ public final class Encoder implements Visitor {
           emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); //jump to the command case 
 
           ast.commandAST.visit(this, frame); // evaluate the command and patch the jump
-
           jumpSelectEnd = nextInstrAddr;
           selectEnconder.jumpAddress.add(jumpSelectEnd);
           emit(Machine.JUMPop, 0, Machine.CBr, 0); //jump to the end of the select command          
@@ -1428,7 +1334,8 @@ public final class Encoder implements Visitor {
           //parsear con el final del case
 
         }
-        return jumpSelectEnd;
+
+        return null;
 
 
     }
@@ -1440,33 +1347,48 @@ public final class Encoder implements Visitor {
 
     @Override
     public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
-        // get the frame of the case
-        Frame frame = (Frame) o;
+        SelectEncoder selectEnconder;
+        selectEnconder = (SelectEncoder) o;
+        //get the frame of the select command
+        Frame frame = (Frame) selectEnconder.o;
         //evaluate the case range
-        int value = (Integer)aThis.caseRange.visit(this, frame);
+        aThis.caseRange.visit(this, selectEnconder);
         
-        return value;
+        return null;
     }
 
     @Override
     public Object visitCaseRangeSimple(CaseRangeSimple ast, Object o) {
-        // get the frame of the case
-        Frame frame = (Frame) o;
-        //evaluate the caseLiteral 1 and store it in the stack
-        int valueLiteral = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
-        int displacement = 17; //displacement of the eq instruction
-        /*  
-        emit(Machine.LOADop, 1, Machine.STr, -1);  //dup clone the select expression DUP = LOAD (1) -1 [ST]   
-        emit(Machine.LOADLop, 0, 0, valueLiteral); // LOADL the value of the caseLiteral1  
-        emit(Machine.LOADLop, 0, 0, 1); // LOADL the size of the frame   
-        emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement); //call the function to compare the value of the expression with the value of the caseLiteral1
-       */
-        return valueLiteral;
+        SelectEncoder selectEnconder;
+        selectEnconder = (SelectEncoder) o;
+        //get the frame of the select command
+        Frame frame = (Frame) selectEnconder.o;
+
+        //parsing and store the caseLiteral 1 and 2 in the selectEncoder
+        if (ast.caseLiteral1 instanceof CaseLiteralInteger){
+          selectEnconder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+        }else{
+          selectEnconder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
+        }
+        return null;
     }
 
     @Override
     public Object visitCaseRangeComplex(CaseRangeComplex ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SelectEncoder selectEnconder;
+        selectEnconder = (SelectEncoder) o;
+        //get the frame of the select command
+        Frame frame = (Frame) selectEnconder.o;
+
+        //parsing and store the caseLiteral 1 and 2 in the selectEncoder
+        if (ast.caseLiteral1 instanceof CaseLiteralInteger){
+          selectEnconder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+          selectEnconder.intLiteral2 = Integer.parseInt((String) ast.caseLiteral2.visit(this, frame));
+        }else{
+          selectEnconder.charLiteral1 = (char) ast.caseLiteral1.visit(this, frame);
+          selectEnconder.charLiteral2 = (char) ast.caseLiteral2.visit(this, frame);
+        }
+        return null;
     }
 
     @Override
@@ -1475,8 +1397,8 @@ public final class Encoder implements Visitor {
     }
 
     @Override
-    public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Object visitCaseLiteralChar(CaseLiteralChar ast, Object o) {
+        return ast.literal.spelling;
     }
 
     @Override

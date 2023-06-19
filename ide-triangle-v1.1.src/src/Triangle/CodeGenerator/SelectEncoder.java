@@ -5,8 +5,8 @@ import java.util.List;
 
 import Triangle.AbstractSyntaxTrees.Command;
 
-public class SelectEconcder {
-    public SelectEconcder(Object o) {
+public class SelectEncoder {
+    public SelectEncoder(Object o) {
         this.o = o;
         this.jumpAddress = new ArrayList<Integer>();
     
@@ -22,7 +22,8 @@ public class SelectEconcder {
     public boolean lastCase;
     public List<Integer> jumpAddress;
     public Command elseCommand;
-
+    public int intLiteral1, intLiteral2;
+    public char charLiteral1, charLiteral2;
     
 }
 

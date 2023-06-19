@@ -6,7 +6,7 @@ in
 	select a  from 
 
 		when 1 then put('A')	
-		!when 11 then put('B')
+		when 11 then put('B')
 		!when 21 then put('C')
 		!when 31 then put('D')
 		!when 41 then put('E')
