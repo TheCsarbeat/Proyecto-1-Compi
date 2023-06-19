@@ -18,112 +18,14 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import TAM.Instruction;
 import TAM.Machine;
 import Triangle.ErrorReporter;
 import Triangle.StdEnvironment;
-import Triangle.AbstractSyntaxTrees.AST;
-import Triangle.AbstractSyntaxTrees.AnyTypeDenoter;
-import Triangle.AbstractSyntaxTrees.ArrayExpression;
-import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
-import Triangle.AbstractSyntaxTrees.AssignCommand;
-import Triangle.AbstractSyntaxTrees.BinaryExpression;
-import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
-import Triangle.AbstractSyntaxTrees.BodyComplex;
-import Triangle.AbstractSyntaxTrees.BodySingle;
-import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
-import Triangle.AbstractSyntaxTrees.CallCommand;
-import Triangle.AbstractSyntaxTrees.CallExpression;
-import Triangle.AbstractSyntaxTrees.CaseLiteral;
-import Triangle.AbstractSyntaxTrees.CaseLiteralChar;
-import Triangle.AbstractSyntaxTrees.CaseLiteralInteger;
-import Triangle.AbstractSyntaxTrees.CaseRange;
-import Triangle.AbstractSyntaxTrees.CaseRangeComplex;
-import Triangle.AbstractSyntaxTrees.CaseRangeSimple;
-import Triangle.AbstractSyntaxTrees.CharTypeDenoter;
-import Triangle.AbstractSyntaxTrees.CharacterExpression;
-import Triangle.AbstractSyntaxTrees.CharacterLiteral;
-import Triangle.AbstractSyntaxTrees.ConstActualParameter;
-import Triangle.AbstractSyntaxTrees.ConstDeclaration;
-import Triangle.AbstractSyntaxTrees.ConstFormalParameter;
-import Triangle.AbstractSyntaxTrees.Declaration;
-import Triangle.AbstractSyntaxTrees.DoUntilLoop;
-import Triangle.AbstractSyntaxTrees.DoWhileLoop;
-import Triangle.AbstractSyntaxTrees.DotVname;
-import Triangle.AbstractSyntaxTrees.EmptyActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.EmptyCommand;
-import Triangle.AbstractSyntaxTrees.EmptyExpression;
-import Triangle.AbstractSyntaxTrees.EmptyFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
-import Triangle.AbstractSyntaxTrees.ForCommand;
-import Triangle.AbstractSyntaxTrees.ForInCommand;
-import Triangle.AbstractSyntaxTrees.ForControl;
-import Triangle.AbstractSyntaxTrees.ForUntilCommand;
-import Triangle.AbstractSyntaxTrees.ForVarDeclaration;
-import Triangle.AbstractSyntaxTrees.ForWhileCommand;
-import Triangle.AbstractSyntaxTrees.FuncActualParameter;
-import Triangle.AbstractSyntaxTrees.FuncDeclaration;
-import Triangle.AbstractSyntaxTrees.FuncFormalParameter;
-import Triangle.AbstractSyntaxTrees.Identifier;
-import Triangle.AbstractSyntaxTrees.IfCommand;
-import Triangle.AbstractSyntaxTrees.IfExpression;
-import Triangle.AbstractSyntaxTrees.IntTypeDenoter;
-import Triangle.AbstractSyntaxTrees.IntegerExpression;
-import Triangle.AbstractSyntaxTrees.IntegerLiteral;
-import Triangle.AbstractSyntaxTrees.LetCommand;
-import Triangle.AbstractSyntaxTrees.LetExpression;
-import Triangle.AbstractSyntaxTrees.LongIdentifier;
-import Triangle.AbstractSyntaxTrees.LongIdentifierComplex;
-import Triangle.AbstractSyntaxTrees.LongIdentifierSimple;
-import Triangle.AbstractSyntaxTrees.MultipleActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.MultipleArrayAggregate;
-import Triangle.AbstractSyntaxTrees.MultipleFieldTypeDenoter;
-import Triangle.AbstractSyntaxTrees.MultipleFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.MultipleRecordAggregate;
-import Triangle.AbstractSyntaxTrees.Operator;
-import Triangle.AbstractSyntaxTrees.PackageDeclaration;
-import Triangle.AbstractSyntaxTrees.PackageIdentifier;
-import Triangle.AbstractSyntaxTrees.PrivateDeclaration;
-import Triangle.AbstractSyntaxTrees.ProcActualParameter;
-import Triangle.AbstractSyntaxTrees.ProcDeclaration;
-import Triangle.AbstractSyntaxTrees.ProcFormalParameter;
-import Triangle.AbstractSyntaxTrees.Program;
-import Triangle.AbstractSyntaxTrees.RECDeclaration;
-import Triangle.AbstractSyntaxTrees.RecordExpression;
-import Triangle.AbstractSyntaxTrees.RecordTypeDenoter;
-import Triangle.AbstractSyntaxTrees.RepeatTimes;
-import Triangle.AbstractSyntaxTrees.SelectCommandComplex;
-import Triangle.AbstractSyntaxTrees.SelectCommandSimple;
-import Triangle.AbstractSyntaxTrees.SequentialCase;
-import Triangle.AbstractSyntaxTrees.SequentialCaseLiterals;
-import Triangle.AbstractSyntaxTrees.SequentialCommand;
-import Triangle.AbstractSyntaxTrees.SequentialDeclaration;
-import Triangle.AbstractSyntaxTrees.SequentialPackage;
-import Triangle.AbstractSyntaxTrees.SimpleTypeDenoter;
-import Triangle.AbstractSyntaxTrees.SimpleVname;
-import Triangle.AbstractSyntaxTrees.SingleActualParameterSequence;
-import Triangle.AbstractSyntaxTrees.SingleArrayAggregate;
-import Triangle.AbstractSyntaxTrees.SingleCase;
-import Triangle.AbstractSyntaxTrees.SingleCaseLiterals;
-import Triangle.AbstractSyntaxTrees.SingleFieldTypeDenoter;
-import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
-import Triangle.AbstractSyntaxTrees.SinglePackage;
-import Triangle.AbstractSyntaxTrees.SingleRecordAggregate;
-import Triangle.AbstractSyntaxTrees.SubscriptVname;
-import Triangle.AbstractSyntaxTrees.TypeDeclaration;
-import Triangle.AbstractSyntaxTrees.UnaryExpression;
-import Triangle.AbstractSyntaxTrees.UnaryOperatorDeclaration;
-import Triangle.AbstractSyntaxTrees.UntilLoop;
-import Triangle.AbstractSyntaxTrees.VarActualParameter;
-import Triangle.AbstractSyntaxTrees.VarDeclaration;
-import Triangle.AbstractSyntaxTrees.VarFormalParameter;
-import Triangle.AbstractSyntaxTrees.VariableInitializedDeclaration;
-import Triangle.AbstractSyntaxTrees.Visitor;
-import Triangle.AbstractSyntaxTrees.Vname;
-import Triangle.AbstractSyntaxTrees.VnameExpression;
-import Triangle.AbstractSyntaxTrees.WhileCommand;
-import Triangle.AbstractSyntaxTrees.WhileLoop;
+import Triangle.AbstractSyntaxTrees.*;
 
 public final class Encoder implements Visitor {
 
@@ -378,8 +280,10 @@ public final class Encoder implements Visitor {
   public Object visitBinaryExpression(BinaryExpression ast, Object o) {
     Frame frame = (Frame) o;
     Integer valSize = (Integer) ast.type.visit(this, null);
+    // ast.E1.visit(this, frame);
     int valSize1 = ((Integer) ast.E1.visit(this, frame)).intValue();
     Frame frame1 = new Frame(frame, valSize1);
+    // ast.E2.visit(this, frame1);
     int valSize2 = ((Integer) ast.E2.visit(this, frame1)).intValue();
     Frame frame2 = new Frame(frame.level, valSize1 + valSize2);
     ast.O.visit(this, frame2);
@@ -1302,34 +1206,6 @@ public final class Encoder implements Visitor {
     return null;
   }
 
-  // @Override
-  // public Object
-  // visitInitializedVariableDeclaration(VariableInitializedDeclaration ast,
-  // Object o) {
-  // Frame frame = (Frame) o;
-  // int extraSize;
-
-  // // Visita el tipo de la variable para determinar cu�nto espacio necesita en
-  // la
-  // // pila.
-  // extraSize = ((Integer) ast.T.visit(this, null)).intValue();
-
-  // // Emite una instrucci�n para reservar espacio en la pila para la variable.
-  // emit(Machine.PUSHop, 0, 0, extraSize);
-  // ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
-  // writeTableDetails(ast);
-
-  // // A continuaci�n, procesa la expresi�n de inicializaci�n y emite una
-  // // instrucci�n
-  // // para almacenar el valor inicial en la ubicaci�n de la variable.
-  // ast.E.visit(this, frame);
-  // emit(Machine.STOREop, extraSize, frame.level, frame.size);
-
-  // return new Integer(extraSize);
-  // // throw new UnsupportedOperationException("Not supported yet."); //To change
-  // // body of generated methods, choose Tools | Templates.
-  // }
-
   @Override
   public Object visitPackageIdentifier(PackageIdentifier packageIdentifier, Object o) {
     throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
@@ -1344,18 +1220,6 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitLongIdentifierComplex(LongIdentifierComplex ast, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
-  }
-
-  @Override
-  public Object visitSequentialCase(SequentialCase aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
-  }
-
-  @Override
-  public Object visitSingleCase(SingleCase aThis, Object o) {
     throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
                                                                    // | Templates.
   }
@@ -1378,52 +1242,298 @@ public final class Encoder implements Visitor {
                                                                    // | Templates.
   }
 
+  // Select Command
+  /*
+   * Maynor Martínez
+   */
+
   @Override
-  public Object visitSelectCommandComplex(SelectCommandComplex aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSelectCommandComplex(SelectCommandComplex ast, Object o) {
+    // get the frame of the select command
+    Frame frame = (Frame) o;
+    ast.E.visit(this, frame); // evaluate the expression
+
+    // create the selectEconcder object
+    SelectEncoder selectEnconder = new SelectEncoder(frame);
+    selectEnconder.elseCommand = ast.elseCommand;
+    if (ast.C instanceof SequentialCase) {
+      selectEnconder.caseType = 0;
+      selectEnconder.caseLevel = 0;
+    } else {
+      selectEnconder.caseType = 1;
+      selectEnconder.setLastCase(true);
+
+    }
+    ast.C.visit(this, selectEnconder);
+    // case Type 0 means that the cases are sequential, 1 means that the cases are
+    // single
+    System.out.println("jumpAddress: " + selectEnconder.jumpAddress);
+    // for to patch the jump address of the cases
+    for (int i = 0; i < selectEnconder.jumpAddress.size(); i++) {
+      patch(selectEnconder.jumpAddress.get(i), nextInstrAddr);
+    }
+    // pop the value of the expression
+    // patch(jumpSelectEnd, nextInstrAddr);
+    emit(Machine.POPop, 0, 0, 1);
+
+    return null;
   }
 
   @Override
-  public Object visitSelectCommandSimple(SelectCommandSimple aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSelectCommandSimple(SelectCommandSimple ast, Object o) {
+    // get the frame of the select command
+    Frame frame = (Frame) o;
+    ast.E.visit(this, frame); // evaluate the expression
+
+    SelectEncoder selectEnconder = new SelectEncoder(frame);
+    if (ast.C instanceof SequentialCase) {
+      selectEnconder.caseType = 0;
+      selectEnconder.caseLevel = 0;
+    } else {
+      selectEnconder.caseType = 1;
+      selectEnconder.setLastCase(true);
+
+    }
+    selectEnconder.typeExpresion = ast.E.type;
+    ast.C.visit(this, selectEnconder);
+    // case Type 0 means that the cases are sequential, 1 means that the cases are
+    // single
+    System.out.println("jumpAddress: " + selectEnconder.jumpAddress);
+    // for to patch the jump address of the cases
+    for (int i = 0; i < selectEnconder.jumpAddress.size(); i++) {
+      patch(selectEnconder.jumpAddress.get(i), nextInstrAddr);
+    }
+    // pop the value of the expression
+    // patch(jumpSelectEnd, nextInstrAddr);
+    emit(Machine.POPop, 0, 0, 1);
+
+    return null;
+
   }
 
   @Override
-  public Object visitSequentialCaseLiterals(SequentialCaseLiterals aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSequentialCase(SequentialCase ast, Object o) {
+    SelectEncoder selectEconcder;
+    selectEconcder = (SelectEncoder) o;
+
+    if (selectEconcder.caseLevel == 0) { // if to check if is th first level of cases
+      selectEconcder.caseLevel++;
+      ast.Case1.visit(this, selectEconcder);
+      selectEconcder.setLastCase(true);
+      ast.Case2.visit(this, selectEconcder);
+    } else {
+      selectEconcder.caseLevel++;
+      ast.Case1.visit(this, selectEconcder);
+      ast.Case2.visit(this, selectEconcder);
+    }
+    return null;
   }
 
   @Override
-  public Object visitSingleCaseLiterals(SingleCaseLiterals aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSingleCase(SingleCase ast, Object o) {
+    SelectEncoder selectEncoder;
+    selectEncoder = (SelectEncoder) o;
+    // get the frame of the select command
+    Frame frame = (Frame) selectEncoder.o;
+
+    int jumpAddrCommandCase = 0;
+    int jumpAddrNextCase = 0;
+    int jumpSelectEnd = 0;
+
+    
+    selectEncoder.commandCase = ast.commandAST;
+    selectEncoder.caseLiteralLevel = 0;
+    if (ast.caseLiterals instanceof SingleCaseLiterals){
+      selectEncoder.lastCaseLiteral = true;
+    }
+    ast.caseLiterals.visit(this, selectEncoder);
+
+    return null;
+
   }
 
   @Override
-  public Object visitCaseRangeSimple(CaseRangeSimple aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSequentialCaseLiterals(SequentialCaseLiterals ast, Object o) {
+    SelectEncoder selectEncoder;
+    selectEncoder = (SelectEncoder) o;
+
+    selectEncoder.lastCaseLiteral = false;
+
+    if (selectEncoder.caseLevel == 0) { // if to check if is th first level of cases
+      selectEncoder.caseLevel++;
+      ast.caseLiteral1.visit(this, selectEncoder);
+      selectEncoder.lastCaseLiteral = true;
+      ast.caseLiteral2.visit(this, selectEncoder);
+    } else {
+      selectEncoder.caseLevel++;
+      ast.caseLiteral1.visit(this, selectEncoder);
+      ast.caseLiteral2.visit(this, selectEncoder);
+    }
+    return null;
   }
 
   @Override
-  public Object visitCaseRangeComplex(CaseRangeComplex aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitSingleCaseLiterals(SingleCaseLiterals ast, Object o) {
+    SelectEncoder selectEncoder;
+    selectEncoder = (SelectEncoder) o;
+    // get the frame of the select command
+    Frame frame = (Frame) selectEncoder.o;
+    // evaluate the case range
+    int jumpAddrCommandCase = 0;
+    int jumpAddrNextCase = 0;
+    int jumpSelectEnd = 0;
+    emit(Machine.LOADop, 1, Machine.STr, -1); // dup clone the select expression DUP = LOAD (1) -1 [ST]
+    if (ast.caseRange instanceof CaseRangeSimple) {
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral) {
+        jumpAddrCommandCase = nextInstrAddr;
+        ast.caseRange.visit(this, selectEncoder);
+        // check if encoder has else command
+        if (selectEncoder.elseCommand != null) {
+          selectEncoder.elseCommand.visit(this, frame);
+          jumpSelectEnd = nextInstrAddr;
+          selectEncoder.jumpAddress.add(jumpSelectEnd);
+          emit(Machine.JUMPop, 0, Machine.CBr, 0); // jump to the end of the select command
+        } else {
+          emit(Machine.POPop, 0, 0, 1);// pop de dup value
+          emit(Machine.HALTop, 0, 0, 19); // halt
+        }
+        patch(jumpAddrCommandCase, nextInstrAddr);
+
+        selectEncoder.commandCase.visit(this, frame); // evaluate the command and patch the jump
+        jumpSelectEnd = nextInstrAddr;
+        selectEncoder.jumpAddress.add(jumpSelectEnd);
+        emit(Machine.JUMPop, 0, Machine.CBr, 0); // jump to the end of the select command
+
+      } else { // is not the last case
+        int displacement = 17; // displacement of the eq instruction
+        ast.caseRange.visit(this, selectEncoder);
+        emit(Machine.LOADLop, 0, 0, 1); // LOADL the size of the frame
+        emit(Machine.CALLop, Machine.SBr, Machine.PBr, displacement); // call the function to compare the value of the
+                                                                      // expression with the value of the caseLiteral1
+        jumpAddrNextCase = nextInstrAddr;
+        emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to the command case
+        selectEncoder.commandCase.visit(this, frame); // evaluate the command and patch the jump
+        jumpSelectEnd = nextInstrAddr;
+        selectEncoder.jumpAddress.add(jumpSelectEnd);
+        emit(Machine.JUMPop, 0, Machine.CBr, 0); // jump to the end of the select command
+        patch(jumpAddrNextCase, nextInstrAddr);
+        // llamar el resto de cases
+        // parsear con el final del case
+      }
+
+    } else {
+      ast.caseRange.visit(this, selectEncoder);
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral) {
+        // check if encoder has else command
+        if (selectEncoder.elseCommand != null) {
+          selectEncoder.elseCommand.visit(this, frame);
+          selectEncoder.jumpAddress.add(nextInstrAddr);
+          emit(Machine.JUMPop, 0, Machine.CBr, 0); // jump to the end of the select command
+        } else {
+          emit(Machine.POPop, 0, 0, 1);// pop de dup value
+          emit(Machine.HALTop, 0, 0, 19); // halt
+        }
+      }
+    }
+    return null;
   }
 
   @Override
-  public Object visitCaseLiteralInteger(CaseLiteralInteger aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitCaseRangeSimple(CaseRangeSimple ast, Object o) {
+    SelectEncoder selectEncoder;
+    selectEncoder = (SelectEncoder) o;
+    // get the frame of the select command
+    Frame frame = (Frame) selectEncoder.o;
+
+    // parsing and store the caseLiteral 1 and 2 in the selectEncoder
+    if (ast.caseLiteral1 instanceof CaseLiteralInteger) {
+      selectEncoder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral)
+        emit(Machine.JUMPIFop, selectEncoder.intLiteral1, Machine.CBr, 0); // jump to the command case
+      else
+        emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral1); // LOADL the value of the caseLiteral1
+
+    } else {
+      selectEncoder.charLiteral1 = ((String) ast.caseLiteral1.visit(this, frame)).charAt(1);
+      if (selectEncoder.lastCase && selectEncoder.lastCaseLiteral)
+        emit(Machine.JUMPIFop, selectEncoder.charLiteral1, Machine.CBr, 0); // jump to the command case
+      else
+        emit(Machine.LOADLop, 0, 0, selectEncoder.charLiteral1); // LOADL the value of the caseLiteral1
+    }
+    return null;
   }
 
   @Override
-  public Object visitCaseLiteralChar(CaseLiteralChar aThis, Object o) {
-    throw new UnsupportedOperationException("Not supported yet."); // To change body of generated methods, choose Tools
-                                                                   // | Templates.
+  public Object visitCaseRangeComplex(CaseRangeComplex ast, Object o) {
+    SelectEncoder selectEncoder;
+    selectEncoder = (SelectEncoder) o;
+    // get the frame of the select command
+    Frame frame = (Frame) selectEncoder.o;
+
+    // parsing and store the caseLiteral 1 and 2 in the selectEncoder
+    if (ast.caseLiteral1 instanceof CaseLiteralInteger) {
+      selectEncoder.intLiteral1 = Integer.parseInt((String) ast.caseLiteral1.visit(this, frame));
+      selectEncoder.intLiteral2 = Integer.parseInt((String) ast.caseLiteral2.visit(this, frame));
+
+      emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral2); // LOADL the literal2
+      int displayment = 14; // le instruction
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
+                                                                   // expression with the value of the caseLiteral2
+      int failJump = nextInstrAddr;
+      emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
+
+      // DUP instruction
+      emit(Machine.LOADop, 1, Machine.STr, -1); // dup clone the select expression DUP = LOAD (1) -1 [ST]
+      emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral1); // LOADL the literal1
+      displayment = 15; // ge instruction
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
+                                                                   // expression with the value of the caseLiteral1
+      int failJump2 = nextInstrAddr;
+      emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
+      selectEncoder.commandCase.visit(this, frame); // evaluate the command and patch the jump
+      selectEncoder.jumpAddress.add(nextInstrAddr);
+      emit(Machine.JUMPop, 0, Machine.CBr, 0); // jump to the end of the select command
+      // fail
+      patch(failJump, nextInstrAddr);
+      patch(failJump2, nextInstrAddr);
+
+    } else {
+      selectEncoder.charLiteral1 = ((String) ast.caseLiteral1.visit(this, frame)).charAt(1);
+      selectEncoder.charLiteral2 = ((String) ast.caseLiteral2.visit(this, frame)).charAt(1);
+      emit(Machine.LOADLop, 0, 0, selectEncoder.charLiteral2); // LOADL the literal2
+      int displayment = 14; // le instruction
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
+                                                                   // expression with the value of the caseLiteral2
+      int failJump = nextInstrAddr;
+      emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
+
+      // DUP instruction
+      emit(Machine.LOADop, 1, Machine.STr, -1); // dup clone the select expression DUP = LOAD (1) -1 [ST]
+      emit(Machine.LOADLop, 0, 0, selectEncoder.intLiteral1); // LOADL the literal1
+      displayment = 15; // ge instruction
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, displayment); // call the function to compare the value of the
+                                                                   // expression with the value of the caseLiteral1
+      int failJump2 = nextInstrAddr;
+      emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // jump to fail
+      selectEncoder.commandCase.visit(this, frame); // evaluate the command and patch the jump
+      selectEncoder.jumpAddress.add(nextInstrAddr);
+      emit(Machine.JUMPop, 0, Machine.CBr, 0); // jump to the end of the select command
+      // fail
+      patch(failJump, nextInstrAddr);
+      patch(failJump2, nextInstrAddr);
+    }
+    return null;
+  }
+
+  @Override
+  public Object visitCaseLiteralInteger(CaseLiteralInteger ast, Object o) {
+    return ast.literal.spelling;
+  }
+
+  @Override
+  public Object visitCaseLiteralChar(CaseLiteralChar ast, Object o) {
+    return ast.literal.spelling;
   }
 
   @Override

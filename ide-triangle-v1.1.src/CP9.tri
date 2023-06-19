@@ -1,19 +1,6 @@
-let 
-   private   
-  	var x := 1;
-  	var a := 2
-   in   
-  	private   
-  		var fernanda := x+1;
-  		var maynor := 2
-   	in   
-  		var y := fernanda;
-   		var b := maynor
-   	end  ;
-	var cesar := a
+skip;
+for i := 5 .. 6 do let var n : Integer in n := i end end;
 
-   end   
-in
- skip    
-end
-
+skip;
+if 9 = 9 then putint(56) else putint(2) end;
+skip

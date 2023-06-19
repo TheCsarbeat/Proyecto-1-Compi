@@ -1,0 +1,9 @@
+select 1 from 
+
+  when 0 .. 3 then putint (1) ! rango de literales
+
+  when 4 then putint(2)
+
+end
+
+! OK: imprime 1

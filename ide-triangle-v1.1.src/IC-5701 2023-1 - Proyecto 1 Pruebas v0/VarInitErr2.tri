@@ -1,9 +1,0 @@
-let
-	var j := 'c';
-	var i := 4 : Integer; 
-	var y : Integer
-in
-	skip 
-end
-
-! Error: i no debería tener declaración de tipo

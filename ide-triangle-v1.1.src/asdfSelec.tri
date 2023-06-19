@@ -1,0 +1,19 @@
+let
+
+  var a := 830 ! el generador de c?digo debe generar LOADL 1 en este punto
+
+in
+	select a  from 
+
+		when 1 .. 10 | 43 then put('A')	
+		when 11 .. 19 then put('B')
+		when 21 .. 30 then put('C')
+		when 31.. 40 then put('D')
+		!when 41 then put('E')
+		!when 51 then put('F')
+		when 61 .. 100 | 830 then put('G')
+	else  put('Z')
+	end
+	
+
+end

@@ -1,0 +1,9 @@
+let
+
+  var a := 9 ! el generador de c?digo debe generar LOADL 1 en este punto
+
+in
+
+  if a = 9 then putint(56) else putint(2) end
+
+end

@@ -1,5 +1,0 @@
-for i := 1 .. 10 until i > 5 do 
-    getint (var i); ! debe dar un error, variable protegida no debería poder pasarse por referencia
-    putint (i) 
-end
-

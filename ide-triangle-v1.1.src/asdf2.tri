@@ -1,0 +1,10 @@
+let
+
+  var a := 8 ! el generador de c?digo debe generar LOADL 1 en este punto
+
+in
+
+  putint (15) ! imprime 1
+
+end
+
