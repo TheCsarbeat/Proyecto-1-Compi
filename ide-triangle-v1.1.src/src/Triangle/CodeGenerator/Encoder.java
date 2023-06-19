@@ -340,7 +340,7 @@ public final class Encoder implements Visitor {
 
     aThis.C.visit(this, frame);
     emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
-
+    patch(jumpAddr, nextInstrAddr);
     emit(Machine.LOADop, 2, Machine.STr, -2);
     emit(Machine.CALLop, 0, Machine.PBr, Machine.geDisplacement);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
