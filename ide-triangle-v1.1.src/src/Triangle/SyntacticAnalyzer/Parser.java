@@ -452,6 +452,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
 
       case Token.REPEAT: {
         acceptIt();
+        Expression eAST = null;
         switch (currentToken.kind) {
 
           case Token.DO: {
@@ -460,7 +461,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
             switch (currentToken.kind) {
               case Token.WHILE: {
                 acceptIt();
-                Expression eAST = parseExpression();
+                eAST = parseExpression();
                 accept(Token.END);
                 finish(commandPos);
                 commandAST = new DoWhileLoop(cAST, eAST, commandPos);
@@ -468,22 +469,22 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
                 break;
               case Token.UNTIL: {
                 acceptIt();
-                Expression eAST = parseExpression();
+                eAST = parseExpression();
                 accept(Token.END);
                 finish(commandPos);
                 commandAST = new DoUntilLoop(cAST, eAST, commandPos);
               }
                 break;
               default:
-                syntacticError("\"%\" cannot start a DO loop",
-                    currentToken.spelling);
+                        syntacticError("\"%\" cannot start a DO loop",
+                            currentToken.spelling);
                 break;
             }
           }
             break;
           case Token.WHILE: {
             acceptIt();
-            Expression eAST = parseExpression();
+            eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
             accept(Token.END);
@@ -493,7 +494,7 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
             break;
           case Token.UNTIL: {
             acceptIt();
-            Expression eAST = parseExpression();
+            eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
             accept(Token.END);
@@ -502,25 +503,38 @@ LongIdentifier parseLongIdentifier() throws SyntaxError {
           }
             break;
 
-          case Token.IDENTIFIER: {
-            Expression eAST = parseExpression();
-            accept(Token.TIMES);
-            accept(Token.DO);
-            Command cAST = parseCommand();
-            accept(Token.END);
-            finish(commandPos);
-            commandAST = new RepeatTimes(eAST, cAST, commandPos);
-          }
-            break;
-
           default:
+          boolean isTimes = false;
+                try {
+                    eAST = parseExpression();
+                    isTimes = true;
+                } catch (SyntaxError s) {
+                  syntacticError("\"%\" is not a valid token after an expression in a REPEAT command", currentToken.spelling);
+                }
+
+                if (isTimes == true) {
+                    switch (currentToken.kind) {
+                        case Token.TIMES: {
+                            acceptIt();
+                            accept(Token.DO);
+                            Command cAST = parseCommand();
+                            accept(Token.END);
+                            finish(commandPos);
+                            commandAST = new RepeatTimes(eAST, cAST, commandPos);
+                        }
+                        break;
+                        default:
+                            syntacticError("\"%\" is not a valid token after an expression in a REPEAT command", currentToken.spelling);
+                            break;
+                    }
+                } else {
             syntacticError("\"%\" cannot start a loop",
                 currentToken.spelling);
+                }
             break;
         }
-      }
-        break;
-
+    }
+      break;
       /*
         Agregar:
         | "let" Declaration "in" Command "end"

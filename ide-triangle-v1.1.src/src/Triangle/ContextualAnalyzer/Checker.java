@@ -1024,8 +1024,7 @@ public final class Checker implements Visitor {
   // Programs
 
   public Object visitProgram(Program ast, Object o) {
-    ast.B.visit(this, null);
-    return null;
+    return ast.B.visit(this, null);
   }
 
   public Object visitBodySingle(BodySingle ast, Object o) {

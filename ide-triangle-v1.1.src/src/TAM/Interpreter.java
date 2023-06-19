@@ -581,6 +581,10 @@ public class Interpreter {
       }
       if ((CP < CB) || (CP >= CT))
         status = failedInvalidCodeAddress;
+//      System.out.print("SB>|");
+//      for(int i = 0; i<ST; i++){
+//          System.out.print(data[i]+"|");
+//      }System.out.print("<ST"+'\n');
     } while (status == running);
   }
 
