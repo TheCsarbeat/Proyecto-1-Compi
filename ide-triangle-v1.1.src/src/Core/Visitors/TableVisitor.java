@@ -700,8 +700,13 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitForInCommand(ForInCommand ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        ast.IEI.visit(this, null);
+        ast.C.visit(this, null);
+        return (null);
+        
     }
+    
     public Object visitWhileLoop(WhileLoop aThis, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -728,7 +733,10 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitLongIdentifierSimple(LongIdentifierSimple ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return ast.I.visit(this, null);
+        
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -823,7 +831,29 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitForControl(ForControl v, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        try {
+             if (v.entity instanceof KnownValue) {
+
+                addIdentifier(v.I.spelling, 
+                        "KnownAddress", 
+                        (v.entity!=null?v.entity.size:0), 
+                        ((KnownAddress)v.entity).address.level, 
+                        ((KnownAddress)v.entity).address.displacement, 
+                        -1);
+             } else {
+                 addIdentifier(v.I.spelling, 
+                        "UnknownVale", 
+                        (v.entity!=null?v.entity.size:0), 
+                        ((UnknownValue)v.entity).address.level, 
+                        ((UnknownValue)v.entity).address.displacement, 
+                        -1);
+             }
+      } catch (NullPointerException e) { }
+
+      v.E.visit(this, null);
+      return(null);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
    

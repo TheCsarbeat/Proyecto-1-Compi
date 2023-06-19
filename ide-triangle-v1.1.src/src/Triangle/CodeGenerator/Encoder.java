@@ -312,12 +312,8 @@ public final class Encoder implements Visitor {
 
   // Expressions
   public Object visitArrayExpression(ArrayExpression ast, Object o) {
-    Frame frame = (Frame) o;
-    // Get the size of each element
-    int arraySize = ast.AA.elemCount; 
-    
-    // Return the size of the array
-    return arraySize;
+    ast.type.visit(this, null);
+    return ast.AA.visit(this, o);
   }
   
   public Object visitBinaryExpression(BinaryExpression ast, Object o) {
@@ -678,7 +674,7 @@ public final class Encoder implements Visitor {
   public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object o) {
     int typeSize;
     if (ast.entity == null) {
-      int elemSize = ((Integer) ast.T.visit(this, null)).intValue();
+      int elemSize = ((Integer) ast.T.visit(this, o)).intValue();
       typeSize = Integer.parseInt(ast.IL.spelling) * elemSize;
       ast.entity = new TypeRepresentation(typeSize);
       writeTableDetails(ast);
@@ -1163,51 +1159,84 @@ public final class Encoder implements Visitor {
   @Override
   public Object visitForInCommand(ForInCommand ast, Object o) {
     Frame frame = (Frame) o;
-    ForControl forCtrl = ast.IEI;
-    
-    int extraSize = (Integer) forCtrl.E.visit(this, frame);
-    forCtrl.entity = new UnknownValue(extraSize, frame.level, frame.size);
+    ForControl forCtrl = (ForControl) ast.IEI;
+
+    int arraySize = (Integer) forCtrl.E.type.visit(this, frame);
+    int elemSize = (Integer) forCtrl.T.visit(this, o); //Tamaño de los elementos en el arreglo
+    int extraSize = (Integer ) forCtrl.E.visit(this, frame);
     frame = new Frame(frame, extraSize); // Mantiene el tamaño
+    
+    emit(Machine.LOADLop, 0, Machine.STr, arraySize); // Tamaño arreglo
+    emit(Machine.LOADLop, 0, Machine.STr, 0); 
 
-    int loopAddr, endLoopAddr;
+    int jumpAddr, loopAddr;
 
-    // Cargar tamaños
-    emit(Machine.LOADLop, 0, Machine.PBr, 0); // Tamaño arreglo
-    emit(Machine.LOADLop, 0, Machine.PBr, 0); // Indice
-
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop,0,Machine.CBr,0);
     loopAddr = nextInstrAddr;
 
-    // Revisa el indice
-    emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
-    emit(Machine.LOADop, 0, Machine.STr, -3); // carga tamaño
-    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.ltDisplacement); // los compara
-    emit(Machine.JUMPIFop, Machine.CPr, Machine.PBr, endLoopAddr = nextInstrAddr); // mientras indice < arraySize 
-
-    // Carga el elemento segun el indice
-    emit(Machine.LOADop, 0, Machine.STr, -4); // carga array
-    emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
-    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.multDisplacement); // multiplica por el tamaño del elemento 
-    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement); 
-    emit(Machine.LOADIop, 0, Machine.PBr, 0); // carga el elemento
+    emit(Machine.LOADop, 1, Machine.STr, -1); 
+    emit(Machine.LOADIop, 1, Machine.STr, -1); 
     
     // Hace el command con ese elemento
     ast.C.visit(this, frame);
 
-    // Aumento del indice
-    emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
     emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement); // Utiliza succ para aumentar
-    emit(Machine.STOREop, 0, Machine.STr, -2); // lo guarda de nuevo
 
-    // Salta al inicio hasta que el if detecte que el indice > arraySize
-    emit(Machine.JUMPop, 0, Machine.PBr, loopAddr);
+    patch(jumpAddr,nextInstrAddr);
 
-    endLoopAddr = nextInstrAddr;
+    //Load 1
+    emit(Machine.LOADop, 2, Machine.STr, -2); 
+
+    //comparacion
+    emit(Machine.CALLop, 0, Machine.PBr, Machine.gtDisplacement); // los compara
+    emit(Machine.JUMPIFop,1,Machine.SBr,loopAddr);
 
     // Limpia la pila
-    emit(Machine.POPop, 0, 0, extraSize + 3);
+    emit(Machine.POPop, 0, 0, arraySize+elemSize+1);
+   
+   
+   // ---------------------------------------------------------- 
+   
+//    // Cargar tamaños
+
+//    emit(Machine.PUSHop, 0, Machine.PBr, elemSize); // Indice (empuja el tamaño del tipo de elemento en la pila)
+//
+//    loopAddr = nextInstrAddr;
+//
+//    // Revisa el indice
+//    emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
+//    emit(Machine.LOADop, 0, Machine.STr, -3); // carga tamaño
+//    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.ltDisplacement); // los compara
+//    
+//    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr); // index < arraySize 
+//
+////    emit(Machine.JUMPIFop, Machine.CPr, Machine.PBr, endLoopAddr = nextInstrAddr); // mientras indice < arraySize 
+//    
+//    // Carga el elemento segun el indice
+//    emit(Machine.LOADop, 0, Machine.STr, -4); // carga array
+//    emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
+//    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.multDisplacement); // multiplica por el tamaño del elemento 
+//    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement); 
+//    emit(Machine.LOADIop, 0, Machine.PBr, 0); // carga el elemento
+//    
+//    
+//
+//    // Aumento del indice
+//    emit(Machine.LOADop, 0, Machine.STr, -2); // carga indice
+//    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement); // Utiliza succ para aumentar
+//    emit(Machine.STOREop, 0, Machine.STr, -2); // lo guarda de nuevo
+//
+//    // Salta al inicio hasta que el if detecte que el indice > arraySize
+//    emit(Machine.JUMPop, 0, Machine.PBr, loopAddr);
+//
+//    endLoopAddr = nextInstrAddr;
+//
+//    // Limpia la pila
+//    emit(Machine.POPop, 0, 0, arraySize + index + 3);
 
     return null;
-  }
+}
   
   
   @Override
