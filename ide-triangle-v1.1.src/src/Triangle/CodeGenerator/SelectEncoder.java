@@ -3,6 +3,7 @@ package Triangle.CodeGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+import Triangle.AbstractSyntaxTrees.Case;
 import Triangle.AbstractSyntaxTrees.Command;
 import Triangle.AbstractSyntaxTrees.TypeDenoter;
 
@@ -26,7 +27,7 @@ public class SelectEncoder {
     public int intLiteral1, intLiteral2;
     public char charLiteral1, charLiteral2;
     public TypeDenoter typeExpresion;
-    
+    public Command commandCase;
 }
 
 
