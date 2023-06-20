@@ -1,0 +1,16 @@
+let
+
+  private
+    const a ~ 1 ! 1
+  in
+    const b ~ a + 1 ! 2, a visible aquí­
+  end
+
+in
+
+  putint(b) ! 2, b visible aquí
+
+end
+
+! La salida debe lucir así:
+! 2

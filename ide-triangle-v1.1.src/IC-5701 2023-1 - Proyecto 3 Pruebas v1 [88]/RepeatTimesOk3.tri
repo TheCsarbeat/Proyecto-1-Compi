@@ -1,0 +1,13 @@
+let
+  var x : Integer
+in
+  getint (var x) ; ! lee de la entrada estándar
+
+  repeat x + 1 times do ! Expresión es entera
+    putint (x) ;
+    puteol ()
+  end
+
+end
+
+! imprime el valor ingresado (x), x + 1 veces

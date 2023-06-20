@@ -1,0 +1,12 @@
+select 1 from
+
+  when 0 .. 8 | 40 | 20 then putint (11) 
+
+  when 17 then putint(2)
+
+  else put ('E')
+
+end
+
+! OK: imprime 11
+! SelectOK10 [rango y lits 0-8 40 20] Ok16

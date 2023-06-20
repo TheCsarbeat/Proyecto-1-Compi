@@ -1,0 +1,27 @@
+! revisar cómo se muestra Table Details
+! POR EJEMPLO:
+!     i          (56) knownAddress size=1 address=(0,0)
+!     i          (117) knownAddress size=1 address=(0,1)
+
+
+let 
+  var i : Integer
+in
+  i := 0 ;            ! i global en 0
+  let
+    var i : Integer   ! re-declaración de i, en un alcance más anidado
+  in
+    i := 9 ;          ! i local en 9
+    put('n') ;        ! primera letra de nueve
+    putint(i) ;       ! debe imprimir 9
+    puteol()
+  end ;
+  i := i + 1 ;        ! i global se incrementa a 1
+  put('u') ;          ! primera letra de uno
+  putint(i) ;         ! debe imprimir 1
+  puteol()
+end
+
+! debe imprimir:
+! n9
+! u1

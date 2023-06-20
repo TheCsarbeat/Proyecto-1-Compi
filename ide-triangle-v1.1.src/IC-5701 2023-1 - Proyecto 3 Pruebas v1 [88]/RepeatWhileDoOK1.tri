@@ -1,0 +1,14 @@
+let
+  const b ~ 10;
+  var a := 15
+in
+  repeat 
+  while a > b do
+
+    putint (a) ; ! debe imprimir 1514131211
+    a := a - 1
+
+  end
+
+end
+

@@ -1,0 +1,14 @@
+let
+  var miArr := [1,2,3,4]
+in
+  for i := 0 .. 3 do
+    putint(miArr[i]);
+    puteol()
+  end
+end
+
+! debe imprimir:
+! 1 
+! 2
+! 3 
+! 4  

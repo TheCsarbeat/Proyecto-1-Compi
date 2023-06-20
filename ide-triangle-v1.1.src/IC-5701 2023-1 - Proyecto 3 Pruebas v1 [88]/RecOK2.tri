@@ -1,0 +1,22 @@
+! Revisa el tipo de declaración rec - varias alternativas
+! Cuando no hay dependencia mutua, se deben comportar como las declaraciones secuenciales.
+
+let
+
+  rec
+
+    proc a() ~ put('Z') end 
+    |
+    func b() : Integer ~ 5
+    |
+    proc c() ~ putint (999) end
+
+  end
+
+in
+  a (); ! imprime Z
+  c (); ! imprime 999
+  putint(6 * b()) ! imprime 30
+end
+
+! todo debe salir junto, sin cambio de línea Z99930

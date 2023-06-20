@@ -1,0 +1,7 @@
+let
+	var lista : array 20 of Integer
+in
+	putint(lista [21]) 
+end
+
+! Error: acceso a índice mayor que la cota superior

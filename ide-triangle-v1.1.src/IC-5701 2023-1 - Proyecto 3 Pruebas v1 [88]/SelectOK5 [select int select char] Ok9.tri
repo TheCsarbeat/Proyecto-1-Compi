@@ -1,0 +1,13 @@
+select 10 - 6 from
+  when 3 then putint (3) 
+  when 4 then ! debe seleccionar esta rama
+! selecciona y comienza select anidado, tiene otro alcance para las literales
+
+    select '1' from
+      when '1' then putint (41) !OK, está en select anidado
+      else putint (2)
+    end ! termina select anidado
+
+end ! termina select externo
+
+! imprime 41

@@ -1,0 +1,7 @@
+let
+	var lista : array 10 of Integer
+in
+	putint(lista[4 - 12]) 
+end
+
+! Error: acceso a índice menor que la cota inferior

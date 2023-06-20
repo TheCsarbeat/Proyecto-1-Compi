@@ -1,0 +1,8 @@
+repeat 
+ (let const x ~ 3 in x + 2) ! x está visible en x + 2; valor la expresión es 5
+ times do ! Expresión let está bien, además declara a x y es de tipo Integer
+
+    putint (3) ! imprime 3 cinco veces = 33333
+
+end
+

@@ -1,0 +1,7 @@
+let
+	var lista : array 0 of Integer
+in
+	skip 
+end
+
+! Error: No tiene elementos. Debe detectarlo el Analizador contextual
