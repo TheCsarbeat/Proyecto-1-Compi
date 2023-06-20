@@ -1266,8 +1266,7 @@ public final class Encoder implements Visitor {
     }
     ast.C.visit(this, selectEnconder);
     // case Type 0 means that the cases are sequential, 1 means that the cases are
-    // single
-    System.out.println("jumpAddress: " + selectEnconder.jumpAddress);
+
     // for to patch the jump address of the cases
     for (int i = 0; i < selectEnconder.jumpAddress.size(); i++) {
       patch(selectEnconder.jumpAddress.get(i), nextInstrAddr);
